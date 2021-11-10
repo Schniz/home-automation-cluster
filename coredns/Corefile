@@ -1,0 +1,11 @@
+.:53 {
+    forward . 8.8.8.8 9.9.9.9
+    log
+    errors
+}
+
+schl.es:53 {
+    file /root/schl.es.db
+    log
+    errors
+}
