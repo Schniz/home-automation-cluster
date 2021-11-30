@@ -1,3 +1,6 @@
+# {{- $subdomain := .Values.apps.ical_http_sensor.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -64,9 +67,9 @@ metadata:
 spec:
   tls:
     - hosts:
-        - ical-sensor.home.hagever.com
+        - {{ $domain | quote }}
   rules:
-  - host: ical-sensor.home.hagever.com
+  - host: {{ $domain | quote }}
     http:
       paths:
       - backend:

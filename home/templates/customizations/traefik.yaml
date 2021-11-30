@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: kube-system
+type: Opaque
+stringData:
+  api-token: {{ .Values.cloudflare.api_token | quote }}
+
+---
+
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -8,7 +19,6 @@ spec:
     email: gal@spitfire.co.il
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      # Secret resource that will be used to store the account's private key.
       name: cloudflare-issuer-secret
     solvers:
     - dns01:
@@ -22,17 +32,17 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: home.hagever.com
+  name: {{ .Values.ingress.base_domain }}
   namespace: kube-system
 spec:
-  secretName: home.hagever.com
+  secretName: {{ .Values.ingress.base_domain }}
   issuerRef:
     name: cloudflare-cert-issuer
     kind: ClusterIssuer
-  commonName: 'home.hagever.com'
+  commonName: {{ .Values.ingress.base_domain | quote }}
   dnsNames:
-  - "home.hagever.com"
-  - "*.home.hagever.com"
+  - {{ .Values.ingress.base_domain | quote }}
+  - "*.{{.Values.ingress.base_domain}}"
 
 ---
 
@@ -43,4 +53,4 @@ metadata:
   namespace: kube-system
 spec:
   defaultCertificate:
-    secretName: home.hagever.com
+    secretName: {{ .Values.ingress.base_domain }}

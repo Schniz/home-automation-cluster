@@ -1,3 +1,5 @@
+# {{- $domain := print .Values.apps.kubernetes_dashboard.subdomain "." .Values.ingress.base_domain -}}
+
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
@@ -18,9 +20,9 @@ metadata:
 spec:
   tls:
     - hosts:
-        - k8s.home.hagever.com
+        - {{ $domain | quote }}
   rules:
-  - host: k8s.home.hagever.com
+  - host: {{ $domain | quote }}
     http:
       paths:
       - backend:
@@ -30,4 +32,5 @@ spec:
               number: 443
         path: /
         pathType: Prefix
+
 ---

@@ -1,3 +1,6 @@
+# {{- $subdomain := .Values.apps.home_assistant.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+
 ---
 
 apiVersion: v1
@@ -48,9 +51,9 @@ metadata:
 spec:
   tls:
     - hosts:
-        - ha.home.hagever.com
+        - {{ $domain | quote }}
   rules:
-  - host: ha.home.hagever.com
+  - host: {{ $domain | quote }}
     http:
       paths:
       - backend:
