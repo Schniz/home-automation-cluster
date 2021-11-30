@@ -1,0 +1,9 @@
+dependencies:
+- name: kubernetes-dashboard
+  repository: https://kubernetes.github.io/dashboard/
+  version: 5.0.4
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.6.1
+digest: sha256:5ef443dbc910257f4511d93c84cf9bc03fe8baf86c93952c0ba7a632f3dd6fd9
+generated: "2021-11-30T16:36:00.224263+02:00"

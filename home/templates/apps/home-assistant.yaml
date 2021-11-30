@@ -46,8 +46,6 @@ kind: Ingress
 metadata:
   name: homeassistant
   namespace: home-assistant
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
 spec:
   tls:
     - hosts:

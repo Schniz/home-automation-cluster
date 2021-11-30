@@ -18,7 +18,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
 spec:
   tls:
     - hosts:
@@ -29,7 +28,7 @@ spec:
       paths:
       - backend:
           service:
-            name: kubernetes-dashboard
+            name: home-kubernetes-dashboard
             port:
               number: 443
         path: /

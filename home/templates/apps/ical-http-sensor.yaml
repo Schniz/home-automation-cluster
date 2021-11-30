@@ -10,6 +10,17 @@ metadata:
 
 ---
 
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: ical-http-sensor
+  name: schniz-at-github-regcred
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: {{ template "imagePullSecret" . }}
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,7 +40,7 @@ spec:
         app: ical-http-sensor
     spec:
       imagePullSecrets:
-        - name: regcred
+        - name: schniz-at-github-regcred
       containers:
         - name: server
           image: ghcr.io/schniz/ical_http_server:main
