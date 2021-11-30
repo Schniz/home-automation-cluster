@@ -1,1 +1,4 @@
 kubeconfig.yaml
+.gitsecret/keys/random_seed
+!*.secret
+traefik/0_cert_token.yaml
