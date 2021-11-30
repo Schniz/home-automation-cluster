@@ -1,5 +1,7 @@
+---
 # {{- $subdomain := .Values.apps.ical_http_sensor.subdomain -}}
 # {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+---
 
 apiVersion: v1
 kind: Namespace

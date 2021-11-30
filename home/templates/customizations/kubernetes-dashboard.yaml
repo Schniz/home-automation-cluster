@@ -1,4 +1,6 @@
+---
 # {{- $domain := print .Values.apps.kubernetes_dashboard.subdomain "." .Values.ingress.base_domain -}}
+---
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
