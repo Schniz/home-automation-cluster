@@ -1,0 +1,20 @@
+repositories:
+  - name: kubernetes-dashboard
+    url: https://kubernetes.github.io/dashboard/
+  - name: jetstack
+    url: https://charts.jetstack.io
+
+releases:
+  - name: kubernetes-dashboard
+    namespace: kubernetes-dashboard
+    chart: kubernetes-dashboard/kubernetes-dashboard
+    version: 5.0.4
+  - name: cert-manager
+    namespace: cert-manager
+    chart: jetstack/cert-manager
+    version: 1.6.1
+  - name: home
+    chart: ./home
+    needs:
+      - kubernetes-dashboard
+      - cert-manager
