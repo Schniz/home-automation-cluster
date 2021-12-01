@@ -3,6 +3,8 @@ repositories:
     url: https://kubernetes.github.io/dashboard/
   - name: jetstack
     url: https://charts.jetstack.io
+  - name: node-feature-discovery
+    url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
 
 releases:
   - name: kubernetes-dashboard
@@ -13,6 +15,14 @@ releases:
     namespace: cert-manager
     chart: jetstack/cert-manager
     version: 1.6.1
+  - name: node-feature-discovery
+    namespace: node-feature-discovery
+    chart: node-feature-discovery/node-feature-discovery
+    version: 0.9.0
+    values:
+      - image:
+          repository: "raspbernetes/node-feature-discovery"
+          tag: "v0.9.0"
   - name: home
     chart: ./home
     needs:

@@ -6,5 +6,8 @@ dependencies:
 - name: kubernetes-dashboard
   repository: https://kubernetes.github.io/dashboard/
   version: 5.0.4
-digest: sha256:579117b6205f257e3258f72996151f53d140f527f78692f59e22941be4e56b49
-generated: "2021-12-01T15:16:13.008732+02:00"
+- name: node-feature-discovery
+  repository: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+  version: 0.9.0
+digest: sha256:2eeff7d5b4d8ab4cf44fa12348092169a6e2fc86845f46bc0ed5eec614853c54
+generated: "2021-12-01T15:40:20.447702+02:00"
