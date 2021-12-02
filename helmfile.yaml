@@ -11,10 +11,14 @@ releases:
     namespace: kubernetes-dashboard
     chart: kubernetes-dashboard/kubernetes-dashboard
     version: 5.0.4
+
   - name: cert-manager
     namespace: cert-manager
     chart: jetstack/cert-manager
     version: 1.6.1
+    values:
+      - installCRDs: true
+
   - name: node-feature-discovery
     namespace: node-feature-discovery
     chart: node-feature-discovery/node-feature-discovery
@@ -23,6 +27,7 @@ releases:
       - image:
           repository: "raspbernetes/node-feature-discovery"
           tag: "v0.9.0"
+
   - name: home
     chart: ./home
     needs:
