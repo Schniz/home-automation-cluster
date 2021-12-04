@@ -1,4 +1,4 @@
 kubeconfig*.yaml
 .gitsecret/keys/random_seed
 !*.secret
-home/values.yaml
+home_secrets.yaml

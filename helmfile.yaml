@@ -30,6 +30,8 @@ releases:
 
   - name: home
     chart: ./home
+    values:
+      - ./home_secrets.yaml
     needs:
       - kubernetes-dashboard
       - cert-manager
