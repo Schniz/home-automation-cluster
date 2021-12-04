@@ -25,7 +25,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ .Values.external_storage.base }}/transmission"
+    path: "{{ .Values.external_storage.base }}/jackett"
 
 ---
 
