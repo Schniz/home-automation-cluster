@@ -1,0 +1,176 @@
+---
+
+# {{ $namespace := "sonarr" }}
+# {{- $subdomain := .Values.apps.sonarr.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: {{ $namespace }}
+  name: "sonarr-storage"
+  labels:
+    type: "local"
+spec:
+  storageClassName: "manual"
+  capacity:
+    storage: "1Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/transmission"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "sonarr-storage"
+spec:
+  storageClassName: "manual"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: {{ $namespace }}
+  name: "library-storage"
+  labels:
+    type: "local"
+spec:
+  storageClassName: "manual"
+  capacity:
+    storage: "500Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/transmission"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "library-storage"
+spec:
+  storageClassName: "manual"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "500Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+    hagever.com/version: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: {{ $namespace }}
+  template:
+    metadata:
+      labels:
+        app: {{ $namespace }}
+    spec:
+      volumes:
+        - name: library-storage
+          persistentVolumeClaim:
+            claimName: library-storage
+        - name: sonarr-storage
+          persistentVolumeClaim:
+            claimName: sonarr-storage
+      containers:
+        - name: server
+          image: linuxserver/sonarr:latest
+          imagePullPolicy: Always
+          ports:
+            - name: web-ui
+              containerPort: 8989
+          volumeMounts:
+            - mountPath: /tv
+              name: library-storage
+              subPath: tv
+            - mountPath: /config
+              name: sonarr-storage
+              subPath: config
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Asia/Jerusalem
+          # TODO: understand why it does not work
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8989
+          #   initialDelaySeconds: 3
+          #   periodSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+spec:
+  selector:
+    app: {{ $namespace }}
+  ports:
+    - protocol: TCP
+      targetPort: 8989
+      port: 80
+      name: web-ui
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+spec:
+  tls:
+    - hosts:
+        - {{ $domain | quote }}
+  rules:
+  - host: {{ $domain | quote }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ $namespace }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

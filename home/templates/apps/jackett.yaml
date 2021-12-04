@@ -1,0 +1,134 @@
+---
+# {{ $namespace := "jackett" }}
+# {{- $subdomain := .Values.apps.jackett.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: {{ $namespace }}
+  name: "jackett-storage"
+  labels:
+    type: "local"
+spec:
+  storageClassName: "manual"
+  capacity:
+    storage: "1Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/transmission"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "jackett-storage"
+spec:
+  storageClassName: "manual"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+    hagever.com/version: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: {{ $namespace }}
+  template:
+    metadata:
+      labels:
+        app: {{ $namespace }}
+    spec:
+      volumes:
+        - name: jackett-storage
+          persistentVolumeClaim:
+            claimName: jackett-storage
+      containers:
+        - name: server
+          image: linuxserver/jackett:latest
+          imagePullPolicy: Always
+          ports:
+            - name: web-ui
+              containerPort: 9117
+          volumeMounts:
+            - mountPath: /config
+              name: jackett-storage
+              subPath: config
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Asia/Jerusalem
+          # TODO: understand why it does not work
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 9117
+          #   initialDelaySeconds: 3
+          #   periodSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+spec:
+  selector:
+    app: {{ $namespace }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9117
+      name: web-ui
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+spec:
+  tls:
+    - hosts:
+        - {{ $domain | quote }}
+  rules:
+  - host: {{ $domain | quote }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ $namespace }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

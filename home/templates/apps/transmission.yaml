@@ -1,0 +1,152 @@
+---
+
+# {{ $namespace := "transmission" }}
+# {{- $subdomain := .Values.apps.transmission.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: {{ $namespace }}
+  name: transmission-storage
+  labels:
+    type: "local"
+spec:
+  storageClassName: "manual"
+  capacity:
+    storage: "500Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/transmission"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "transmission-storage"
+spec:
+  storageClassName: "manual"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "500Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: {{ $namespace }}
+  labels:
+    app: transmission
+    hagever.com/version: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      volumes:
+        - name: transmission-storage
+          persistentVolumeClaim:
+            claimName: transmission-storage
+      containers:
+        - name: server
+          image: linuxserver/transmission:latest
+          imagePullPolicy: Always
+          ports:
+            - name: web-ui
+              containerPort: 9091
+            - name: torrent-tcp
+              containerPort: 51413
+            - name: torrent-udp
+              protocol: UDP
+              containerPort: 51413
+          volumeMounts:
+            - mountPath: /downloads
+              name: transmission-storage
+              subPath: downloads
+            - mountPath: /config
+              name: transmission-storage
+              subPath: config
+            - mountPath: /watch
+              name: transmission-storage
+              subPath: watch
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Asia/Jerusalem
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9091
+            initialDelaySeconds: 3
+            periodSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+  namespace: {{ $namespace }}
+  labels:
+    app: transmission
+spec:
+  selector:
+    app: transmission
+  ports:
+    - protocol: TCP
+      targetPort: 9091
+      name: web-ui
+      port: 80
+    - protocol: TCP
+      port: 51413
+      name: torrent-tcp
+    - protocol: UDP
+      port: 51413
+      name: torrent-udp
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: transmission
+  namespace: {{ $namespace }}
+spec:
+  tls:
+    - hosts:
+        - {{ $domain | quote }}
+  rules:
+  - host: {{ $domain | quote }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: transmission
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
