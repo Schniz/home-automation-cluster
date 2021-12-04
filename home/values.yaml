@@ -34,3 +34,12 @@ apps:
 
   jackett:
     subdomain: jackett
+
+  plex:
+    subdomain: media2
+
+  jellyfin:
+    subdomain: media
+
+  bazarr:
+    subdomain: bazarr

@@ -14,18 +14,18 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  namespace: {{ $namespace }}
-  name: "jackett-storage"
+  name: "jackett-config-storage"
   labels:
     type: "local"
+    hagever.com/for: jackett
 spec:
-  storageClassName: "manual"
+  storageClassName: manual
   capacity:
     storage: "1Gi"
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ .Values.external_storage.base }}/jackett"
+    path: "{{ .Values.external_storage.base }}/configs/jackett"
 
 ---
 
@@ -33,9 +33,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "jackett-storage"
+  name: "jackett-config-storage"
 spec:
-  storageClassName: "manual"
+  storageClassName: manual
+  selector:
+    matchLabels:
+      hagever.com/for: jackett
   accessModes:
     - ReadWriteOnce
   resources:
@@ -63,9 +66,9 @@ spec:
         app: {{ $namespace }}
     spec:
       volumes:
-        - name: jackett-storage
+        - name: jackett-config-storage
           persistentVolumeClaim:
-            claimName: jackett-storage
+            claimName: jackett-config-storage
       containers:
         - name: server
           image: linuxserver/jackett:latest
@@ -75,8 +78,7 @@ spec:
               containerPort: 9117
           volumeMounts:
             - mountPath: /config
-              name: jackett-storage
-              subPath: config
+              name: jackett-config-storage
           env:
             - name: PUID
               value: "1000"

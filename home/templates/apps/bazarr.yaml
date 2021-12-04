@@ -1,7 +1,7 @@
 ---
 
-# {{ $namespace := "sonarr" }}
-# {{- $subdomain := .Values.apps.sonarr.subdomain -}}
+# {{ $namespace := "bazarr" }}
+# {{- $subdomain := .Values.apps.bazarr.subdomain -}}
 # {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
 
 ---
@@ -16,10 +16,11 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: "sonarr-library-storage"
+  name: "bazarr-library-storage"
+  namespace: {{ $namespace }}
   labels:
+    hagever.com/for: bazarr
     type: "local"
-    hagever.com/for: sonarr
 spec:
   storageClassName: manual
   capacity:
@@ -34,10 +35,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: "sonarr-config-storage"
+  name: "bazarr-config-storage"
+  namespace: {{ $namespace }}
   labels:
     type: "local"
-    hagever.com/for: sonarr
+    hagever.com/for: bazarr
 spec:
   storageClassName: manual
   capacity:
@@ -45,7 +47,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ .Values.external_storage.base }}/configs/sonarr"
+    path: "{{ .Values.external_storage.base }}/configs/bazarr"
 
 ---
 
@@ -53,12 +55,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "sonarr-config-storage"
+  name: "bazarr-config-storage"
 spec:
   storageClassName: manual
   selector:
     matchLabels:
-      hagever.com/for: sonarr
+      hagever.com/for: bazarr
   accessModes:
     - ReadWriteOnce
   resources:
@@ -71,12 +73,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "sonarr-library-storage"
+  name: "bazarr-library-storage"
 spec:
   storageClassName: manual
   selector:
     matchLabels:
-      hagever.com/for: sonarr
+      hagever.com/for: bazarr
   accessModes:
     - ReadWriteOnce
   resources:
@@ -104,28 +106,35 @@ spec:
         app: {{ $namespace }}
     spec:
       volumes:
-        - name: sonarr-library-storage
+        - name: bazarr-library-storage
           persistentVolumeClaim:
-            claimName: sonarr-library-storage
-        - name: sonarr-config-storage
+            claimName: bazarr-library-storage
+        - name: bazarr-config-storage
           persistentVolumeClaim:
-            claimName: sonarr-config-storage
+            claimName: bazarr-config-storage
       containers:
         - name: server
-          image: linuxserver/sonarr:latest
+          image: linuxserver/bazarr:latest
           imagePullPolicy: Always
+          livenessProbe:
+            tcpSocket:
+              port: 6767
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          name: bazarr
           ports:
-            - name: web-ui
-              containerPort: 8989
+            - containerPort: 6767
+              name: web-ui
+              protocol: TCP
           volumeMounts:
-            - mountPath: /tv
-              name: sonarr-library-storage
-              subPath: tv
-            # - mountPath: /config
-            #   name: sonarr-config-storage
-            - mountPath: /downloads
-              name: sonarr-library-storage
-              subPath: downloads
+          - mountPath: /config
+            name: bazarr-config-storage
+          - mountPath: /tv
+            name: bazarr-library-storage
+            subPath: tv
+          - mountPath: /movies
+            name: bazarr-library-storage
+            subPath: movies
           env:
             - name: PUID
               value: "1000"
@@ -133,13 +142,24 @@ spec:
               value: "1000"
             - name: TZ
               value: Asia/Jerusalem
-          # TODO: understand why it does not work
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8989
-          #   initialDelaySeconds: 3
-          #   periodSeconds: 3
+
+# version: "2.1"
+# services:
+#   bazarr:
+#     image: lscr.io/linuxserver/bazarr
+#     container_name: bazarr
+#     environment:
+#       - PUID=1000
+#       - PGID=1000
+#       - TZ=Europe/London
+#     volumes:
+#       - /path/to/bazarr/config:/config
+#       - /path/to/movies:/movies #optional
+#       - /path/to/tv:/tv #optional
+#     ports:
+#       - 6767:6767
+#     restart: unless-stopped
+
 
 ---
 
@@ -155,7 +175,7 @@ spec:
     app: {{ $namespace }}
   ports:
     - protocol: TCP
-      targetPort: 8989
+      targetPort: 6767
       port: 80
       name: web-ui
 

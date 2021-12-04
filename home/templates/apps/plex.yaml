@@ -1,0 +1,270 @@
+---
+
+# {{ $namespace := "plex" }}
+# {{- $subdomain := .Values.apps.plex.subdomain -}}
+# {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "plex-library-storage"
+  namespace: {{ $namespace }}
+  labels:
+    hagever.com/for: plex
+    type: "local"
+spec:
+  storageClassName: manual
+  capacity:
+    storage: "500Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/library"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "plex-config-storage"
+  namespace: {{ $namespace }}
+  labels:
+    type: "local"
+    hagever.com/for: plex
+spec:
+  storageClassName: manual
+  capacity:
+    storage: "1Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/configs/plex"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "plex-config-storage"
+spec:
+  storageClassName: manual
+  selector:
+    matchLabels:
+      hagever.com/for: plex
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "plex-library-storage"
+spec:
+  storageClassName: manual
+  selector:
+    matchLabels:
+      hagever.com/for: plex
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "500Gi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+    hagever.com/version: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: {{ $namespace }}
+  template:
+    metadata:
+      labels:
+        app: {{ $namespace }}
+    spec:
+      volumes:
+        - name: plex-library-storage
+          persistentVolumeClaim:
+            claimName: plex-library-storage
+        - name: plex-config-storage
+          persistentVolumeClaim:
+            claimName: plex-config-storage
+      containers:
+        - name: server
+          image: linuxserver/plex:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            tcpSocket:
+              port: 32400
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          name: plex
+          ports:
+            - containerPort: 32400
+              name: pms-web
+              protocol: TCP
+            - containerPort: 32469
+              name: dlna-tcp
+              protocol: TCP
+            - containerPort: 1900
+              name: dlna-udp
+              protocol: UDP
+            - containerPort: 3005
+              name: plex-companion
+              protocol: TCP  
+            - containerPort: 5353
+              name: discovery-udp
+              protocol: UDP  
+            - containerPort: 8324
+              name: plex-roku
+              protocol: TCP  
+            - containerPort: 32410
+              name: gdm-32410
+              protocol: UDP
+            - containerPort: 32412
+              name: gdm-32412
+              protocol: UDP
+            - containerPort: 32413
+              name: gdm-32413
+              protocol: UDP
+            - containerPort: 32414
+              name: gdm-32414
+              protocol: UDP
+          volumeMounts:
+          - mountPath: /config
+            name: plex-config-storage
+          - mountPath: /tv
+            name: plex-library-storage
+            subPath: tv
+          - mountPath: /movies
+            name: plex-library-storage
+            subPath: movies
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Asia/Jerusalem
+            - name: VERSION
+              value: docker
+            - name: PLEX_CLAIM
+              value: claim-yuUnUdCg9UMqZY4wpD3Q
+
+# version: "2.1"
+# services:
+#   plex:
+#     image: lscr.io/linuxserver/plex
+#     container_name: plex
+#     network_mode: host
+#     environment:
+#       - PUID=1000
+#       - PGID=1000
+#       - VERSION=docker
+#       - PLEX_CLAIM= #optional
+#     volumes:
+#       - /path/to/library:/config
+#       - /path/to/tvseries:/tv
+#       - /path/to/movies:/movies
+#     restart: unless-stopped
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $namespace }}
+spec:
+  selector:
+    app: {{ $namespace }}
+  ports:
+    - port: 80
+      targetPort: 32400
+      protocol: TCP
+      name: pms-web
+    - port: 1900
+      targetPort: 1900
+      protocol: UDP
+      name: dlna-udp
+    - port: 3005
+      targetPort: 3005
+      protocol: TCP
+      name: plex-companion
+    - port: 5353
+      targetPort: 5353
+      protocol: UDP
+      name: discovery-udp
+    - port: 8324
+      targetPort: 8324
+      protocol: TCP
+      name: plex-roku
+    - port: 32410
+      targetPort: 32410
+      protocol: UDP
+      name: gdm-32410
+    - port: 32412
+      targetPort: 32412
+      protocol: UDP
+      name: gdm-32412
+    - port: 32413
+      targetPort: 32413
+      protocol: UDP
+      name: gdm-32413
+    - port: 32414
+      targetPort: 32414
+      protocol: UDP
+      name: gdm-32414
+    - port: 32469
+      targetPort: 32469
+      protocol: TCP
+      name: dlna-tcp
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $namespace }}
+  namespace: {{ $namespace }}
+spec:
+  tls:
+    - hosts:
+        - {{ $domain | quote }}
+  rules:
+  - host: {{ $domain | quote }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ $namespace }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

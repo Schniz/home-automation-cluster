@@ -16,18 +16,38 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  namespace: {{ $namespace }}
-  name: transmission-storage
+  name: "transmission-library-storage"
   labels:
     type: "local"
+    hagever.com/for: transmission
 spec:
-  storageClassName: "manual"
+  storageClassName: manual
   capacity:
     storage: "500Gi"
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ .Values.external_storage.base }}/transmission"
+    path: "{{ .Values.external_storage.base }}/library"
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "transmission-config-storage"
+  namespace: {{ $namespace }}
+  labels:
+    type: "local"
+    hagever.com/for: transmission
+spec:
+  storageClassName: manual
+  capacity:
+    storage: "1Gi"
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ .Values.external_storage.base }}/configs/transmission"
 
 ---
 
@@ -35,9 +55,30 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "transmission-storage"
+  name: "transmission-config-storage"
 spec:
-  storageClassName: "manual"
+  storageClassName: manual
+  selector:
+    matchLabels:
+      hagever.com/for: transmission
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $namespace }}
+  name: "transmission-library-storage"
+spec:
+  storageClassName: manual
+  selector:
+    matchLabels:
+      hagever.com/for: transmission
   accessModes:
     - ReadWriteOnce
   resources:
@@ -65,9 +106,12 @@ spec:
         app: transmission
     spec:
       volumes:
-        - name: transmission-storage
+        - name: transmission-library-storage
           persistentVolumeClaim:
-            claimName: transmission-storage
+            claimName: transmission-library-storage
+        - name: transmission-config-storage
+          persistentVolumeClaim:
+            claimName: transmission-config-storage
       containers:
         - name: server
           image: linuxserver/transmission:latest
@@ -82,14 +126,13 @@ spec:
               containerPort: 51413
           volumeMounts:
             - mountPath: /downloads
-              name: transmission-storage
+              name: transmission-library-storage
               subPath: downloads
             - mountPath: /config
-              name: transmission-storage
-              subPath: config
+              name: transmission-config-storage
             - mountPath: /watch
-              name: transmission-storage
-              subPath: watch
+              name: transmission-library-storage
+              subPath: transmission-watch
           env:
             - name: PUID
               value: "1000"
