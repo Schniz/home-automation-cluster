@@ -121,8 +121,8 @@ spec:
             - mountPath: /tv
               name: sonarr-library-storage
               subPath: tv
-            # - mountPath: /config
-            #   name: sonarr-config-storage
+            - mountPath: /config
+              name: sonarr-config-storage
             - mountPath: /downloads
               name: sonarr-library-storage
               subPath: downloads

@@ -112,6 +112,11 @@ spec:
         - name: jellyfin-config-storage
           persistentVolumeClaim:
             claimName: jellyfin-config-storage
+        - name: jellyfin-tmp-transcoding
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+
       containers:
         - name: server
           image: linuxserver/jellyfin:latest
@@ -132,6 +137,8 @@ spec:
               containerPort: 1900
               protocol: UDP
           volumeMounts:
+          - mountPath: /tmp-transcoding
+            name: jellyfin-tmp-transcoding
           - mountPath: /config
             name: jellyfin-config-storage
           - mountPath: /data/tvshows
