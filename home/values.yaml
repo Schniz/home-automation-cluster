@@ -40,3 +40,6 @@ apps:
 
   bazarr:
     subdomain: bazarr
+
+  radarr:
+    subdomain: radarr

@@ -1,7 +1,7 @@
 ---
 
-# {{ $namespace := "sonarr" }}
-# {{- $subdomain := .Values.apps.sonarr.subdomain -}}
+# {{ $namespace := "radarr" }}
+# {{- $subdomain := .Values.apps.radarr.subdomain -}}
 # {{- $domain := print $subdomain "." .Values.ingress.base_domain -}}
 
 ---
@@ -16,11 +16,10 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: "sonarr-library-storage"
+  name: "radarr-library-storage"
   labels:
     type: "local"
-    hagever.com/for: sonarr
-    hagever.com/type: library
+    hagever.com/for: radarr
 spec:
   storageClassName: manual
   capacity:
@@ -35,11 +34,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: "sonarr-config-storage"
+  name: "radarr-config-storage"
   labels:
     type: "local"
-    hagever.com/for: sonarr
-    hagever.com/type: config
+    hagever.com/for: radarr
 spec:
   storageClassName: manual
   capacity:
@@ -47,7 +45,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ .Values.external_storage.base }}/configs/sonarr"
+    path: "{{ .Values.external_storage.base }}/configs/radarr"
 
 ---
 
@@ -55,13 +53,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "sonarr-config-storage"
+  name: "radarr-config-storage"
 spec:
   storageClassName: manual
   selector:
     matchLabels:
-      hagever.com/for: sonarr
-      hagever.com/type: config
+      hagever.com/for: radarr
   accessModes:
     - ReadWriteOnce
   resources:
@@ -74,13 +71,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   namespace: {{ $namespace }}
-  name: "sonarr-library-storage"
+  name: "radarr-library-storage"
 spec:
   storageClassName: manual
   selector:
     matchLabels:
-      hagever.com/for: sonarr
-      hagever.com/type: library
+      hagever.com/for: radarr
   accessModes:
     - ReadWriteOnce
   resources:
@@ -108,27 +104,27 @@ spec:
         app: {{ $namespace }}
     spec:
       volumes:
-        - name: sonarr-library-storage
+        - name: radarr-library-storage
           persistentVolumeClaim:
-            claimName: sonarr-library-storage
-        - name: sonarr-config-storage
+            claimName: radarr-library-storage
+        - name: radarr-config-storage
           persistentVolumeClaim:
-            claimName: sonarr-config-storage
+            claimName: radarr-config-storage
       containers:
         - name: server
-          image: linuxserver/sonarr:latest
+          image: linuxserver/radarr:latest
           imagePullPolicy: Always
           ports:
             - name: web-ui
-              containerPort: 8989
+              containerPort: 7878
           volumeMounts:
-            - mountPath: /tv
-              name: sonarr-library-storage
-              subPath: tv
+            - mountPath: /movies
+              name: radarr-library-storage
+              subPath: movies
             - mountPath: /config
-              name: sonarr-config-storage
+              name: radarr-config-storage
             - mountPath: /downloads
-              name: sonarr-library-storage
+              name: radarr-library-storage
               subPath: downloads
           env:
             - name: PUID
@@ -141,7 +137,7 @@ spec:
           # livenessProbe:
           #   httpGet:
           #     path: /
-          #     port: 8989
+          #     port: 7878
           #   initialDelaySeconds: 3
           #   periodSeconds: 3
 
@@ -159,7 +155,7 @@ spec:
     app: {{ $namespace }}
   ports:
     - protocol: TCP
-      targetPort: 8989
+      targetPort: 7878
       port: 80
       name: web-ui
 
