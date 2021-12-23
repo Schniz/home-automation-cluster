@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  caddy:
+    build:
+      dockerfile: ./caddy/Dockerfile
+      context: .
+    env_file: ./caddy/environment
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy-data/:/data/caddy/
+    ports:
+      - published: 443
+        target: 443
+      - published: 80
+        target: 80
+      - published: 2019
+        target: 2019

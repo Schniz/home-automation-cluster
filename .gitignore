@@ -2,3 +2,7 @@ kubeconfig*.yaml
 .gitsecret/keys/random_seed
 !*.secret
 home_secrets.yaml
+
+/caddy-data
+!/caddy-data/.gitkeep
+caddy/environment

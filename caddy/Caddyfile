@@ -1,0 +1,19 @@
+*.home.hagever.com
+
+tls {
+	dns cloudflare {env.CF_API_TOKEN}
+}
+
+@hello host hello.home.hagever.com
+handle @hello {
+  respond "Hello, world!"
+}
+
+@bye host bye.home.hagever.com
+handle @bye {
+  respond "Goodbye"
+}
+
+handle {
+  abort
+}
