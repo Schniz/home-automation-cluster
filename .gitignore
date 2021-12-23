@@ -6,3 +6,4 @@ home_secrets.yaml
 /caddy-data
 !/caddy-data/.gitkeep
 caddy/environment
+cloudflare-ddns/environment
