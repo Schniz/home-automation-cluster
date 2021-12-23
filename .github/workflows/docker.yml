@@ -11,43 +11,7 @@ on:
       - "main"
 
 jobs:
-  build_binaries:
-    env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}
-    strategy:
-      matrix:
-        include:
-          - rust_target: "aarch64-unknown-linux-musl"
-            docker_tag: "aarch64-musl"
-            artifact_name: "arm64"
-          - rust_target: "armv7-unknown-linux-musleabihf"
-            docker_tag: "armv7-musleabihf"
-            artifact_name: "armv7"
-          - rust_target: "x86_64-unknown-linux-musl"
-            docker_tag: "x86_64-musl"
-            artifact_name: "amd64"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: build binary
-        run: |
-          docker run --rm -v "$(pwd)":/home/rust/src messense/rust-musl-cross:${{matrix.docker_tag}} \
-            cargo build --release
-          docker run --rm -v "$(pwd)":/home/rust/src messense/rust-musl-cross:${{matrix.docker_tag}} \
-            musl-strip target/${{matrix.rust_target}}/release/sensor_http
-
-      - name: store binary artifact
-        uses: actions/upload-artifact@v2
-        with:
-          path: target/${{matrix.rust_target}}/release/sensor_http
-          name: ${{matrix.artifact_name}}
-
   docker:
-    needs:
-      - build_binaries
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
@@ -55,11 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: download binaries
-        uses: actions/download-artifact@v2
-        with:
-          path: releases
 
       - name: list directories
         run: |
@@ -82,7 +41,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-caddy
 
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -90,5 +49,6 @@ jobs:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          file: caddy/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
