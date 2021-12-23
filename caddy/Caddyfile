@@ -1,17 +1,17 @@
-*.home.hagever.com
+*.{env.ROOT_DOMAIN}
 
 tls {
 	dns cloudflare {env.CF_API_TOKEN}
 }
 
-@hello host hello.home.hagever.com
+@hello host hello.{env.ROOT_DOMAIN}
 handle @hello {
-  respond "Hello, world!"
+  respond "Howdy."
 }
 
-@bye host bye.home.hagever.com
+@bye host bye.{env.ROOT_DOMAIN}
 handle @bye {
-  respond "Goodbye"
+  reverse_proxy http://whoami
 }
 
 handle {
