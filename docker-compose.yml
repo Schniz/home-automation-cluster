@@ -9,8 +9,8 @@ services:
     environment:
       ROOT_DOMAIN: "home.hagever.com"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
       - ./caddy-data/:/data/caddy/
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - published: 443
         target: 443
@@ -18,6 +18,18 @@ services:
         target: 80
       - published: 2019
         target: 2019
+    labels:
+      caddy: '*.{env.ROOT_DOMAIN}'
+      caddy.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy.1_@caddy: host caddy.{env.ROOT_DOMAIN}
+      caddy.1_handle: '@caddy'
+      caddy.1_handle.request_header: Host "localhost:2019"
+      caddy.1_handle.reverse_proxy: http://localhost:2019
 
   whoami:
     image: traefik/whoami
+    labels:
+      caddy: '*.{env.ROOT_DOMAIN}'
+      caddy.2_@whoami: host whoami.{env.ROOT_DOMAIN}
+      caddy.2_handle: '@whoami'
+      caddy.2_handle.reverse_proxy: '{{upstreams}}'
