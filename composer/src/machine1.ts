@@ -52,7 +52,7 @@ export default function machine1(): ComposeSpecification {
     },
     services: {
       caddy: service("caddy", () => ({
-        image: "ghcr.io/schniz/home-automation-cluster-caddy:pr-1",
+        image: "ghcr.io/schniz/home-automation-cluster-caddy:main",
         env_file: "./caddy/environment",
         environment: {
           ROOT_DOMAIN: "home.hagever.com",
