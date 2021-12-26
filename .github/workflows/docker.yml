@@ -6,6 +6,7 @@ on:
       - "main"
     paths:
       - "caddy/Dockerfile"
+      - ".github/workflows/docker.yml"
   pull_request:
     branches:
       - "main"
@@ -44,7 +45,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/arm64 # linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           file: caddy/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
