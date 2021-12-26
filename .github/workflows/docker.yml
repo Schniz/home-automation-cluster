@@ -43,6 +43,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-caddy
 
+      # Apply docker layer caching to make it faster
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
