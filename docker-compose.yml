@@ -1,16 +1,14 @@
 version: '3'
-
 networks:
   caddy:
     external: true
-
 services:
   caddy:
     restart: unless-stopped
     image: ghcr.io/schniz/home-automation-cluster-caddy:pr-1
     env_file: ./caddy/environment
     environment:
-      ROOT_DOMAIN: "home.hagever.com"
+      ROOT_DOMAIN: home.hagever.com
       CADDY_INGRESS_NETWORKS: caddy
     networks:
       - caddy
@@ -29,13 +27,12 @@ services:
       caddy.1_handle: '@caddy'
       caddy.1_handle.request_header: Host "localhost:2019"
       caddy.1_handle.reverse_proxy: http://localhost:2019
-      caddy.999_@ha: host ha.{env.ROOT_DOMAIN}
-      caddy.999_handle: '@ha'
-      caddy.999_handle.reverse_proxy: http://192.168.31.167:8123
-      caddy.1000_@media: host media.{env.ROOT_DOMAIN}
-      caddy.1000_handle: '@media'
-      caddy.1000_handle.reverse_proxy: http://192.168.31.89:8096
-
+      caddy.2_@ha: host ha.{env.ROOT_DOMAIN}
+      caddy.2_handle: '@ha'
+      caddy.2_handle.reverse_proxy: http://192.168.31.167:8123
+      caddy.3_@media: host media.{env.ROOT_DOMAIN}
+      caddy.3_handle: '@media'
+      caddy.3_handle.reverse_proxy: http://192.168.31.89:8096
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -44,9 +41,9 @@ services:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.2_@torrent: host torrent.{env.ROOT_DOMAIN}
-      caddy.2_handle: '@torrent'
-      caddy.2_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.4_@torrent: host torrent.{env.ROOT_DOMAIN}
+      caddy.4_handle: '@torrent'
+      caddy.4_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -54,7 +51,6 @@ services:
     volumes:
       - /media/SchlezExt2/library/downloads:/downloads
       - /media/SchlezExt2/configs/transmission:/config
-
   cloudflare-ddns:
     restart: unless-stopped
     image: oznu/cloudflare-ddns:latest
@@ -63,15 +59,15 @@ services:
       - ZONE=hagever.com
       - SUBDOMAIN=v
       - PROXIED=false
-
   jackett:
+    restart: unless-stopped
     networks:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.3_@jackett: host jackett.{env.ROOT_DOMAIN}
-      caddy.3_handle: '@jackett'
-      caddy.3_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.5_@torrent: host torrent.{env.ROOT_DOMAIN}
+      caddy.5_handle: '@torrent'
+      caddy.5_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -80,18 +76,17 @@ services:
       - TZ=Asia/Jerusalem
     volumes:
       - /media/SchlezExt2/configs/jackett:/config
-    restart: unless-stopped
-
   sonarr:
+    restart: unless-stopped
     image: linuxserver/sonarr:latest
     container_name: sonarr
     networks:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.4_@sonarr: host sonarr.{env.ROOT_DOMAIN}
-      caddy.4_handle: '@sonarr'
-      caddy.4_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.6_@sonarr: host sonarr.{env.ROOT_DOMAIN}
+      caddy.6_handle: '@sonarr'
+      caddy.6_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -100,18 +95,17 @@ services:
       - /media/SchlezExt2/configs/sonarr:/config
       - /media/SchlezExt2/library/tv:/tv
       - /media/SchlezExt2/library/downloads:/downloads
-    restart: unless-stopped
-
   radarr:
+    restart: unless-stopped
     image: linuxserver/radarr:latest
     container_name: radarr
     networks:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.5_@radarr: host radarr.{env.ROOT_DOMAIN}
-      caddy.5_handle: '@radarr'
-      caddy.5_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.7_@radarr: host radarr.{env.ROOT_DOMAIN}
+      caddy.7_handle: '@radarr'
+      caddy.7_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -120,18 +114,17 @@ services:
       - /media/SchlezExt2/configs/radarr:/config
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library/downloads:/downloads
-    restart: unless-stopped
-
   bazarr:
+    restart: unless-stopped
     image: linuxserver/bazarr:latest
     container_name: bazarr
     networks:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.5_@bazarr: host bazarr.{env.ROOT_DOMAIN}
-      caddy.5_handle: '@bazarr'
-      caddy.5_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.8_@bazarr: host bazarr.{env.ROOT_DOMAIN}
+      caddy.8_handle: '@bazarr'
+      caddy.8_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -140,9 +133,8 @@ services:
       - /media/SchlezExt2/configs/bazarr:/config
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library/tv:/tv
-    restart: unless-stopped
-
   jellyfin:
+    restart: unless-stopped
     image: linuxserver/jellyfin
     container_name: jellyfin
     network_mode: host
@@ -156,18 +148,17 @@ services:
       - /media/SchlezExt2/library/movies:/data/movies
       - type: tmpfs
         target: /tmp-transcoding
-    restart: unless-stopped
-
   ical_http_sensor:
+    restart: unless-stopped
     image: ghcr.io/schniz/ical_http_server:main
     container_name: ical-http-sensor
     environment:
       - TZ=Asia/Jerusalem
-    restart: unless-stopped
     networks:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.6_@ical_sensor: host ical-sensor.{env.ROOT_DOMAIN}
-      caddy.6_handle: '@ical_sensor'
-      caddy.6_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.9_@icalsensor: host ical-sensor.{env.ROOT_DOMAIN}
+      caddy.9_handle: '@icalsensor'
+      caddy.9_handle.reverse_proxy: '{{upstreams 8080}}'
+
