@@ -66,8 +66,8 @@ services:
       - caddy
     labels:
       caddy: '*.{env.ROOT_DOMAIN}'
-      caddy.5_@torrent: host torrent.{env.ROOT_DOMAIN}
-      caddy.5_handle: '@torrent'
+      caddy.5_@jackett: host jackett.{env.ROOT_DOMAIN}
+      caddy.5_handle: '@jackett'
       caddy.5_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett

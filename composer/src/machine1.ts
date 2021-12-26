@@ -112,7 +112,7 @@ export default function machine1(): ComposeSpecification {
       jackett: service("jackett", (helpers) => ({
         networks: ["caddy"],
         labels: {
-          ...caddy.usingUpstreams("torrent", 9117),
+          ...caddy.usingUpstreams("jackett", 9117),
         },
         image: "linuxserver/jackett:latest",
         container_name: "jackett",
