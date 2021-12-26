@@ -30,7 +30,7 @@ services:
       caddy.1_handle.reverse_proxy: http://localhost:2019
       caddy.2_@ha: host ha.{env.ROOT_DOMAIN}
       caddy.2_handle: '@ha'
-      caddy.2_handle.reverse_proxy: http://192.168.31.167:8123
+      caddy.2_handle.reverse_proxy: http://192.168.31.174:8123
       caddy.3_@media: host media.{env.ROOT_DOMAIN}
       caddy.3_handle: '@media'
       caddy.3_handle.reverse_proxy: http://192.168.31.89:8096
