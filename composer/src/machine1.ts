@@ -198,7 +198,7 @@ export default function machine1(): ComposeSpecification {
         env_file: "./tailscale/environment",
         environment: ["TZ=Asia/Jerusalem"],
         volumes: [
-          "tailscale-data:/var/lib/tailscale",
+          "./tailscale-data:/var/lib/tailscale",
           "/dev/net/tun:/dev/net/tun",
         ],
       })),

@@ -171,6 +171,6 @@ services:
     environment:
       - TZ=Asia/Jerusalem
     volumes:
-      - tailscale-data:/var/lib/tailscale
+      - ./tailscale-data:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
 
