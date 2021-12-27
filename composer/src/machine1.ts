@@ -202,6 +202,7 @@ export default function machine1(): ComposeSpecification {
           "./tailscale-data:/var/lib/tailscale",
           "/dev/net/tun:/dev/net/tun",
         ],
+        command: ["--advertise-routes=192.168.31.0/24"],
       })),
     },
   };
