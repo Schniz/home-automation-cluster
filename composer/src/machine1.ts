@@ -189,6 +189,19 @@ export default function machine1(): ComposeSpecification {
           ...caddy.usingUpstreams("ical-sensor", 8080),
         },
       })),
+
+      tailscale: service("tailscale", () => ({
+        image: "jonoh/tailscale",
+        container_name: "tailscale",
+        hostname: "homelab.vpn.hagever.com",
+        network_mode: "host",
+        env_file: "./tailscale/environment",
+        environment: ["TZ=Asia/Jerusalem"],
+        volumes: [
+          "tailscale-data:/var/lib/tailscale",
+          "/dev/net/tun:/dev/net/tun",
+        ],
+      })),
     },
   };
 }

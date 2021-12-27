@@ -161,4 +161,16 @@ services:
       caddy.9_@icalsensor: host ical-sensor.home.hagever.com
       caddy.9_handle: '@icalsensor'
       caddy.9_handle.reverse_proxy: '{{upstreams 8080}}'
+  tailscale:
+    restart: unless-stopped
+    image: jonoh/tailscale
+    container_name: tailscale
+    hostname: homelab.vpn.hagever.com
+    network_mode: host
+    env_file: ./tailscale/environment
+    environment:
+      - TZ=Asia/Jerusalem
+    volumes:
+      - tailscale-data:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
 
