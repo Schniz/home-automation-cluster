@@ -192,6 +192,7 @@ export default function machine1(): ComposeSpecification {
 
       tailscale: service("tailscale", () => ({
         image: "jonoh/tailscale",
+        privileged: true,
         container_name: "tailscale",
         hostname: "homelab.vpn.hagever.com",
         network_mode: "host",

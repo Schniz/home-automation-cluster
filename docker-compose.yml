@@ -164,6 +164,7 @@ services:
   tailscale:
     restart: unless-stopped
     image: jonoh/tailscale
+    privileged: true
     container_name: tailscale
     hostname: homelab.vpn.hagever.com
     network_mode: host
