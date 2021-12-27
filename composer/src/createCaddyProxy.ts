@@ -15,7 +15,7 @@ export function createCaddyProxy() {
 
   function root() {
     return {
-      caddy: "*.{env.ROOT_DOMAIN}",
+      caddy: "*.{$ROOT_DOMAIN}",
     };
   }
 
@@ -33,7 +33,7 @@ export function createCaddyProxy() {
     );
 
     return {
-      [`caddy.${current}_@${name}`]: `host ${subdomain}.{env.ROOT_DOMAIN}`,
+      [`caddy.${current}_@${name}`]: `host ${subdomain}.{$ROOT_DOMAIN}`,
       [`caddy.${current}_handle`]: `@${name}`,
       ...properties,
     };
