@@ -55,7 +55,6 @@ export default function machine1(): ComposeSpecification {
         image: "ghcr.io/schniz/home-automation-cluster-caddy:main",
         env_file: "./caddy/environment",
         environment: {
-          ROOT_DOMAIN: "home.hagever.com",
           CADDY_INGRESS_NETWORKS: "caddy",
         },
         networks: ["caddy"],
