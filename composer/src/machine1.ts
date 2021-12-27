@@ -41,7 +41,7 @@ function service(
 }
 
 export default function machine1(): ComposeSpecification {
-  const caddy = createCaddyProxy();
+  const caddy = createCaddyProxy({ rootDomain: "home.hagever.com" });
 
   return {
     version: "3",
@@ -75,7 +75,7 @@ export default function machine1(): ComposeSpecification {
         ],
         labels: {
           ...caddy.root(),
-          "caddy.tls.dns": "cloudflare {$CF_API_TOKEN}",
+          "caddy.tls.dns": "cloudflare {env.CF_API_TOKEN}",
           ...caddy.subdomainDefinition("caddy", {
             request_header: `Host "localhost:2019"`,
             reverse_proxy: "http://localhost:2019",

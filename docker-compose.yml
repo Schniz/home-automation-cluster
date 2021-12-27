@@ -22,16 +22,16 @@ services:
       - published: 80
         target: 80
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.tls.dns: cloudflare {$CF_API_TOKEN}
-      caddy.1_@caddy: host caddy.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy.1_@caddy: host caddy.home.hagever.com
       caddy.1_handle: '@caddy'
       caddy.1_handle.request_header: Host "localhost:2019"
       caddy.1_handle.reverse_proxy: http://localhost:2019
-      caddy.2_@ha: host ha.{$ROOT_DOMAIN}
+      caddy.2_@ha: host ha.home.hagever.com
       caddy.2_handle: '@ha'
       caddy.2_handle.reverse_proxy: http://192.168.31.174:8123
-      caddy.3_@media: host media.{$ROOT_DOMAIN}
+      caddy.3_@media: host media.home.hagever.com
       caddy.3_handle: '@media'
       caddy.3_handle.reverse_proxy: http://192.168.31.89:8096
   transmission:
@@ -41,8 +41,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.4_@torrent: host torrent.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.4_@torrent: host torrent.home.hagever.com
       caddy.4_handle: '@torrent'
       caddy.4_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
@@ -65,8 +65,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.5_@jackett: host jackett.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.5_@jackett: host jackett.home.hagever.com
       caddy.5_handle: '@jackett'
       caddy.5_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
@@ -84,8 +84,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.6_@sonarr: host sonarr.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.6_@sonarr: host sonarr.home.hagever.com
       caddy.6_handle: '@sonarr'
       caddy.6_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
@@ -103,8 +103,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.7_@radarr: host radarr.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.7_@radarr: host radarr.home.hagever.com
       caddy.7_handle: '@radarr'
       caddy.7_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
@@ -122,8 +122,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.8_@bazarr: host bazarr.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.8_@bazarr: host bazarr.home.hagever.com
       caddy.8_handle: '@bazarr'
       caddy.8_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
@@ -158,8 +158,8 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.{$ROOT_DOMAIN}'
-      caddy.9_@icalsensor: host ical-sensor.{$ROOT_DOMAIN}
+      caddy: '*.home.hagever.com'
+      caddy.9_@icalsensor: host ical-sensor.home.hagever.com
       caddy.9_handle: '@icalsensor'
       caddy.9_handle.reverse_proxy: '{{upstreams 8080}}'
 

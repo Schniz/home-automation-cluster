@@ -1,4 +1,4 @@
-export function createCaddyProxy() {
+export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
   let index = 0;
 
   function usingUpstreams(
@@ -15,7 +15,7 @@ export function createCaddyProxy() {
 
   function root() {
     return {
-      caddy: "*.{$ROOT_DOMAIN}",
+      caddy: `*.${rootDomain}`,
     };
   }
 
@@ -33,7 +33,7 @@ export function createCaddyProxy() {
     );
 
     return {
-      [`caddy.${current}_@${name}`]: `host ${subdomain}.{$ROOT_DOMAIN}`,
+      [`caddy.${current}_@${name}`]: `host ${subdomain}.${rootDomain}`,
       [`caddy.${current}_handle`]: `@${name}`,
       ...properties,
     };
