@@ -180,6 +180,8 @@ services:
     restart: unless-stopped
     image: filebrowser/filebrowser:s6
     container_name: filebrowser
+    networks:
+      - caddy
     environment:
       - PUID=1000
       - PGID=1000

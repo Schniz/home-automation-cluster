@@ -211,6 +211,7 @@ export default function machine1(): ComposeSpecification {
         return {
           image: "filebrowser/filebrowser:s6",
           container_name: "filebrowser",
+          networks: ["caddy"],
           environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
           volumes: [
             `${settings}:/config`,
