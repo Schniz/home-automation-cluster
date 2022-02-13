@@ -204,6 +204,24 @@ export default function machine1(): ComposeSpecification {
         ],
         command: ["--advertise-routes=192.168.31.0/24"],
       })),
+
+      filebrowser: service("filebrowser", (helpers) => {
+        const settings = path.join(helpers.config, "settings.json");
+        const database = path.join(helpers.config, "filebrowser.db");
+        return {
+          image: "filebrowser/filebrowser:s6",
+          container_name: "filebrowser",
+          environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
+          volumes: [
+            `${settings}:/config/settings.json`,
+            `${database}:/database/filebrowser.db`,
+            `${library.downloads}:/downloads`,
+          ],
+          labels: {
+            ...caddy.usingUpstreams("files", 8080),
+          },
+        };
+      }),
     },
   };
 }

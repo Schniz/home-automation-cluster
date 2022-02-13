@@ -176,4 +176,23 @@ services:
       - /dev/net/tun:/dev/net/tun
     command:
       - '--advertise-routes=192.168.31.0/24'
+  filebrowser:
+    restart: unless-stopped
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+    volumes:
+      - >-
+        /media/SchlezExt2/configs/filebrowser/settings.json:/config/settings.json
+      - >-
+        /media/SchlezExt2/configs/filebrowser/filebrowser.db:/database/filebrowser.db
+      - /media/SchlezExt2/library/downloads:/downloads
+    labels:
+      caddy: '*.home.hagever.com'
+      caddy.10_@files: host files.home.hagever.com
+      caddy.10_handle: '@files'
+      caddy.10_handle.reverse_proxy: '{{upstreams 8080}}'
 
