@@ -185,10 +185,8 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - >-
-        /media/SchlezExt2/configs/filebrowser/settings.json:/config/settings.json
-      - >-
-        /media/SchlezExt2/configs/filebrowser/filebrowser.db:/database/filebrowser.db
+      - /media/SchlezExt2/configs/filebrowser/settings:/config
+      - /media/SchlezExt2/configs/filebrowser/db:/database
       - /media/SchlezExt2/library/downloads:/downloads
     labels:
       caddy: '*.home.hagever.com'

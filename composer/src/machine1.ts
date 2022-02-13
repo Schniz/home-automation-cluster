@@ -206,15 +206,15 @@ export default function machine1(): ComposeSpecification {
       })),
 
       filebrowser: service("filebrowser", (helpers) => {
-        const settings = path.join(helpers.config, "settings.json");
-        const database = path.join(helpers.config, "filebrowser.db");
+        const settings = path.join(helpers.config, "settings");
+        const database = path.join(helpers.config, "db");
         return {
           image: "filebrowser/filebrowser:s6",
           container_name: "filebrowser",
           environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
           volumes: [
-            `${settings}:/config/settings.json`,
-            `${database}:/database/filebrowser.db`,
+            `${settings}:/config`,
+            `${database}:/database`,
             `${library.downloads}:/downloads`,
           ],
           labels: {
