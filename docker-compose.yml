@@ -192,5 +192,5 @@ services:
       caddy: '*.home.hagever.com'
       caddy.10_@files: host files.home.hagever.com
       caddy.10_handle: '@files'
-      caddy.10_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.10_handle.reverse_proxy: '{{upstreams 80}}'
 

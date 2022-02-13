@@ -218,7 +218,7 @@ export default function machine1(): ComposeSpecification {
             `${library.downloads}:/downloads`,
           ],
           labels: {
-            ...caddy.usingUpstreams("files", 8080),
+            ...caddy.usingUpstreams("files", 80),
           },
         };
       }),
