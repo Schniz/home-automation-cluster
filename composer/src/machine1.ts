@@ -217,6 +217,7 @@ export default function machine1(): ComposeSpecification {
             `${settings}:/config`,
             `${database}:/database`,
             `${library.downloads}:/downloads`,
+            `/media/SchlezExt2:/srv`,
           ],
           labels: {
             ...caddy.usingUpstreams("files", 80),

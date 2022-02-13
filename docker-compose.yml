@@ -190,6 +190,7 @@ services:
       - /media/SchlezExt2/configs/filebrowser/settings:/config
       - /media/SchlezExt2/configs/filebrowser/db:/database
       - /media/SchlezExt2/library/downloads:/downloads
+      - /media/SchlezExt2:/srv
     labels:
       caddy: '*.home.hagever.com'
       caddy.10_@files: host files.home.hagever.com
