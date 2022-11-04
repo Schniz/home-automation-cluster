@@ -224,6 +224,20 @@ export default function machine1(): ComposeSpecification {
           },
         };
       }),
+
+      mosquitto: service("mosquitto", (helpers) => ({
+        image: "eclipse-mosquitto:latest",
+        container_name: "mosquitto",
+        networks: ["caddy"],
+        environment: ["TZ=Asia/Jerusalem"],
+        volumes: [`${helpers.config}:/mosquitto`],
+        ports: [
+          {
+            published: 1883,
+            target: 1883,
+          },
+        ],
+      })),
     },
   };
 }

@@ -196,4 +196,17 @@ services:
       caddy.10_@files: host files.home.hagever.com
       caddy.10_handle: '@files'
       caddy.10_handle.reverse_proxy: '{{upstreams 80}}'
+  mosquitto:
+    restart: unless-stopped
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    networks:
+      - caddy
+    environment:
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt2/configs/mosquitto:/mosquitto
+    ports:
+      - published: 1883
+        target: 1883
 
