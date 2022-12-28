@@ -163,7 +163,7 @@ services:
       caddy.9_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
-    image: jonoh/tailscale
+    image: tailscale/tailscale
     privileged: true
     container_name: tailscale
     hostname: homelab.vpn.hagever.com
@@ -172,10 +172,8 @@ services:
     environment:
       - TZ=Asia/Jerusalem
     volumes:
-      - ./tailscale-data:/var/lib/tailscale
+      - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun
-    command:
-      - '--advertise-routes=192.168.31.0/24'
   filebrowser:
     restart: unless-stopped
     image: filebrowser/filebrowser:s6
