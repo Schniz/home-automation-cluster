@@ -13,6 +13,7 @@ jobs:
         uses: tailscale/github-action@v1
         with:
           authkey: ${{ secrets.TAILSCALE_TOKEN }}
+          version: latest
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
