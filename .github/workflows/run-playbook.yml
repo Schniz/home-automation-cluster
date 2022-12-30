@@ -10,10 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Connect to Tailscale
-        uses: tailscale/github-action@v1
+        uses: tailscale/github-action@main
         with:
           authkey: ${{ secrets.TAILSCALE_TOKEN }}
-          version: latest
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
