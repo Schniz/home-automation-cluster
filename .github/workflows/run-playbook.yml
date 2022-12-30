@@ -24,7 +24,7 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         with:
-          playbook: playbook.yml
+          playbook: playbook.yaml
           directory: ./
           key: ${{ secrets.SSH_SECRET_KEY }}
           inventory: |
