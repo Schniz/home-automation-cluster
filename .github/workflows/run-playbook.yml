@@ -13,10 +13,6 @@ jobs:
         uses: tailscale/github-action@main
         with:
           authkey: ${{ secrets.TAILSCALE_TOKEN }}
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
 
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
@@ -28,7 +24,7 @@ jobs:
           key: ${{ secrets.SSH_SECRET_KEY }}
           inventory: |
             [all]
-            192.168.31.89
+            192.168.31.89  ansible_user=pi
 
       - name: install git secret and gpg
         run: |
