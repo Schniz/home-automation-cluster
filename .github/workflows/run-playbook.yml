@@ -1,0 +1,48 @@
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v1
+        with:
+          authkey: ${{ secrets.TAILSCALE_TOKEN }}
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        with:
+          playbook: playbook.yml
+          directory: ./
+          key: ${{ secrets.SSH_SECRET_KEY }}
+          inventory: |
+            [all]
+            192.168.31.89
+
+      - name: install git secret and gpg
+        run: |
+          sudo apt-get update
+          sudo apt-get install git-secret gnupg -y
+
+      - name: import gpg private key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
+
+      - name: reveal secrets
+        run: |
+          git secret reveal -f
+
+#       - name: apply docker-compose.yml
+#         run: |
+#           docker-compose up -d

@@ -1,12 +1,10 @@
 ---
 - name: Set up main host
-  hosts: localhost
+  hosts: all
   become: yes
   vars:
     working_directory: "{{ lookup('env', 'PWD') }}"
     gpg_private_key: "{{ lookup('env', 'PGP_PRIVATE_KEY') }}"
-    unix_user: "{{ lookup('env', 'USER') }}"
-    user_group: "{{ lookup('env', 'USER') }}"
   tasks:
     - name: Install gpg
       package:
@@ -57,16 +55,6 @@
       args:
         chdir: "{{ working_directory }}"
         stdin: "{{ gpg_private_key }}"
-
-    - name: Reveal secrets with git-secret
-      command: git secret reveal -f
-      args:
-        chdir: "{{ working_directory }}"
-
-    - name: Apply Docker Compose config
-      command: docker-compose up -d
-      args:
-        chdir: "{{ working_directory }}"
 
   handlers:
     - name: reload docker
