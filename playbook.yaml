@@ -1,0 +1,75 @@
+---
+- name: Set up main host
+  hosts: localhost
+  become: yes
+  vars:
+    working_directory: "{{ lookup('env', 'PWD') }}"
+    gpg_private_key: "{{ lookup('env', 'PGP_PRIVATE_KEY') }}"
+    unix_user: "{{ lookup('env', 'USER') }}"
+    user_group: "{{ lookup('env', 'USER') }}"
+  tasks:
+    - name: Install gpg
+      package:
+        name: gnupg
+        state: latest
+
+    - name: Install git
+      package:
+        name: git
+        state: latest
+
+    - name: Install git-secret
+      package:
+        name: git-secret
+        state: latest
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Compose
+      package:
+        name: docker-compose
+        state: latest
+
+    - name: Set up Docker log rotation
+      lineinfile:
+        path: /etc/docker/daemon.json
+        line: '{"log-driver":{"max-size":"10m","max-file":2}}'
+        create: true
+      notify:
+        - reload docker
+
+    - name: Import gpg private key
+      command: gpg --batch --yes --pinentry-mode loopback --import
+      args:
+        chdir: "{{ working_directory }}"
+        stdin: "{{ gpg_private_key }}"
+
+    - name: Reveal secrets with git-secret
+      command: git secret reveal -f
+      args:
+        chdir: "{{ working_directory }}"
+
+    - name: Apply Docker Compose config
+      command: docker-compose up -d
+      args:
+        chdir: "{{ working_directory }}"
+
+  handlers:
+    - name: reload docker
+      service:
+        name: docker
+        state: reloaded
