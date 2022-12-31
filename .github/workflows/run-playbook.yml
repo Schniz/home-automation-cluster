@@ -18,32 +18,32 @@ jobs:
           playbook: ansible/main.yaml
           directory: ./
           requirements: ansible/galaxy-requirements.yml
-          key: ${{ secrets.SSH_SECRET_KEY }}
+          # key: ${{ secrets.SSH_SECRET_KEY }}
           inventory: |
             [all]
-            192.168.31.89  ansible_user=pi
+            localhost
+          options:
+            --connection=local
 
       - name: install git secret and gpg
         run: |
           sudo apt-get update
           sudo apt-get install git-secret gnupg -y
 
-      - name: import gpg private key
-        run: |
-          echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
+      # - name: import gpg private key
+      #   run: |
+      #     echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
 
       - name: reveal secrets
         run: |
           git secret reveal -f
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_SECRET_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      # - name: Install SSH key
+      #   uses: shimataro/ssh-key-action@v2
+      #   with:
+      #     key: ${{ secrets.SSH_SECRET_KEY }}
+      #     known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
       - name: apply docker-compose.yml
         run: |
           docker-compose --project-name deployment up -d
-        env:
-          DOCKER_HOST: ssh://pi@192.168.31.89
