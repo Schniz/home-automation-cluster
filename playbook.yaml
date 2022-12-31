@@ -6,21 +6,6 @@
     working_directory: "{{ lookup('env', 'PWD') }}"
     gpg_private_key: "{{ lookup('env', 'PGP_PRIVATE_KEY') }}"
   tasks:
-    - name: Install gpg
-      package:
-        name: gnupg
-        state: latest
-
-    - name: Install git
-      package:
-        name: git
-        state: latest
-
-    - name: Install git-secret
-      package:
-        name: git-secret
-        state: latest
-
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -31,15 +16,14 @@
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
 
-    - name: install docker-ce
+    - name: install deps
       apt:
-        name: docker-ce
-        state: latest
-        # update_cache: true
-
-    - name: Install Docker Compose
-      package:
-        name: docker-compose
+        name:
+          - gnupg
+          - git
+          - git-secret
+          - docker-ce
+          - docker-compose
         state: latest
 
     - name: Set up Docker log rotation
