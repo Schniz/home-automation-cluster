@@ -5,6 +5,10 @@
   vars:
     working_directory: "{{ lookup('env', 'PWD') }}"
     gpg_private_key: "{{ lookup('env', 'PGP_PRIVATE_KEY') }}"
+    runner_user: pi
+    runner_labels: [home, pi4]
+    github_account: Schniz
+    github_repo: home-automation-cluster
   tasks:
     - name: Add Docker GPG apt Key
       apt_key:
@@ -39,6 +43,9 @@
       args:
         chdir: "{{ working_directory }}"
         stdin: "{{ gpg_private_key }}"
+
+  roles:
+    - role: monolithprojects.github_actions_runner
 
   handlers:
     - name: reload docker

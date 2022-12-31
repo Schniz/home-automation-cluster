@@ -5,22 +5,19 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pi4]
     environment: home
     steps:
       - uses: actions/checkout@v2
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@main
-        with:
-          authkey: ${{ secrets.TAILSCALE_TOKEN }}
-
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
         env:
           PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         with:
-          playbook: playbook.yaml
+          playbook: ansible/playbook.yaml
           directory: ./
+          requirements: ansible/galaxy-requirements.yml
           key: ${{ secrets.SSH_SECRET_KEY }}
           inventory: |
             [all]
