@@ -15,7 +15,7 @@ jobs:
           PGP_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         with:
-          playbook: ansible/playbook.yaml
+          playbook: ansible/main.yaml
           directory: ./
           requirements: ansible/galaxy-requirements.yml
           key: ${{ secrets.SSH_SECRET_KEY }}
