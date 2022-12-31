@@ -39,9 +39,14 @@ jobs:
         run: |
           git secret reveal -f
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_SECRET_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
       - name: apply docker-compose.yml
         run: |
-          echo "${{secrets.SSH_SECRET_KEY}}" | ssh-add -
           docker-compose up -d
         env:
           DOCKER_HOST: ssh://pi@192.168.31.89
