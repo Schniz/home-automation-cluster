@@ -33,7 +33,7 @@ jobs:
 
       - name: import gpg private key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
+          echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
 
       - name: reveal secrets
         run: |
