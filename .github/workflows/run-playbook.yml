@@ -39,6 +39,8 @@ jobs:
         run: |
           git secret reveal -f
 
-#       - name: apply docker-compose.yml
-#         run: |
-#           docker-compose up -d
+      - name: apply docker-compose.yml
+        run: |
+          docker-compose up -d
+        env:
+          DOCKER_HOST: ssh://pi@192.168.31.89
