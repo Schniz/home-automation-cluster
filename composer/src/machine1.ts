@@ -51,15 +51,16 @@ export default function machine1(): ComposeSpecification {
       },
     },
     services: {
-      caddy: service("caddy", () => ({
+      caddy: service("caddy", (helpers) => ({
         image: "ghcr.io/schniz/home-automation-cluster-caddy:main",
         env_file: "./caddy/environment",
         environment: {
           CADDY_INGRESS_NETWORKS: "caddy",
         },
+        container_name: "caddy",
         networks: ["caddy"],
         volumes: [
-          "./caddy-data/:/data/caddy/",
+          `${helpers.config}/data/:/data/caddy/`,
           "/var/run/docker.sock:/var/run/docker.sock",
         ],
         ports: [

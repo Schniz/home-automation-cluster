@@ -10,10 +10,11 @@ services:
     env_file: ./caddy/environment
     environment:
       CADDY_INGRESS_NETWORKS: caddy
+    container_name: caddy
     networks:
       - caddy
     volumes:
-      - ./caddy-data/:/data/caddy/
+      - /media/SchlezExt2/configs/caddy/data/:/data/caddy/
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - published: 443
