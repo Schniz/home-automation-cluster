@@ -11,6 +11,7 @@ const library = {
   tv: path.join(LIBRARY_ROOT, "tv"),
   movies: path.join(LIBRARY_ROOT, "movies"),
   downloads: path.join(LIBRARY_ROOT, "downloads"),
+  git: path.join(LIBRARY_ROOT, "git"),
 };
 function configDir(name: string) {
   return path.join(CONFIGS_ROOT, name);
@@ -51,6 +52,28 @@ export default function machine1(): ComposeSpecification {
       },
     },
     services: {
+      watchtower: service("watchtower", () => ({
+        image: "containrrr/watchtower",
+        container_name: "watchtower",
+        volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
+        command: "--cleanup --interval 30",
+      })),
+      gitea: service("gitea", (helpers) => ({
+        image: "gitea/gitea:latest-rootless",
+        container_name: "gitea",
+        networks: ["caddy"],
+        environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
+        volumes: [
+          `${helpers.config}:/etc/gitea`,
+          `${library.git}/:/var/lib/gitea`,
+          `/etc/timezone:/etc/timezone:ro`,
+          `/etc/localtime:/etc/localtime:ro`,
+        ],
+        labels: {
+          ...caddy.usingUpstreams("git", 3000),
+        },
+        ports: ["2222:2222"],
+      })),
       caddy: service("caddy", (helpers) => ({
         image: "ghcr.io/schniz/home-automation-cluster-caddy:main",
         env_file: "./caddy/environment",
