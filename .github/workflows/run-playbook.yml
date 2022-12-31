@@ -25,10 +25,10 @@ jobs:
           options:
             --connection=local
 
-      - name: install git secret and gpg
-        run: |
-          sudo apt-get update
-          sudo apt-get install git-secret gnupg -y
+      # - name: install git secret and gpg (no need because it is running after ansible)
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install git-secret gnupg -y
 
       # - name: import gpg private key
       #   run: |
