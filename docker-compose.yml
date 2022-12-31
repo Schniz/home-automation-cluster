@@ -10,7 +10,7 @@ services:
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: '--cleanup --interval 30'
+    command: '--cleanup'
   gitea:
     restart: unless-stopped
     image: patrickthedev/gitea-rpi:stable

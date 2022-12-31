@@ -56,7 +56,7 @@ export default function machine1(): ComposeSpecification {
         image: "containrrr/watchtower",
         container_name: "watchtower",
         volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
-        command: "--cleanup --interval 30",
+        command: "--cleanup",
       })),
       gitea: service("gitea", (helpers) => ({
         image: "patrickthedev/gitea-rpi:stable",
