@@ -47,6 +47,6 @@ jobs:
 
       - name: apply docker-compose.yml
         run: |
-          docker-compose up -d --projec-name deployment
+          docker-compose up -d --project-name deployment
         env:
           DOCKER_HOST: ssh://pi@192.168.31.89
