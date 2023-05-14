@@ -104,7 +104,7 @@ export default function machine1(): ComposeSpecification {
             reverse_proxy: "http://localhost:2019",
           }),
           ...caddy.subdomainDefinition("ha", {
-            reverse_proxy: `http://${machines.pi1}:8123`,
+            reverse_proxy: `http://${machines.pi0}:8123`,
           }),
           ...caddy.subdomainDefinition("media", {
             reverse_proxy: `http://${machines.pi0}:8096`,
@@ -257,6 +257,19 @@ export default function machine1(): ComposeSpecification {
             target: 1883,
           },
         ],
+      })),
+
+      homeassistant: service("homeassistant", (helpers) => ({
+        container_name: "homeassistant",
+        image: "ghcr.io/home-assistant/home-assistant:stable",
+        environment: ["TZ=Asia/Jerusalem"],
+        volumes: [
+          `/media/SchlezExt2/homeassistant-config:/config`,
+          "/etc/localtime:/etc/localtime:ro",
+        ],
+        privileged: true,
+        network_mode: "host",
+        restart: "unless-stopped",
       })),
     },
   };
