@@ -44,6 +44,19 @@
         chdir: "{{ working_directory }}"
         stdin: "{{ gpg_private_key }}"
 
+    # sudo groupadd docker
+    - name: Create "docker" group
+      group:
+        name: "docker"
+        state: present
+
+    # sudo usermod -aG docker root
+    - name: Add "pi" user to "docker" group
+      user:
+        name: "pi"
+        group: "docker"
+        append: yes
+
   roles:
     - role: monolithprojects.github_actions_runner
 
