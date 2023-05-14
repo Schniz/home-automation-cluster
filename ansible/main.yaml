@@ -27,7 +27,7 @@
           - git
           - git-secret
           - docker-ce
-          - docker-compose
+          - docker-compose-plugin
         state: latest
 
     - name: Set up Docker log rotation

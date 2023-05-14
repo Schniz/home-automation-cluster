@@ -22,8 +22,7 @@ jobs:
           inventory: |
             [all]
             localhost
-          options:
-            --connection=local
+          options: --connection=local
 
       # - name: install git secret and gpg (no need because it is running after ansible)
       #   run: |
@@ -46,4 +45,4 @@ jobs:
 
       - name: apply docker-compose.yml
         run: |
-          docker-compose --project-name deployment up -d
+          docker compose --project-name deployment up -d
