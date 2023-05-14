@@ -59,7 +59,7 @@ export default function machine1(): ComposeSpecification {
         command: "--cleanup",
       })),
       gitea: service("gitea", (helpers) => ({
-        image: "patrickthedev/gitea-rpi:stable",
+        image: "gitea/gitea",
         container_name: "gitea",
         networks: ["caddy"],
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],

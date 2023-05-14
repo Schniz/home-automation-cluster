@@ -13,7 +13,7 @@ services:
     command: '--cleanup'
   gitea:
     restart: unless-stopped
-    image: patrickthedev/gitea-rpi:stable
+    image: gitea/gitea
     container_name: gitea
     networks:
       - caddy
