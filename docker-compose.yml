@@ -246,6 +246,7 @@ services:
     volumes:
       - /media/SchlezExt2/homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
+      - /media/SchlezExt2/library:/library
     privileged: true
     network_mode: host
 
