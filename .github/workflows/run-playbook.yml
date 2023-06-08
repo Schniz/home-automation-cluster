@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, pi4]
+    runs-on: [self-hosted, linux]
     environment: home
     steps:
       - uses: actions/checkout@v2
@@ -24,24 +24,9 @@ jobs:
             localhost
           options: --connection=local
 
-      # - name: install git secret and gpg (no need because it is running after ansible)
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install git-secret gnupg -y
-
-      # - name: import gpg private key
-      #   run: |
-      #     echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
-
       - name: reveal secrets
         run: |
           git secret reveal -f
-
-      # - name: Install SSH key
-      #   uses: shimataro/ssh-key-action@v2
-      #   with:
-      #     key: ${{ secrets.SSH_SECRET_KEY }}
-      #     known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
       - name: apply docker-compose.yml
         run: |

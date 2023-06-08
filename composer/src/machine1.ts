@@ -126,11 +126,11 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
-      "cloudflare-ddns": service("cloudflare-ddns", () => ({
-        image: "oznu/cloudflare-ddns:latest",
-        env_file: "./cloudflare-ddns/environment",
-        environment: ["ZONE=hagever.com", "SUBDOMAIN=v", "PROXIED=false"],
-      })),
+      // "cloudflare-ddns": service("cloudflare-ddns", () => ({
+      //   image: "oznu/cloudflare-ddns:latest",
+      //   env_file: "./cloudflare-ddns/environment",
+      //   environment: ["ZONE=hagever.com", "SUBDOMAIN=v", "PROXIED=false"],
+      // })),
 
       jackett: service("jackett", (helpers) => ({
         networks: ["caddy"],

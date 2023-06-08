@@ -5,8 +5,8 @@
   vars:
     working_directory: "{{ lookup('env', 'PWD') }}"
     gpg_private_key: "{{ lookup('env', 'PGP_PRIVATE_KEY') }}"
-    runner_user: pi
-    runner_labels: [home, pi4]
+    runner_user: schniz
+    runner_labels: [home, linux]
     github_account: Schniz
     github_repo: home-automation-cluster
   tasks:
@@ -33,12 +33,13 @@
     - name: Set up Docker log rotation
       lineinfile:
         path: /etc/docker/daemon.json
-        line: '{"log-driver":{"max-size":"10m","max-file":2}}'
+        line: '{"log-driver":"json-file","log-opts":{"max-size":"10m","max-file":"2"}}'
         create: true
       notify:
         - reload docker
 
     - name: Import gpg private key
+      when: gpg_private_key != ""
       command: gpg --batch --yes --pinentry-mode loopback --import
       args:
         chdir: "{{ working_directory }}"
@@ -51,14 +52,16 @@
         state: present
 
     # sudo usermod -aG docker root
-    - name: Add "pi" user to "docker" group
+    - name: Add "{{runner_user}}" user to "docker" group
       user:
-        name: "pi"
-        group: "docker"
+        name: "{{runner_user}}"
+        groups:
+          - "docker"
         append: yes
 
   roles:
     - role: monolithprojects.github_actions_runner
+      when: lookup('env', 'PERSONAL_ACCESS_TOKEN') != ""
 
   handlers:
     - name: reload docker

@@ -81,14 +81,6 @@ services:
     volumes:
       - /media/SchlezExt2/library/downloads:/downloads
       - /media/SchlezExt2/configs/transmission:/config
-  cloudflare-ddns:
-    restart: unless-stopped
-    image: oznu/cloudflare-ddns:latest
-    env_file: ./cloudflare-ddns/environment
-    environment:
-      - ZONE=hagever.com
-      - SUBDOMAIN=v
-      - PROXIED=false
   jackett:
     restart: unless-stopped
     networks:
