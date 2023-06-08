@@ -44,6 +44,11 @@
       args:
         chdir: "{{ working_directory }}"
         stdin: "{{ gpg_private_key }}"
+      register: gpg_import_result
+
+    - name: Print gpg import result
+      debug:
+        var: gpg_import_result.stdout_lines
 
     # sudo groupadd docker
     - name: Create "docker" group
