@@ -40,15 +40,15 @@
 
     - name: Import gpg private key
       when: gpg_private_key != ""
-      command: gpg --batch --yes --pinentry-mode loopback --import
+      command: |
+        echo "{{ gpg_private_key }} | gpg --batch --yes --pinentry-mode loopback --import
       args:
         chdir: "{{ working_directory }}"
-        stdin: "{{ gpg_private_key }}"
       register: gpg_import_result
 
     - name: Print gpg import result
       debug:
-        var: gpg_import_result.stdout_lines
+        var: gpg_import_result
 
     # sudo groupadd docker
     - name: Create "docker" group
