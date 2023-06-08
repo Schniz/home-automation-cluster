@@ -18,8 +18,7 @@ function configDir(name: string) {
 }
 
 const machines = {
-  pi0: "192.168.31.89",
-  pi1: "192.168.31.174",
+  main: "192.168.31.38",
 };
 
 type ServiceHelpers = {
@@ -104,10 +103,10 @@ export default function machine1(): ComposeSpecification {
             reverse_proxy: "http://localhost:2019",
           }),
           ...caddy.subdomainDefinition("ha", {
-            reverse_proxy: `http://${machines.pi0}:8123`,
+            reverse_proxy: `http://${machines.main}:8123`,
           }),
           ...caddy.subdomainDefinition("media", {
-            reverse_proxy: `http://${machines.pi0}:8096`,
+            reverse_proxy: `http://${machines.main}:8096`,
           }),
         },
       })),
