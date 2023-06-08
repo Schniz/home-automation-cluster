@@ -59,10 +59,10 @@ services:
       caddy.2_handle.reverse_proxy: http://localhost:2019
       caddy.3_@ha: host ha.home.hagever.com
       caddy.3_handle: '@ha'
-      caddy.3_handle.reverse_proxy: http://192.168.31.89:8123
+      caddy.3_handle.reverse_proxy: http://192.168.31.38:8123
       caddy.4_@media: host media.home.hagever.com
       caddy.4_handle: '@media'
-      caddy.4_handle.reverse_proxy: http://192.168.31.89:8096
+      caddy.4_handle.reverse_proxy: http://192.168.31.38:8096
   transmission:
     restart: unless-stopped
     container_name: transmission
