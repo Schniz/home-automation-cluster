@@ -1,3 +1,5 @@
 ---
-- monolithprojects.github_actions_runner
-- community.docker
+roles:
+  - monolithprojects.github_actions_runner
+collections:
+  - community.docker
