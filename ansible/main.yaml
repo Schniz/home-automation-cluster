@@ -65,6 +65,12 @@
           - "docker"
         append: yes
 
+    - name: create the "caddy" network in docker
+      become: true
+      community.docker.docker_network:
+        name: caddy
+        state: present
+
   roles:
     - role: monolithprojects.github_actions_runner
       become: true
