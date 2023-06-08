@@ -38,9 +38,16 @@
       notify:
         - reload docker
 
+    - name: store the gpg private key file in tmp
+      when: gpg_private_key != ""
+      copy:
+        content: "{{ gpg_private_key }}"
+        dest: /tmp/gpg_private_key.key
+        mode: 0600
+
     - name: Import gpg private key
       when: gpg_private_key != ""
-      shell: echo "{{ gpg_private_key }}" | gpg --batch --yes --pinentry-mode loopback --import
+      shell: gpg --import /tmp/gpg_private_key.key
       register: gpg_import_result
 
     - name: Print gpg import result
