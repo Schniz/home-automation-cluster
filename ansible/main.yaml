@@ -41,7 +41,7 @@
     - name: Import gpg private key
       when: gpg_private_key != ""
       command: |
-        echo "{{ gpg_private_key }} | gpg --batch --yes --pinentry-mode loopback --import
+        echo "{{ gpg_private_key }}" | gpg --batch --yes --pinentry-mode loopback --import
       args:
         chdir: "{{ working_directory }}"
       register: gpg_import_result
