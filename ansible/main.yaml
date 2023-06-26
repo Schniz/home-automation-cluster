@@ -31,7 +31,37 @@
           - git-secret
           - docker-ce
           - docker-compose-plugin
+
+          # <kvm>
+          # TODO: extract a kvm role
+          - qemu-kvm
+          - bridge-utils
+          - libvirt-daemon-system
+          - libvirt-clients
+          - libosinfo-bin
+          - virt-manager
+          - swtpm-tools
+          # </kvm>
+
         state: latest
+
+    - name: Download RustDesk deb file
+      get_url:
+        url: https://github.com/rustdesk/rustdesk/releases/download/1.1.9/rustdesk-1.1.9.deb
+        dest: /tmp/rustdesk.deb
+        mode: 0644
+
+    - name: Install RustDesk
+      become: true
+      apt:
+        deb: /tmp/rustdesk.deb
+        state: present
+
+    - name: Run kvm-ok
+      become: true
+      command: kvm-ok
+      register: kvm_ok
+      failed_when: kvm_ok.rc != 0
 
     - name: Set up Docker log rotation
       become: true
@@ -48,6 +78,21 @@
       args:
         chdir: "{{ working_directory }}"
         stdin: "{{ gpg_private_key }}"
+
+    # <kvm>
+    - name: Ensure there's a "libvirt" group
+      become: true
+      group:
+        name: "libvirt"
+        state: present
+    - name: Add "{{runner_user}}" user to "libvirt" group
+      become: true
+      user:
+        name: "{{runner_user}}"
+        groups:
+          - "libvirt"
+        append: yes
+    # </kvm>
 
     # sudo groupadd docker
     - name: Create "docker" group
