@@ -32,11 +32,6 @@
           - docker-ce
           - docker-compose-plugin
 
-          # for rustdesk, we need a GUI
-          - xorg
-          - gnome-session
-          - gnome-terminal
-
           # <kvm>
           # TODO: extract a kvm role
           - qemu-kvm
