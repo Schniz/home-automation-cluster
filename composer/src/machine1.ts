@@ -57,13 +57,13 @@ export default function machine1(): ComposeSpecification {
         volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
         command: "--cleanup",
       })),
-      gitea: service("gitea", (helpers) => ({
+      gitea: service("gitea", () => ({
         image: "gitea/gitea",
         container_name: "gitea",
         networks: ["caddy"],
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [
-          `${helpers.config}:/etc/gitea`,
+          `${library.git}/gitea/conf:/etc/gitea`,
           `${library.git}/:/data`,
           `/etc/timezone:/etc/timezone:ro`,
           `/etc/localtime:/etc/localtime:ro`,

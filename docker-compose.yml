@@ -22,7 +22,7 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/gitea:/etc/gitea
+      - /media/SchlezExt2/library/git/gitea/conf:/etc/gitea
       - /media/SchlezExt2/library/git/:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
