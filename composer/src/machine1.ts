@@ -265,6 +265,7 @@ export default function machine1(): ComposeSpecification {
         volumes: [
           `/media/SchlezExt2/homeassistant-config:/config`,
           "/etc/localtime:/etc/localtime:ro",
+          "/run/dbus:/run/dbus:ro",
           `${LIBRARY_ROOT}:/library`,
         ],
         privileged: true,
