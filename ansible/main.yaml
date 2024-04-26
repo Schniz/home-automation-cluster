@@ -116,6 +116,13 @@
         name: caddy
         state: present
 
+    - name: login to ghcr as schniz
+      become: true
+      community.docker.docker_login:
+        username: schniz
+        password: "{{ lookup('env', 'PERSONAL_ACCESS_TOKEN') }}"
+        registry_url: ghcr.io
+
   roles:
     - role: monolithprojects.github_actions_runner
       become: true
