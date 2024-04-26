@@ -153,7 +153,7 @@ export default function machine1(): ComposeSpecification {
         ],
         command: [
           "--docker.socket=/var/run/docker.sock",
-          "--mdns-enabled",
+          "--mdns.enabled",
           "/apps",
         ],
         volumes: [

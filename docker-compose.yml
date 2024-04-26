@@ -116,7 +116,7 @@ services:
       - PORT=16661
     command:
       - '--docker.socket=/var/run/docker.sock'
-      - '--mdns-enabled'
+      - '--mdns.enabled'
       - /apps
     volumes:
       - /media/SchlezExt2/configs/krembo:/app/backend/data
