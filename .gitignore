@@ -8,3 +8,4 @@ home_secrets.yaml
 caddy/environment
 cloudflare-ddns/environment
 tailscale/environment
+openobserve/environment

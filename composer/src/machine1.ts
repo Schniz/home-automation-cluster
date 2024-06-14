@@ -324,6 +324,26 @@ export default function machine1(): ComposeSpecification {
         network_mode: "host",
         restart: "unless-stopped",
       })),
+
+      openobserve: service("openobserve", (helpers) => {
+        const data = path.join(helpers.config, "data");
+        return {
+          image: "public.ecr.aws/zinclabs/openobserve:latest",
+          container_name: "openobserve",
+          networks: ["caddy"],
+          env_file: "./openobserve/environment",
+          environment: [
+            "PUID=1000",
+            "PGID=1000",
+            "TZ=Asia/Jerusalem",
+            "ZO_DATA_DIR=/data",
+          ],
+          volumes: [`${data}:/data`],
+          labels: {
+            ...caddy.usingUpstreams("o11y", 5080),
+          },
+        };
+      }),
     },
   };
 }

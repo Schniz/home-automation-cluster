@@ -301,4 +301,23 @@ services:
       - /media/SchlezExt2/library:/library
     privileged: true
     network_mode: host
+  openobserve:
+    restart: unless-stopped
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    container_name: openobserve
+    networks:
+      - caddy
+    env_file: ./openobserve/environment
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+      - ZO_DATA_DIR=/data
+    volumes:
+      - /media/SchlezExt2/configs/openobserve/data:/data
+    labels:
+      caddy: '*.home.hagever.com'
+      caddy.15_@o11y: host o11y.home.hagever.com
+      caddy.15_handle: '@o11y'
+      caddy.15_handle.reverse_proxy: '{{upstreams 5080}}'
 
