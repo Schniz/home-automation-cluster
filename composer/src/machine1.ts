@@ -349,13 +349,13 @@ export default function machine1(): ComposeSpecification {
         const configs = Object.entries({
           format: "json",
           Host: "openobserve",
-          HTTP_User: "${ZO_ROOT_USER_EMAIL}",
+          HTTP_User: "$${ZO_ROOT_USER_EMAIL}",
           Port: 5080,
           Json_date_key: "_timestamp",
           Json_date_format: "iso8601",
           compress: "gzip",
           URI: "/api/default/default/_json",
-          HTTP_Passwd: "${ZO_HTTP_PASSWD}",
+          HTTP_Passwd: "$${ZO_HTTP_PASSWD}",
         }).flatMap(([key, value]) => [`-p`, `${key}=${value}`]);
         return {
           image: "fluent/fluent-bit:latest",
