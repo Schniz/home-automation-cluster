@@ -320,4 +320,43 @@ services:
       caddy.15_@o11y: host o11y.home.hagever.com
       caddy.15_handle: '@o11y'
       caddy.15_handle.reverse_proxy: '{{upstreams 5080}}'
+  fluentbit:
+    restart: unless-stopped
+    image: fluent/fluent-bit:latest
+    container_name: fluentbit
+    networks:
+      - caddy
+    environment:
+      - TZ=Asia/Jerusalem
+    env_file: ./openobserve/environment
+    volumes:
+      - /media/SchlezExt2/configs/fluentbit:/config
+    ports:
+      - 127.0.0.1:24224:24224
+    command:
+      - /fluent-bit/bin/fluent-bit
+      - '-i'
+      - forward
+      - '-o'
+      - http
+      - '-p'
+      - format=json
+      - '-p'
+      - Host=openobserve
+      - '-p'
+      - HTTP_User=${ZO_ROOT_USER_EMAIL}
+      - '-p'
+      - Port=5080
+      - '-p'
+      - Json_date_key=_timestamp
+      - '-p'
+      - Json_date_format=iso8601
+      - '-p'
+      - compress=gzip
+      - '-p'
+      - URI=/api/default/default/_json
+      - '-p'
+      - HTTP_Passwd=${ZO_HTTP_PASSWD}
+      - '-f'
+      - '1'
 

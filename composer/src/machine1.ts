@@ -344,6 +344,39 @@ export default function machine1(): ComposeSpecification {
           },
         };
       }),
+
+      fluentbit: service("fluentbit", (helpers) => {
+        const configs = Object.entries({
+          format: "json",
+          Host: "openobserve",
+          HTTP_User: "${ZO_ROOT_USER_EMAIL}",
+          Port: 5080,
+          Json_date_key: "_timestamp",
+          Json_date_format: "iso8601",
+          compress: "gzip",
+          URI: "/api/default/default/_json",
+          HTTP_Passwd: "${ZO_HTTP_PASSWD}",
+        }).flatMap(([key, value]) => [`-p`, `${key}=${value}`]);
+        return {
+          image: "fluent/fluent-bit:latest",
+          container_name: "fluentbit",
+          networks: ["caddy"],
+          environment: ["TZ=Asia/Jerusalem"],
+          env_file: "./openobserve/environment",
+          volumes: [`${helpers.config}:/config`],
+          ports: ["127.0.0.1:24224:24224"],
+          command: [
+            "/fluent-bit/bin/fluent-bit",
+            "-i",
+            "forward",
+            "-o",
+            "http",
+            ...configs,
+            "-f",
+            "1",
+          ],
+        };
+      }),
     },
   };
 }
