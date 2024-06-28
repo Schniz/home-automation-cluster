@@ -17,10 +17,6 @@ function configDir(name: string) {
   return path.join(CONFIGS_ROOT, name);
 }
 
-const logging = {
-  driver: "fluentd",
-};
-
 const machines = {
   main: "192.168.31.38",
 };
@@ -60,7 +56,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "watchtower",
         volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
         command: "--cleanup",
-        logging,
       })),
       gitea: service("gitea", () => ({
         image: "gitea/gitea",
@@ -73,7 +68,6 @@ export default function machine1(): ComposeSpecification {
           `/etc/timezone:/etc/timezone:ro`,
           `/etc/localtime:/etc/localtime:ro`,
         ],
-        logging,
         labels: {
           ...caddy.usingUpstreams("git", 3000),
         },
@@ -126,14 +120,12 @@ export default function machine1(): ComposeSpecification {
         },
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [`${helpers.config}:/root/.ollama`],
-        logging,
       })),
 
       ollama_web: service("ollama_web", (helpers) => ({
         container_name: "ollama_web",
         image: "ghcr.io/open-webui/open-webui:main",
         networks: ["caddy"],
-        logging,
         labels: {
           ...caddy.usingUpstreams("ai", 8080),
         },
@@ -150,7 +142,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "krembo",
         image: "ghcr.io/schniz/krembo:main",
         networks: ["caddy"],
-        logging,
         labels: {
           ...caddy.usingUpstreams("krembo", 16661),
         },
@@ -176,7 +167,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "transmission",
         image: "linuxserver/transmission",
         networks: ["caddy"],
-        logging,
         labels: {
           ...caddy.usingUpstreams("torrent", 9091),
         },
@@ -200,7 +190,6 @@ export default function machine1(): ComposeSpecification {
         },
         image: "linuxserver/jackett:latest",
         container_name: "jackett",
-        logging,
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [`${helpers.config}:/config`],
       })),
@@ -213,7 +202,6 @@ export default function machine1(): ComposeSpecification {
           ...caddy.usingUpstreams("sonarr", 8989),
         },
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
-        logging,
         volumes: [
           `${helpers.config}:/config`,
           `${library.tv}:/tv`,
@@ -228,7 +216,6 @@ export default function machine1(): ComposeSpecification {
         labels: {
           ...caddy.usingUpstreams("radarr", 7878),
         },
-        logging,
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [
           `${helpers.config}:/config`,
@@ -244,7 +231,6 @@ export default function machine1(): ComposeSpecification {
         labels: {
           ...caddy.usingUpstreams("bazarr", 6767),
         },
-        logging,
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [
           `${helpers.config}:/config`,
@@ -258,7 +244,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "jellyfin",
         network_mode: "host",
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
-        logging,
         volumes: [
           `${helpers.config}:/config`,
           `${library.tv}:/data/tvshows`,
@@ -275,7 +260,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "ical-http-sensor",
         environment: ["TZ=Asia/Jerusalem"],
         networks: ["caddy"],
-        logging,
         labels: {
           ...caddy.usingUpstreams("ical-sensor", 8080),
         },
@@ -290,7 +274,6 @@ export default function machine1(): ComposeSpecification {
         env_file: "./tailscale/environment",
         environment: ["TZ=Asia/Jerusalem"],
         volumes: ["/var/lib:/var/lib", "/dev/net/tun:/dev/net/tun"],
-        logging,
       })),
 
       filebrowser: service("filebrowser", (helpers) => {
@@ -301,7 +284,6 @@ export default function machine1(): ComposeSpecification {
           container_name: "filebrowser",
           networks: ["caddy"],
           environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
-          logging,
           volumes: [
             `${settings}:/config`,
             `${database}:/database`,
@@ -326,7 +308,6 @@ export default function machine1(): ComposeSpecification {
             target: 1883,
           },
         ],
-        logging,
       })),
 
       homeassistant: service("homeassistant", (helpers) => ({
@@ -341,62 +322,8 @@ export default function machine1(): ComposeSpecification {
         ],
         privileged: true,
         network_mode: "host",
-        logging,
         restart: "unless-stopped",
       })),
-
-      openobserve: service("openobserve", (helpers) => {
-        const data = path.join(helpers.config, "data");
-        return {
-          image: "public.ecr.aws/zinclabs/openobserve:latest",
-          container_name: "openobserve",
-          networks: ["caddy"],
-          env_file: "./openobserve/environment",
-          environment: [
-            "PUID=1000",
-            "PGID=1000",
-            "TZ=Asia/Jerusalem",
-            "ZO_DATA_DIR=/data",
-          ],
-          volumes: [`${data}:/data`],
-          labels: {
-            ...caddy.usingUpstreams("o11y", 5080),
-          },
-        };
-      }),
-
-      fluentbit: service("fluentbit", (helpers) => {
-        const configs = Object.entries({
-          format: "json",
-          Host: "openobserve",
-          HTTP_User: "$${ZO_ROOT_USER_EMAIL}",
-          Port: 5080,
-          Json_date_key: "_timestamp",
-          Json_date_format: "iso8601",
-          compress: "gzip",
-          URI: "/api/default/default/_json",
-          HTTP_Passwd: "$${ZO_HTTP_PASSWD}",
-        }).flatMap(([key, value]) => [`-p`, `${key}=${value}`]);
-        return {
-          image: "fluent/fluent-bit:latest",
-          container_name: "fluentbit",
-          networks: ["caddy"],
-          environment: ["TZ=Asia/Jerusalem"],
-          env_file: "./openobserve/environment",
-          volumes: [`${helpers.config}:/config`],
-          ports: ["127.0.0.1:24224:24224"],
-          command: [
-            "/fluent-bit/bin/fluent-bit",
-            "-i",
-            "forward",
-            "-o",
-            "http",
-            ...configs,
-            "-f",
-            "1",
-          ],
-        };
-      }),
     },
   };
 }

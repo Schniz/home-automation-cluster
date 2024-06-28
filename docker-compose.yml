@@ -11,8 +11,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: '--cleanup'
-    logging: &ref_0
-      driver: fluentd
   gitea:
     restart: unless-stopped
     image: gitea/gitea
@@ -28,7 +26,6 @@ services:
       - /media/SchlezExt2/library/git/:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    logging: *ref_0
     labels:
       caddy: '*.home.hagever.com'
       caddy.1_@git: host git.home.hagever.com
@@ -83,14 +80,12 @@ services:
       - TZ=Asia/Jerusalem
     volumes:
       - /media/SchlezExt2/configs/ollama:/root/.ollama
-    logging: *ref_0
   ollama_web:
     restart: unless-stopped
     container_name: ollama_web
     image: ghcr.io/open-webui/open-webui:main
     networks:
       - caddy
-    logging: *ref_0
     labels:
       caddy: '*.home.hagever.com'
       caddy.6_@ai: host ai.home.hagever.com
@@ -109,7 +104,6 @@ services:
     image: ghcr.io/schniz/krembo:main
     networks:
       - caddy
-    logging: *ref_0
     labels:
       caddy: '*.home.hagever.com'
       caddy.7_@krembo: host krembo.home.hagever.com
@@ -134,7 +128,6 @@ services:
     image: linuxserver/transmission
     networks:
       - caddy
-    logging: *ref_0
     labels:
       caddy: '*.home.hagever.com'
       caddy.8_@torrent: host torrent.home.hagever.com
@@ -158,7 +151,6 @@ services:
       caddy.9_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
-    logging: *ref_0
     environment:
       - PUID=1000
       - PGID=1000
@@ -180,7 +172,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Jerusalem
-    logging: *ref_0
     volumes:
       - /media/SchlezExt2/configs/sonarr:/config
       - /media/SchlezExt2/library/tv:/tv
@@ -196,7 +187,6 @@ services:
       caddy.11_@radarr: host radarr.home.hagever.com
       caddy.11_handle: '@radarr'
       caddy.11_handle.reverse_proxy: '{{upstreams 7878}}'
-    logging: *ref_0
     environment:
       - PUID=1000
       - PGID=1000
@@ -216,7 +206,6 @@ services:
       caddy.12_@bazarr: host bazarr.home.hagever.com
       caddy.12_handle: '@bazarr'
       caddy.12_handle.reverse_proxy: '{{upstreams 6767}}'
-    logging: *ref_0
     environment:
       - PUID=1000
       - PGID=1000
@@ -234,7 +223,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Jerusalem
-    logging: *ref_0
     volumes:
       - /media/SchlezExt2/configs/jellyfin:/config
       - /media/SchlezExt2/library/tv:/data/tvshows
@@ -249,7 +237,6 @@ services:
       - TZ=Asia/Jerusalem
     networks:
       - caddy
-    logging: *ref_0
     labels:
       caddy: '*.home.hagever.com'
       caddy.13_@icalsensor: host ical-sensor.home.hagever.com
@@ -268,7 +255,6 @@ services:
     volumes:
       - /var/lib:/var/lib
       - /dev/net/tun:/dev/net/tun
-    logging: *ref_0
   filebrowser:
     restart: unless-stopped
     image: filebrowser/filebrowser:s6
@@ -279,7 +265,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Jerusalem
-    logging: *ref_0
     volumes:
       - /media/SchlezExt2/configs/filebrowser/settings:/config
       - /media/SchlezExt2/configs/filebrowser/db:/database
@@ -303,7 +288,6 @@ services:
     ports:
       - published: 1883
         target: 1883
-    logging: *ref_0
   homeassistant:
     restart: unless-stopped
     container_name: homeassistant
@@ -317,63 +301,4 @@ services:
       - /media/SchlezExt2/library:/library
     privileged: true
     network_mode: host
-    logging: *ref_0
-  openobserve:
-    restart: unless-stopped
-    image: public.ecr.aws/zinclabs/openobserve:latest
-    container_name: openobserve
-    networks:
-      - caddy
-    env_file: ./openobserve/environment
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Jerusalem
-      - ZO_DATA_DIR=/data
-    volumes:
-      - /media/SchlezExt2/configs/openobserve/data:/data
-    labels:
-      caddy: '*.home.hagever.com'
-      caddy.15_@o11y: host o11y.home.hagever.com
-      caddy.15_handle: '@o11y'
-      caddy.15_handle.reverse_proxy: '{{upstreams 5080}}'
-  fluentbit:
-    restart: unless-stopped
-    image: fluent/fluent-bit:latest
-    container_name: fluentbit
-    networks:
-      - caddy
-    environment:
-      - TZ=Asia/Jerusalem
-    env_file: ./openobserve/environment
-    volumes:
-      - /media/SchlezExt2/configs/fluentbit:/config
-    ports:
-      - 127.0.0.1:24224:24224
-    command:
-      - /fluent-bit/bin/fluent-bit
-      - '-i'
-      - forward
-      - '-o'
-      - http
-      - '-p'
-      - format=json
-      - '-p'
-      - Host=openobserve
-      - '-p'
-      - HTTP_User=$${ZO_ROOT_USER_EMAIL}
-      - '-p'
-      - Port=5080
-      - '-p'
-      - Json_date_key=_timestamp
-      - '-p'
-      - Json_date_format=iso8601
-      - '-p'
-      - compress=gzip
-      - '-p'
-      - URI=/api/default/default/_json
-      - '-p'
-      - HTTP_Passwd=$${ZO_HTTP_PASSWD}
-      - '-f'
-      - '1'
 
