@@ -111,58 +111,6 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
-      ollama: service("ollama", (helpers) => ({
-        container_name: "ollama",
-        image: "ollama/ollama",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("ai-api", 11434),
-        },
-        environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
-        volumes: [`${helpers.config}:/root/.ollama`],
-      })),
-
-      ollama_web: service("ollama_web", (helpers) => ({
-        container_name: "ollama_web",
-        image: "ghcr.io/open-webui/open-webui:main",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("ai", 8080),
-        },
-        environment: [
-          "PUID=1000",
-          "PGID=1000",
-          "TZ=Asia/Jerusalem",
-          "OLLAMA_BASE_URL=https://ai-api.home.hagever.com",
-        ],
-        volumes: [`${helpers.config}:/app/backend/data`],
-      })),
-
-      krembo: service("krembo", (helpers) => ({
-        container_name: "krembo",
-        image: "ghcr.io/schniz/krembo:main",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("krembo", 16661),
-        },
-        environment: [
-          "PUID=1000",
-          "PGID=1000",
-          "TZ=Asia/Jerusalem",
-          "PORT=16661",
-        ],
-        command: [
-          "--docker.socket=/var/run/docker.sock",
-          "--mdns.enabled",
-          "/apps",
-        ],
-        volumes: [
-          `${helpers.config}:/app/backend/data`,
-          "/var/run/docker.sock:/var/run/docker.sock",
-          `${LIBRARY_ROOT}/krembo_apps:/apps`,
-        ],
-      })),
-
       transmission: service("transmission", (helpers) => ({
         container_name: "transmission",
         image: "linuxserver/transmission",

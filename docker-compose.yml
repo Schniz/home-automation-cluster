@@ -63,65 +63,6 @@ services:
       caddy.4_@media: host media.home.hagever.com
       caddy.4_handle: '@media'
       caddy.4_handle.reverse_proxy: http://192.168.31.38:8096
-  ollama:
-    restart: unless-stopped
-    container_name: ollama
-    image: ollama/ollama
-    networks:
-      - caddy
-    labels:
-      caddy: '*.home.hagever.com'
-      caddy.5_@aiapi: host ai-api.home.hagever.com
-      caddy.5_handle: '@aiapi'
-      caddy.5_handle.reverse_proxy: '{{upstreams 11434}}'
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Jerusalem
-    volumes:
-      - /media/SchlezExt2/configs/ollama:/root/.ollama
-  ollama_web:
-    restart: unless-stopped
-    container_name: ollama_web
-    image: ghcr.io/open-webui/open-webui:main
-    networks:
-      - caddy
-    labels:
-      caddy: '*.home.hagever.com'
-      caddy.6_@ai: host ai.home.hagever.com
-      caddy.6_handle: '@ai'
-      caddy.6_handle.reverse_proxy: '{{upstreams 8080}}'
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Jerusalem
-      - OLLAMA_BASE_URL=https://ai-api.home.hagever.com
-    volumes:
-      - /media/SchlezExt2/configs/ollama_web:/app/backend/data
-  krembo:
-    restart: unless-stopped
-    container_name: krembo
-    image: ghcr.io/schniz/krembo:main
-    networks:
-      - caddy
-    labels:
-      caddy: '*.home.hagever.com'
-      caddy.7_@krembo: host krembo.home.hagever.com
-      caddy.7_handle: '@krembo'
-      caddy.7_handle.reverse_proxy: '{{upstreams 16661}}'
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Jerusalem
-      - PORT=16661
-    command:
-      - '--docker.socket=/var/run/docker.sock'
-      - '--mdns.enabled'
-      - /apps
-    volumes:
-      - /media/SchlezExt2/configs/krembo:/app/backend/data
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /media/SchlezExt2/library/krembo_apps:/apps
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -130,9 +71,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.8_@torrent: host torrent.home.hagever.com
-      caddy.8_handle: '@torrent'
-      caddy.8_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.5_@torrent: host torrent.home.hagever.com
+      caddy.5_handle: '@torrent'
+      caddy.5_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -146,9 +87,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.9_@jackett: host jackett.home.hagever.com
-      caddy.9_handle: '@jackett'
-      caddy.9_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.6_@jackett: host jackett.home.hagever.com
+      caddy.6_handle: '@jackett'
+      caddy.6_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -165,9 +106,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.10_@sonarr: host sonarr.home.hagever.com
-      caddy.10_handle: '@sonarr'
-      caddy.10_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.7_@sonarr: host sonarr.home.hagever.com
+      caddy.7_handle: '@sonarr'
+      caddy.7_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -184,9 +125,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.11_@radarr: host radarr.home.hagever.com
-      caddy.11_handle: '@radarr'
-      caddy.11_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.8_@radarr: host radarr.home.hagever.com
+      caddy.8_handle: '@radarr'
+      caddy.8_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -203,9 +144,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.12_@bazarr: host bazarr.home.hagever.com
-      caddy.12_handle: '@bazarr'
-      caddy.12_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.9_@bazarr: host bazarr.home.hagever.com
+      caddy.9_handle: '@bazarr'
+      caddy.9_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -239,9 +180,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.13_@icalsensor: host ical-sensor.home.hagever.com
-      caddy.13_handle: '@icalsensor'
-      caddy.13_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.10_@icalsensor: host ical-sensor.home.hagever.com
+      caddy.10_handle: '@icalsensor'
+      caddy.10_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -272,9 +213,9 @@ services:
       - /media/SchlezExt2:/srv
     labels:
       caddy: '*.home.hagever.com'
-      caddy.14_@files: host files.home.hagever.com
-      caddy.14_handle: '@files'
-      caddy.14_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy.11_@files: host files.home.hagever.com
+      caddy.11_handle: '@files'
+      caddy.11_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
