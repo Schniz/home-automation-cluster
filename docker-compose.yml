@@ -116,6 +116,7 @@ services:
     volumes:
       - /media/SchlezExt2/configs/sonarr:/config
       - /media/SchlezExt2/library/tv:/tv
+      - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
   radarr:
     restart: unless-stopped
@@ -135,6 +136,7 @@ services:
     volumes:
       - /media/SchlezExt2/configs/radarr:/config
       - /media/SchlezExt2/library/movies:/movies
+      - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
   bazarr:
     restart: unless-stopped

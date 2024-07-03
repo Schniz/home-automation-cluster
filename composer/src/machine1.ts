@@ -153,6 +153,7 @@ export default function machine1(): ComposeSpecification {
         volumes: [
           `${helpers.config}:/config`,
           `${library.tv}:/tv`,
+          `${LIBRARY_ROOT}:/library_root`,
           `${library.downloads}:/downloads`,
         ],
       })),
@@ -168,6 +169,7 @@ export default function machine1(): ComposeSpecification {
         volumes: [
           `${helpers.config}:/config`,
           `${library.movies}:/movies`,
+          `${LIBRARY_ROOT}:/library_root`,
           `${library.downloads}:/downloads`,
         ],
       })),
