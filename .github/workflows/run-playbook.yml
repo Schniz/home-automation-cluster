@@ -30,4 +30,4 @@ jobs:
 
       - name: apply docker-compose.yml
         run: |
-          docker compose --project-name deployment up -d --remove-orphans
+          docker compose --project-name deployment up -d
