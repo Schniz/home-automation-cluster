@@ -51,11 +51,18 @@ export default function machine1(): ComposeSpecification {
       },
     },
     services: {
-      watchtower: service("watchtower", () => ({
+      watchtower: service("watchtower", (helpers) => ({
         image: "containrrr/watchtower",
         container_name: "watchtower",
-        volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
-        command: "--cleanup",
+        volumes: [
+          "/var/run/docker.sock:/var/run/docker.sock",
+          `${helpers.config}:/config`,
+        ],
+        command: [
+          `--cleanup`,
+          `--notification-url`,
+          `/config/notification_url`,
+        ],
       })),
       gitea: service("gitea", () => ({
         image: "gitea/gitea",
