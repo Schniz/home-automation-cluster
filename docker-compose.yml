@@ -67,6 +67,9 @@ services:
       caddy.4_@media: host media.home.hagever.com
       caddy.4_handle: '@media'
       caddy.4_handle.reverse_proxy: http://192.168.31.38:8096
+      caddy.5_@esphome: host esphome.home.hagever.com
+      caddy.5_handle: '@esphome'
+      caddy.5_handle.reverse_proxy: http://192.168.31.38:6052
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -75,9 +78,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.5_@torrent: host torrent.home.hagever.com
-      caddy.5_handle: '@torrent'
-      caddy.5_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.6_@torrent: host torrent.home.hagever.com
+      caddy.6_handle: '@torrent'
+      caddy.6_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -91,9 +94,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.6_@jackett: host jackett.home.hagever.com
-      caddy.6_handle: '@jackett'
-      caddy.6_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.7_@jackett: host jackett.home.hagever.com
+      caddy.7_handle: '@jackett'
+      caddy.7_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -110,9 +113,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.7_@sonarr: host sonarr.home.hagever.com
-      caddy.7_handle: '@sonarr'
-      caddy.7_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.8_@sonarr: host sonarr.home.hagever.com
+      caddy.8_handle: '@sonarr'
+      caddy.8_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -130,9 +133,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.8_@radarr: host radarr.home.hagever.com
-      caddy.8_handle: '@radarr'
-      caddy.8_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.9_@radarr: host radarr.home.hagever.com
+      caddy.9_handle: '@radarr'
+      caddy.9_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -150,9 +153,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.9_@bazarr: host bazarr.home.hagever.com
-      caddy.9_handle: '@bazarr'
-      caddy.9_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.10_@bazarr: host bazarr.home.hagever.com
+      caddy.10_handle: '@bazarr'
+      caddy.10_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -186,9 +189,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.10_@icalsensor: host ical-sensor.home.hagever.com
-      caddy.10_handle: '@icalsensor'
-      caddy.10_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.11_@icalsensor: host ical-sensor.home.hagever.com
+      caddy.11_handle: '@icalsensor'
+      caddy.11_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -219,9 +222,9 @@ services:
       - /media/SchlezExt2:/srv
     labels:
       caddy: '*.home.hagever.com'
-      caddy.11_@files: host files.home.hagever.com
-      caddy.11_handle: '@files'
-      caddy.11_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy.12_@files: host files.home.hagever.com
+      caddy.12_handle: '@files'
+      caddy.12_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -257,6 +260,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       - TZ=Asia/Jerusalem
+      - ESPHOME_DASHBOARD_USE_PING=true
+      - ESPHOME_DASHBOARD_RELATIVE_URL=/
+      - ESPHOME_QUICKWIZARD=
+      - ESPHOME_IS_HA_ADDON=
+      - DISABLE_HA_AUTHENTICATION=
     network_mode: host
     privileged: true
     env_file: ./esphome/environment

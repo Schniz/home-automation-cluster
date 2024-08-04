@@ -115,6 +115,9 @@ export default function machine1(): ComposeSpecification {
           ...caddy.subdomainDefinition("media", {
             reverse_proxy: `http://${machines.main}:8096`,
           }),
+          ...caddy.subdomainDefinition("esphome", {
+            reverse_proxy: `http://${machines.main}:6052`,
+          }),
         },
       })),
 
@@ -289,7 +292,14 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}:/config`,
           `/etc/localtime:/etc/localtime:ro`,
         ],
-        environment: ["TZ=Asia/Jerusalem"],
+        environment: [
+          "TZ=Asia/Jerusalem",
+          "ESPHOME_DASHBOARD_USE_PING=true",
+          "ESPHOME_DASHBOARD_RELATIVE_URL=/",
+          "ESPHOME_QUICKWIZARD=",
+          "ESPHOME_IS_HA_ADDON=",
+          "DISABLE_HA_AUTHENTICATION=",
+        ],
         network_mode: "host",
         privileged: true,
         env_file: "./esphome/environment",
