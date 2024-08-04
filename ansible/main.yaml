@@ -122,6 +122,13 @@
         password: "{{ lookup('env', 'PERSONAL_ACCESS_TOKEN') }}"
         registry_url: ghcr.io
 
+    - name: Add EDITOR=vim to schniz
+      become: true
+      lineinfile:
+        path: "/home/{{runner_user}}/.bashrc"
+        line: 'export EDITOR=vim'
+        create: true
+
   roles:
     - role: monolithprojects.github_actions_runner
       become: true
