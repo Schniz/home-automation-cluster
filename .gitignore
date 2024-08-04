@@ -9,3 +9,4 @@ caddy/environment
 cloudflare-ddns/environment
 tailscale/environment
 openobserve/environment
+esphome/environment

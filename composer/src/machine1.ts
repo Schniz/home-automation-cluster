@@ -281,6 +281,20 @@ export default function machine1(): ComposeSpecification {
         network_mode: "host",
         restart: "unless-stopped",
       })),
+
+      esphome: service("esphome", (helpers) => ({
+        container_name: "esphome",
+        image: "ghcr.io/esphome/esphome",
+        volumes: [
+          `${helpers.config}:/config`,
+          `/etc/localtime:/etc/localtime:ro`,
+        ],
+        environment: ["TZ=Asia/Jerusalem"],
+        network_mode: "host",
+        privileged: true,
+        env_file: "./esphome/environment",
+        restart: "unless-stopped",
+      })),
     },
   };
 }
