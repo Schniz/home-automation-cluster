@@ -21,7 +21,7 @@
             line: "DNSStubListener=no"
             state: present
           notify:
-            - reload system-resolved
+            - restart systemd-resolved
         - name: Adjust /etc/resolv.conf symlink to point to /run/systemd/resolve/resolv.conf
           block:
             - name: Remove existing /etc/resolv.conf symlink
@@ -172,8 +172,8 @@
       service:
         name: docker
         state: reloaded
-    - name: reload system-resolved
+    - name: restart systemd-resolved
       become: true
       service:
         name: systemd-resolved
-        state: reloaded
+        state: restarted
