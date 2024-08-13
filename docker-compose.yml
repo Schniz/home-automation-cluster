@@ -72,7 +72,7 @@ services:
       caddy.5_handle.reverse_proxy: http://192.168.31.38:6052
       caddy.6_@dns: host dns.home.hagever.com
       caddy.6_handle: '@dns'
-      caddy.6_handle.reverse_proxy: http://192.168.31.38:8882
+      caddy.6_handle.reverse_proxy: http://192.168.31.38:8881
   transmission:
     restart: unless-stopped
     container_name: transmission
