@@ -120,6 +120,7 @@ export default function machine1(): ComposeSpecification {
           }),
           ...caddy.subdomainDefinition("dns", {
             reverse_proxy: `http://${machines.main}:8881`,
+            redir: "/ /admin",
           }),
         },
       })),
