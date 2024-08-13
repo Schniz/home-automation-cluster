@@ -14,6 +14,7 @@
     - name: Ensure port 53 is free for pihole
       block:
         - name: Disable systemd-resolved from listening on port 53
+          become: true
           lineinfile:
             path: /etc/systemd/resolved.conf
             regexp: "^DNSStubListener="
@@ -24,11 +25,13 @@
         - name: Adjust /etc/resolv.conf symlink to point to /run/systemd/resolve/resolv.conf
           block:
             - name: Remove existing /etc/resolv.conf symlink
+              become: true
               file:
                 path: /etc/resolv.conf
                 state: absent
 
             - name: Create new symlink for /etc/resolv.conf
+              become: true
               file:
                 src: /run/systemd/resolve/resolv.conf
                 dest: /etc/resolv.conf
