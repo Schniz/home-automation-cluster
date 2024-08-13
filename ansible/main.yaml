@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook
 ---
 - name: Set up main host
   hosts: all
@@ -10,17 +11,43 @@
     github_account: Schniz
     github_repo: home-automation-cluster
   tasks:
-    - name: Add Docker GPG apt Key
-      become: true
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - name: Ensure port 53 is free for pihole
+      block:
+        - name: Disable systemd-resolved from listening on port 53
+          lineinfile:
+            path: /etc/systemd/resolved.conf
+            regexp: "^DNSStubListener="
+            line: "DNSStubListener=no"
+            state: present
+          notify:
+            - reload system-resolved
+        - name: Adjust /etc/resolv.conf symlink to point to /run/systemd/resolve/resolv.conf
+          block:
+            - name: Remove existing /etc/resolv.conf symlink
+              file:
+                path: /etc/resolv.conf
+                state: absent
 
-    - name: Add Docker Repository
-      become: true
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
+            - name: Create new symlink for /etc/resolv.conf
+              file:
+                src: /run/systemd/resolve/resolv.conf
+                dest: /etc/resolv.conf
+                state: link
+                mode: "0644"
+
+    - name: Install Docker GPG
+      block:
+        - name: Add Docker GPG apt Key
+          become: true
+          apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+        - name: Add Docker Repository
+          become: true
+          apt_repository:
+            repo: deb https://download.docker.com/linux/ubuntu focal stable
+            state: present
 
     - name: install deps
       become: true
@@ -45,88 +72,90 @@
 
         state: latest
 
-    - name: Download RustDesk deb file
-      get_url:
-        url: https://github.com/rustdesk/rustdesk/releases/download/1.1.9/rustdesk-1.1.9.deb
-        dest: /tmp/rustdesk.deb
-        mode: 0644
-
     - name: Install RustDesk
-      become: true
-      apt:
-        deb: /tmp/rustdesk.deb
-        state: present
+      block:
+        - name: Download RustDesk deb file
+          get_url:
+            url: https://github.com/rustdesk/rustdesk/releases/download/1.1.9/rustdesk-1.1.9.deb
+            dest: /tmp/rustdesk.deb
+            mode: 0644
 
-    - name: Run kvm-ok
-      become: true
-      command: kvm-ok
-      register: kvm_ok
-      failed_when: kvm_ok.rc != 0
+        - name: Install RustDesk
+          become: true
+          apt:
+            deb: /tmp/rustdesk.deb
+            state: present
 
-    - name: Set up Docker log rotation
-      become: true
-      lineinfile:
-        path: /etc/docker/daemon.json
-        line: '{"log-driver":"json-file","log-opts":{"max-size":"10m","max-file":"2"}}'
-        create: true
-      notify:
-        - reload docker
+    - name: configure docker
+      block:
+        - name: Set up Docker log rotation
+          become: true
+          lineinfile:
+            path: /etc/docker/daemon.json
+            line: '{"log-driver":"json-file","log-opts":{"max-size":"10m","max-file":"2"}}'
+            create: true
+          notify:
+            - reload docker
+        # sudo groupadd docker
+        - name: Create "docker" group
+          become: true
+          group:
+            name: "docker"
+            state: present
+        # sudo usermod -aG docker root
+        - name: Add "{{runner_user}}" user to "docker" group
+          become: true
+          user:
+            name: "{{runner_user}}"
+            groups:
+              - "docker"
+            append: yes
+        - name: create the "caddy" network in docker
+          become: true
+          community.docker.docker_network:
+            name: caddy
+            state: present
 
-    - name: Import gpg private key
-      when: gpg_private_key != ""
-      command: gpg --batch --yes --pinentry-mode loopback --import
-      args:
-        chdir: "{{ working_directory }}"
-        stdin: "{{ gpg_private_key }}"
+    - name: secrets
+      block:
+        - name: login to ghcr as schniz
+          community.docker.docker_login:
+            username: schniz
+            password: "{{ lookup('env', 'PERSONAL_ACCESS_TOKEN') }}"
+            registry_url: ghcr.io
 
-    # <kvm>
-    - name: Ensure there's a "libvirt" group
-      become: true
-      group:
-        name: "libvirt"
-        state: present
-    - name: Add "{{runner_user}}" user to "libvirt" group
-      become: true
-      user:
-        name: "{{runner_user}}"
-        groups:
-          - "libvirt"
-        append: yes
-    # </kvm>
+        - name: Import gpg private key
+          when: gpg_private_key != ""
+          command: gpg --batch --yes --pinentry-mode loopback --import
+          args:
+            chdir: "{{ working_directory }}"
+            stdin: "{{ gpg_private_key }}"
 
-    # sudo groupadd docker
-    - name: Create "docker" group
-      become: true
-      group:
-        name: "docker"
-        state: present
+    - name: configure kvm
+      block:
+        - name: Run kvm-ok
+          become: true
+          command: kvm-ok
+          register: kvm_ok
+          failed_when: kvm_ok.rc != 0
+        - name: Ensure there's a "libvirt" group
+          become: true
+          group:
+            name: "libvirt"
+            state: present
+        - name: Add "{{runner_user}}" user to "libvirt" group
+          become: true
+          user:
+            name: "{{runner_user}}"
+            groups:
+              - "libvirt"
+            append: yes
 
-    # sudo usermod -aG docker root
-    - name: Add "{{runner_user}}" user to "docker" group
-      become: true
-      user:
-        name: "{{runner_user}}"
-        groups:
-          - "docker"
-        append: yes
-
-    - name: create the "caddy" network in docker
-      become: true
-      community.docker.docker_network:
-        name: caddy
-        state: present
-
-    - name: login to ghcr as schniz
-      community.docker.docker_login:
-        username: schniz
-        password: "{{ lookup('env', 'PERSONAL_ACCESS_TOKEN') }}"
-        registry_url: ghcr.io
-
-    - name: Add EDITOR=vim to schniz
+    - name: Add EDITOR=vim to {{runner_user}}
       become: true
       lineinfile:
         path: "/home/{{runner_user}}/.bashrc"
-        line: 'export EDITOR=vim'
+        line: "export EDITOR=vim"
         create: true
 
   roles:
@@ -139,4 +168,9 @@
       become: true
       service:
         name: docker
+        state: reloaded
+    - name: reload system-resolved
+      become: true
+      service:
+        name: systemd-resolved
         state: reloaded
