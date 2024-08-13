@@ -10,3 +10,4 @@ cloudflare-ddns/environment
 tailscale/environment
 openobserve/environment
 esphome/environment
+pihole/environment

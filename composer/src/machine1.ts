@@ -118,6 +118,9 @@ export default function machine1(): ComposeSpecification {
           ...caddy.subdomainDefinition("esphome", {
             reverse_proxy: `http://${machines.main}:6052`,
           }),
+          ...caddy.subdomainDefinition("dns", {
+            reverse_proxy: `http://${machines.main}:8882`,
+          }),
         },
       })),
 
@@ -304,6 +307,19 @@ export default function machine1(): ComposeSpecification {
         privileged: true,
         env_file: "./esphome/environment",
         restart: "unless-stopped",
+      })),
+
+      pihole: service("pihole", (helpers) => ({
+        container_name: "pihole",
+        image: "pihole/pihole:latest",
+        ports: ["53:53/tcp", "53:53/udp", "67:67/udp", "8881:80/tcp"],
+        environment: ["TZ=Asia/Jerusalem"],
+        env_file: "./pihole/environment",
+        volumes: [
+          `${helpers.config}/etc-pihole:/etc/pihole`,
+          `${helpers.config}/etc-dnsmasq.d:/etc/dnsmasq.d`,
+        ],
+        cap_add: ["NET_ADMIN"],
       })),
     },
   };

@@ -70,6 +70,9 @@ services:
       caddy.5_@esphome: host esphome.home.hagever.com
       caddy.5_handle: '@esphome'
       caddy.5_handle.reverse_proxy: http://192.168.31.38:6052
+      caddy.6_@dns: host dns.home.hagever.com
+      caddy.6_handle: '@dns'
+      caddy.6_handle.reverse_proxy: http://192.168.31.38:8882
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -78,9 +81,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.6_@torrent: host torrent.home.hagever.com
-      caddy.6_handle: '@torrent'
-      caddy.6_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.7_@torrent: host torrent.home.hagever.com
+      caddy.7_handle: '@torrent'
+      caddy.7_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -94,9 +97,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.7_@jackett: host jackett.home.hagever.com
-      caddy.7_handle: '@jackett'
-      caddy.7_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.8_@jackett: host jackett.home.hagever.com
+      caddy.8_handle: '@jackett'
+      caddy.8_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -113,9 +116,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.8_@sonarr: host sonarr.home.hagever.com
-      caddy.8_handle: '@sonarr'
-      caddy.8_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.9_@sonarr: host sonarr.home.hagever.com
+      caddy.9_handle: '@sonarr'
+      caddy.9_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -133,9 +136,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.9_@radarr: host radarr.home.hagever.com
-      caddy.9_handle: '@radarr'
-      caddy.9_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.10_@radarr: host radarr.home.hagever.com
+      caddy.10_handle: '@radarr'
+      caddy.10_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -153,9 +156,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.10_@bazarr: host bazarr.home.hagever.com
-      caddy.10_handle: '@bazarr'
-      caddy.10_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.11_@bazarr: host bazarr.home.hagever.com
+      caddy.11_handle: '@bazarr'
+      caddy.11_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -189,9 +192,9 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.11_@icalsensor: host ical-sensor.home.hagever.com
-      caddy.11_handle: '@icalsensor'
-      caddy.11_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.12_@icalsensor: host ical-sensor.home.hagever.com
+      caddy.12_handle: '@icalsensor'
+      caddy.12_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -222,9 +225,9 @@ services:
       - /media/SchlezExt2:/srv
     labels:
       caddy: '*.home.hagever.com'
-      caddy.12_@files: host files.home.hagever.com
-      caddy.12_handle: '@files'
-      caddy.12_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy.13_@files: host files.home.hagever.com
+      caddy.13_handle: '@files'
+      caddy.13_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -268,4 +271,21 @@ services:
     network_mode: host
     privileged: true
     env_file: ./esphome/environment
+  pihole:
+    restart: unless-stopped
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
+      - 8881:80/tcp
+    environment:
+      - TZ=Asia/Jerusalem
+    env_file: ./pihole/environment
+    volumes:
+      - /media/SchlezExt2/configs/pihole/etc-pihole:/etc/pihole
+      - /media/SchlezExt2/configs/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
 
