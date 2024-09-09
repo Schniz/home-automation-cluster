@@ -200,7 +200,7 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}:/config`,
           `${library.movies}:/movies`,
           `${library.tv}:/tv`,
-          `${LIBRARY_ROOT}:/library`,
+          `${LIBRARY_ROOT}:/library_root`,
         ],
       })),
 

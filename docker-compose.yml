@@ -168,7 +168,7 @@ services:
       - /media/SchlezExt2/configs/bazarr:/config
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library/tv:/tv
-      - /media/SchlezExt2/library:/library
+      - /media/SchlezExt2/library:/library_root
   jellyfin:
     restart: unless-stopped
     image: linuxserver/jellyfin
