@@ -213,6 +213,7 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}:/config`,
           `${library.tv}:/data/tvshows`,
           `${library.movies}:/data/movies`,
+          `${LIBRARY_ROOT}:/library_root`,
           {
             type: "tmpfs",
             target: "/tmp-transcoding",

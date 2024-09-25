@@ -182,6 +182,7 @@ services:
       - /media/SchlezExt2/configs/jellyfin:/config
       - /media/SchlezExt2/library/tv:/data/tvshows
       - /media/SchlezExt2/library/movies:/data/movies
+      - /media/SchlezExt2/library:/library_root
       - type: tmpfs
         target: /tmp-transcoding
   ical_http_sensor:
