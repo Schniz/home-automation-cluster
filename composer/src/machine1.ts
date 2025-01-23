@@ -118,6 +118,9 @@ export default function machine1(): ComposeSpecification {
           ...caddy.subdomainDefinition("esphome", {
             reverse_proxy: `http://${machines.main}:6052`,
           }),
+          ...caddy.subdomainDefinition("upsnap", {
+            reverse_proxy: `http://${machines.main}:8090`,
+          }),
           ...caddy.subdomainDefinition("dns", {
             reverse_proxy: `http://${machines.main}:8881`,
             redir: "/ /admin",
@@ -323,6 +326,22 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}/etc-dnsmasq.d:/etc/dnsmasq.d`,
         ],
         cap_add: ["NET_ADMIN"],
+      })),
+
+      upsnap: service("upsnap", (helpers) => ({
+        image: "ghcr.io/seriousm4x/upsnap:4",
+        environment: [
+          "TZ=Asia/Jerusalem",
+          "PUID=1000",
+          "PGID=1000",
+          "UPSNAP_SCAN_RANGE=192.168.31.0/24",
+          "UPSNAP_PING_PRIVILEGED=true",
+        ],
+        network_mode: "host",
+        healthcheck: {
+          test: "curl -fs http://localhost:8090/api/health || exit 1",
+        },
+        volumes: [`${helpers.config}/data:/data`],
       })),
     },
   };
