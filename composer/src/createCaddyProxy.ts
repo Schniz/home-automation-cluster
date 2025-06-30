@@ -27,22 +27,19 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
     const name = subdomain.replace(/[^A-z0-9_]/g, "");
     const properties = Object.fromEntries(
       Object.entries(options).map(([key, value]) => {
-        const newKey = `caddy.${current}_handle.${key}`;
+        const newKey = `caddy_0.${current}_handle.${key}`;
         return [newKey, value];
       })
     );
 
-    // Add HTTP redirect for bare subdomain to HTTPS FQDN
-    const redirectIndex = ++index;
     const redirectProperties = {
-      [`caddy.${redirectIndex}_@${name}_bare`]: `host ${subdomain}`,
-      [`caddy.${redirectIndex}_handle`]: `@${name}_bare`,
-      [`caddy.${redirectIndex}_handle.redir`]: `https://${subdomain}.${rootDomain}{uri}`,
+      [`caddy_1`]: `http://${name}`,
+      [`caddy_1.redir`]: `https://${subdomain}.${rootDomain}{uri}`,
     };
 
     return {
-      [`caddy.${current}_@${name}`]: `host ${subdomain}.${rootDomain}`,
-      [`caddy.${current}_handle`]: `@${name}`,
+      [`caddy_0.${current}_@${name}`]: `host ${subdomain}.${rootDomain}`,
+      [`caddy_0.${current}_handle`]: `@${name}`,
       ...properties,
       ...redirectProperties,
     };
