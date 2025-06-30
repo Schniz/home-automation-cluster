@@ -1,4 +1,4 @@
-#!/usr/bin/env node -r @swc-node/register
+#!/usr/bin/env bun
 
 import machine1 from "../src/machine1";
 import yaml from "js-yaml";

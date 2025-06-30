@@ -35,6 +35,9 @@ services:
       caddy.1_@git: host git.home.hagever.com
       caddy.1_handle: '@git'
       caddy.1_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy.2_@git_bare: host git
+      caddy.2_handle: '@git_bare'
+      caddy.2_handle.redir: https://git.home.hagever.com{uri}
     ports:
       - '2222:2222'
   caddy:
@@ -57,26 +60,44 @@ services:
     labels:
       caddy: '*.home.hagever.com'
       caddy.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy.2_@caddy: host caddy.home.hagever.com
-      caddy.2_handle: '@caddy'
-      caddy.2_handle.request_header: Host "localhost:2019"
-      caddy.2_handle.reverse_proxy: http://localhost:2019
-      caddy.3_@ha: host ha.home.hagever.com
-      caddy.3_handle: '@ha'
-      caddy.3_handle.reverse_proxy: http://192.168.31.38:8123
-      caddy.4_@media: host media.home.hagever.com
-      caddy.4_handle: '@media'
-      caddy.4_handle.reverse_proxy: http://192.168.31.38:8096
-      caddy.5_@esphome: host esphome.home.hagever.com
-      caddy.5_handle: '@esphome'
-      caddy.5_handle.reverse_proxy: http://192.168.31.38:6052
-      caddy.6_@upsnap: host upsnap.home.hagever.com
-      caddy.6_handle: '@upsnap'
-      caddy.6_handle.reverse_proxy: http://192.168.31.38:8090
-      caddy.7_@dns: host dns.home.hagever.com
-      caddy.7_handle: '@dns'
-      caddy.7_handle.reverse_proxy: http://192.168.31.38:8881
-      caddy.7_handle.redir: / /admin
+      caddy.3_@caddy: host caddy.home.hagever.com
+      caddy.3_handle: '@caddy'
+      caddy.3_handle.request_header: Host "localhost:2019"
+      caddy.3_handle.reverse_proxy: http://localhost:2019
+      caddy.4_@caddy_bare: host caddy
+      caddy.4_handle: '@caddy_bare'
+      caddy.4_handle.redir: https://caddy.home.hagever.com{uri}
+      caddy.5_@ha: host ha.home.hagever.com
+      caddy.5_handle: '@ha'
+      caddy.5_handle.reverse_proxy: http://192.168.31.38:8123
+      caddy.6_@ha_bare: host ha
+      caddy.6_handle: '@ha_bare'
+      caddy.6_handle.redir: https://ha.home.hagever.com{uri}
+      caddy.7_@media: host media.home.hagever.com
+      caddy.7_handle: '@media'
+      caddy.7_handle.reverse_proxy: http://192.168.31.38:8096
+      caddy.8_@media_bare: host media
+      caddy.8_handle: '@media_bare'
+      caddy.8_handle.redir: https://media.home.hagever.com{uri}
+      caddy.9_@esphome: host esphome.home.hagever.com
+      caddy.9_handle: '@esphome'
+      caddy.9_handle.reverse_proxy: http://192.168.31.38:6052
+      caddy.10_@esphome_bare: host esphome
+      caddy.10_handle: '@esphome_bare'
+      caddy.10_handle.redir: https://esphome.home.hagever.com{uri}
+      caddy.11_@upsnap: host upsnap.home.hagever.com
+      caddy.11_handle: '@upsnap'
+      caddy.11_handle.reverse_proxy: http://192.168.31.38:8090
+      caddy.12_@upsnap_bare: host upsnap
+      caddy.12_handle: '@upsnap_bare'
+      caddy.12_handle.redir: https://upsnap.home.hagever.com{uri}
+      caddy.13_@dns: host dns.home.hagever.com
+      caddy.13_handle: '@dns'
+      caddy.13_handle.reverse_proxy: http://192.168.31.38:8881
+      caddy.13_handle.redir: / /admin
+      caddy.14_@dns_bare: host dns
+      caddy.14_handle: '@dns_bare'
+      caddy.14_handle.redir: https://dns.home.hagever.com{uri}
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -85,9 +106,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.8_@torrent: host torrent.home.hagever.com
-      caddy.8_handle: '@torrent'
-      caddy.8_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.15_@torrent: host torrent.home.hagever.com
+      caddy.15_handle: '@torrent'
+      caddy.15_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy.16_@torrent_bare: host torrent
+      caddy.16_handle: '@torrent_bare'
+      caddy.16_handle.redir: https://torrent.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -101,9 +125,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.9_@jackett: host jackett.home.hagever.com
-      caddy.9_handle: '@jackett'
-      caddy.9_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.17_@jackett: host jackett.home.hagever.com
+      caddy.17_handle: '@jackett'
+      caddy.17_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy.18_@jackett_bare: host jackett
+      caddy.18_handle: '@jackett_bare'
+      caddy.18_handle.redir: https://jackett.home.hagever.com{uri}
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -120,9 +147,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.10_@sonarr: host sonarr.home.hagever.com
-      caddy.10_handle: '@sonarr'
-      caddy.10_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.19_@sonarr: host sonarr.home.hagever.com
+      caddy.19_handle: '@sonarr'
+      caddy.19_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy.20_@sonarr_bare: host sonarr
+      caddy.20_handle: '@sonarr_bare'
+      caddy.20_handle.redir: https://sonarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -140,9 +170,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.11_@radarr: host radarr.home.hagever.com
-      caddy.11_handle: '@radarr'
-      caddy.11_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.21_@radarr: host radarr.home.hagever.com
+      caddy.21_handle: '@radarr'
+      caddy.21_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy.22_@radarr_bare: host radarr
+      caddy.22_handle: '@radarr_bare'
+      caddy.22_handle.redir: https://radarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -160,9 +193,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.12_@bazarr: host bazarr.home.hagever.com
-      caddy.12_handle: '@bazarr'
-      caddy.12_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.23_@bazarr: host bazarr.home.hagever.com
+      caddy.23_handle: '@bazarr'
+      caddy.23_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy.24_@bazarr_bare: host bazarr
+      caddy.24_handle: '@bazarr_bare'
+      caddy.24_handle.redir: https://bazarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -198,9 +234,12 @@ services:
       - caddy
     labels:
       caddy: '*.home.hagever.com'
-      caddy.13_@icalsensor: host ical-sensor.home.hagever.com
-      caddy.13_handle: '@icalsensor'
-      caddy.13_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.25_@icalsensor: host ical-sensor.home.hagever.com
+      caddy.25_handle: '@icalsensor'
+      caddy.25_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy.26_@icalsensor_bare: host ical-sensor
+      caddy.26_handle: '@icalsensor_bare'
+      caddy.26_handle.redir: https://ical-sensor.home.hagever.com{uri}
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -231,9 +270,12 @@ services:
       - /media/SchlezExt2:/srv
     labels:
       caddy: '*.home.hagever.com'
-      caddy.14_@files: host files.home.hagever.com
-      caddy.14_handle: '@files'
-      caddy.14_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy.27_@files: host files.home.hagever.com
+      caddy.27_handle: '@files'
+      caddy.27_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy.28_@files_bare: host files
+      caddy.28_handle: '@files_bare'
+      caddy.28_handle.redir: https://files.home.hagever.com{uri}
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest

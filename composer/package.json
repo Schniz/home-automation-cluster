@@ -5,11 +5,11 @@
   "license": "MIT",
   "scripts": {
     "types:refresh": "curl -L https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json | json2ts > generated/docker-compose-spec.ts",
-    "generate": "node -r @swc-node/register scripts/generate.ts"
+    "generate": "bun run scripts/generate.ts"
   },
   "devDependencies": {
-    "@swc-node/register": "^1.4.2",
     "@types/js-yaml": "^4.0.5",
+    "@types/node": "^20.0.0",
     "cmd-ts": "^0.9.0",
     "json-schema-to-typescript": "^10.1.5",
     "prettier": "^2.5.1",
