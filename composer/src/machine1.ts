@@ -93,14 +93,8 @@ export default function machine1(): ComposeSpecification {
           "/var/run/docker.sock:/var/run/docker.sock",
         ],
         ports: [
-          {
-            published: 443,
-            target: 443,
-          },
-          {
-            published: 80,
-            target: 80,
-          },
+          { published: 443, target: 443 },
+          { published: 80, target: 80 },
         ],
         labels: {
           ...caddy.root(),

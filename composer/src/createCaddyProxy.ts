@@ -15,7 +15,7 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
 
   function root() {
     return {
-      caddy: `*.${rootDomain}`,
+      caddy_0: `*.${rootDomain}`,
     };
   }
 

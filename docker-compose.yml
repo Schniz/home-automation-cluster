@@ -31,7 +31,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.1_@git: host git.home.hagever.com
       caddy_0.1_handle: '@git'
       caddy_0.1_handle.reverse_proxy: '{{upstreams 3000}}'
@@ -57,7 +57,7 @@ services:
       - published: 80
         target: 80
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.2_@caddy: host caddy.home.hagever.com
       caddy_0.2_handle: '@caddy'
@@ -88,7 +88,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.8_@torrent: host torrent.home.hagever.com
       caddy_0.8_handle: '@torrent'
       caddy_0.8_handle.reverse_proxy: '{{upstreams 9091}}'
@@ -106,7 +106,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.9_@jackett: host jackett.home.hagever.com
       caddy_0.9_handle: '@jackett'
       caddy_0.9_handle.reverse_proxy: '{{upstreams 9117}}'
@@ -127,7 +127,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.10_@sonarr: host sonarr.home.hagever.com
       caddy_0.10_handle: '@sonarr'
       caddy_0.10_handle.reverse_proxy: '{{upstreams 8989}}'
@@ -149,7 +149,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.11_@radarr: host radarr.home.hagever.com
       caddy_0.11_handle: '@radarr'
       caddy_0.11_handle.reverse_proxy: '{{upstreams 7878}}'
@@ -171,7 +171,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.12_@bazarr: host bazarr.home.hagever.com
       caddy_0.12_handle: '@bazarr'
       caddy_0.12_handle.reverse_proxy: '{{upstreams 6767}}'
@@ -211,7 +211,7 @@ services:
     networks:
       - caddy
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.13_@icalsensor: host ical-sensor.home.hagever.com
       caddy_0.13_handle: '@icalsensor'
       caddy_0.13_handle.reverse_proxy: '{{upstreams 8080}}'
@@ -246,7 +246,7 @@ services:
       - /media/SchlezExt2/library/downloads:/downloads
       - /media/SchlezExt2:/srv
     labels:
-      caddy: '*.home.hagever.com'
+      caddy_0: '*.home.hagever.com'
       caddy_0.14_@files: host files.home.hagever.com
       caddy_0.14_handle: '@files'
       caddy_0.14_handle.reverse_proxy: '{{upstreams 80}}'
