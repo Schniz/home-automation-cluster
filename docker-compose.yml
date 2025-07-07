@@ -32,11 +32,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.1_@git: host git.home.hagever.com
       caddy_0.1_handle: '@git'
-      caddy_0.1_handle.reverse_proxy: '{{upstreams 3000}}'
       caddy_1: http://git
       caddy_1.redir: https://git.home.hagever.com{uri}
+      caddy_0.1_handle.reverse_proxy: '{{upstreams 3000}}'
     ports:
       - '2222:2222'
   caddy:
@@ -58,27 +59,37 @@ services:
         target: 80
     labels:
       caddy_0: '*.home.hagever.com'
-      caddy.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.2_@caddy: host caddy.home.hagever.com
       caddy_0.2_handle: '@caddy'
+      caddy_2: http://caddy
+      caddy_2.redir: https://caddy.home.hagever.com{uri}
       caddy_0.2_handle.request_header: Host "localhost:2019"
       caddy_0.2_handle.reverse_proxy: http://localhost:2019
-      caddy_1: http://dns
-      caddy_1.redir: https://dns.home.hagever.com{uri}
       caddy_0.3_@ha: host ha.home.hagever.com
       caddy_0.3_handle: '@ha'
+      caddy_3: http://ha
+      caddy_3.redir: https://ha.home.hagever.com{uri}
       caddy_0.3_handle.reverse_proxy: http://192.168.31.38:8123
       caddy_0.4_@media: host media.home.hagever.com
       caddy_0.4_handle: '@media'
+      caddy_4: http://media
+      caddy_4.redir: https://media.home.hagever.com{uri}
       caddy_0.4_handle.reverse_proxy: http://192.168.31.38:8096
       caddy_0.5_@esphome: host esphome.home.hagever.com
       caddy_0.5_handle: '@esphome'
+      caddy_5: http://esphome
+      caddy_5.redir: https://esphome.home.hagever.com{uri}
       caddy_0.5_handle.reverse_proxy: http://192.168.31.38:6052
       caddy_0.6_@upsnap: host upsnap.home.hagever.com
       caddy_0.6_handle: '@upsnap'
+      caddy_6: http://upsnap
+      caddy_6.redir: https://upsnap.home.hagever.com{uri}
       caddy_0.6_handle.reverse_proxy: http://192.168.31.38:8090
       caddy_0.7_@dns: host dns.home.hagever.com
       caddy_0.7_handle: '@dns'
+      caddy_7: http://dns
+      caddy_7.redir: https://dns.home.hagever.com{uri}
       caddy_0.7_handle.reverse_proxy: http://192.168.31.38:8881
       caddy_0.7_handle.redir: / /admin
   transmission:
@@ -89,11 +100,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.8_@torrent: host torrent.home.hagever.com
       caddy_0.8_handle: '@torrent'
+      caddy_8: http://torrent
+      caddy_8.redir: https://torrent.home.hagever.com{uri}
       caddy_0.8_handle.reverse_proxy: '{{upstreams 9091}}'
-      caddy_1: http://torrent
-      caddy_1.redir: https://torrent.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -107,11 +119,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.9_@jackett: host jackett.home.hagever.com
       caddy_0.9_handle: '@jackett'
+      caddy_9: http://jackett
+      caddy_9.redir: https://jackett.home.hagever.com{uri}
       caddy_0.9_handle.reverse_proxy: '{{upstreams 9117}}'
-      caddy_1: http://jackett
-      caddy_1.redir: https://jackett.home.hagever.com{uri}
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -128,11 +141,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.10_@sonarr: host sonarr.home.hagever.com
       caddy_0.10_handle: '@sonarr'
+      caddy_10: http://sonarr
+      caddy_10.redir: https://sonarr.home.hagever.com{uri}
       caddy_0.10_handle.reverse_proxy: '{{upstreams 8989}}'
-      caddy_1: http://sonarr
-      caddy_1.redir: https://sonarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -150,11 +164,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.11_@radarr: host radarr.home.hagever.com
       caddy_0.11_handle: '@radarr'
+      caddy_11: http://radarr
+      caddy_11.redir: https://radarr.home.hagever.com{uri}
       caddy_0.11_handle.reverse_proxy: '{{upstreams 7878}}'
-      caddy_1: http://radarr
-      caddy_1.redir: https://radarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -172,11 +187,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.12_@bazarr: host bazarr.home.hagever.com
       caddy_0.12_handle: '@bazarr'
+      caddy_12: http://bazarr
+      caddy_12.redir: https://bazarr.home.hagever.com{uri}
       caddy_0.12_handle.reverse_proxy: '{{upstreams 6767}}'
-      caddy_1: http://bazarr
-      caddy_1.redir: https://bazarr.home.hagever.com{uri}
     environment:
       - PUID=1000
       - PGID=1000
@@ -212,11 +228,12 @@ services:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.13_@icalsensor: host ical-sensor.home.hagever.com
       caddy_0.13_handle: '@icalsensor'
+      caddy_13: http://icalsensor
+      caddy_13.redir: https://ical-sensor.home.hagever.com{uri}
       caddy_0.13_handle.reverse_proxy: '{{upstreams 8080}}'
-      caddy_1: http://icalsensor
-      caddy_1.redir: https://ical-sensor.home.hagever.com{uri}
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -247,11 +264,12 @@ services:
       - /media/SchlezExt2:/srv
     labels:
       caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
       caddy_0.14_@files: host files.home.hagever.com
       caddy_0.14_handle: '@files'
+      caddy_14: http://files
+      caddy_14.redir: https://files.home.hagever.com{uri}
       caddy_0.14_handle.reverse_proxy: '{{upstreams 80}}'
-      caddy_1: http://files
-      caddy_1.redir: https://files.home.hagever.com{uri}
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest

@@ -16,6 +16,7 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
   function root() {
     return {
       caddy_0: `*.${rootDomain}`,
+      "caddy_0.tls.dns": "cloudflare {env.CF_API_TOKEN}",
     };
   }
 
@@ -32,16 +33,12 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
       })
     );
 
-    const redirectProperties = {
-      [`caddy_1`]: `http://${name}`,
-      [`caddy_1.redir`]: `https://${subdomain}.${rootDomain}{uri}`,
-    };
-
     return {
       [`caddy_0.${current}_@${name}`]: `host ${subdomain}.${rootDomain}`,
       [`caddy_0.${current}_handle`]: `@${name}`,
+      [`caddy_${current}`]: `http://${name}`,
+      [`caddy_${current}.redir`]: `https://${subdomain}.${rootDomain}{uri}`,
       ...properties,
-      ...redirectProperties,
     };
   }
 
