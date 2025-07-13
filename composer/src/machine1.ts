@@ -12,6 +12,8 @@ const library = {
   movies: path.join(LIBRARY_ROOT, "movies"),
   downloads: path.join(LIBRARY_ROOT, "downloads"),
   git: path.join(LIBRARY_ROOT, "git"),
+  audiobooks: path.join(LIBRARY_ROOT, "audiobooks"),
+  podcasts: path.join(LIBRARY_ROOT, "podcasts"),
 };
 function configDir(name: string) {
   return path.join(CONFIGS_ROOT, name);
@@ -335,6 +337,22 @@ export default function machine1(): ComposeSpecification {
           test: "curl -fs http://localhost:8090/api/health || exit 1",
         },
         volumes: [`${helpers.config}/data:/data`],
+      })),
+
+      audiobookshelf: service("audiobookshelf", (helpers) => ({
+        image: "ghcr.io/advplyr/audiobookshelf:latest",
+        container_name: "audiobookshelf",
+        networks: ["caddy"],
+        environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
+        volumes: [
+          `${library.audiobooks}:/audiobooks`,
+          `${library.podcasts}:/podcasts`,
+          `${helpers.config}:/config`,
+          `${helpers.config}/metadata:/metadata`,
+        ],
+        labels: {
+          ...caddy.usingUpstreams("audiobooks", 80),
+        },
       })),
     },
   };

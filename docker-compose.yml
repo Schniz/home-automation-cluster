@@ -344,4 +344,27 @@ services:
       test: curl -fs http://localhost:8090/api/health || exit 1
     volumes:
       - /media/SchlezExt2/configs/upsnap/data:/data
+  audiobookshelf:
+    restart: unless-stopped
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    networks:
+      - caddy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt2/library/audiobooks:/audiobooks
+      - /media/SchlezExt2/library/podcasts:/podcasts
+      - /media/SchlezExt2/configs/audiobookshelf:/config
+      - /media/SchlezExt2/configs/audiobookshelf/metadata:/metadata
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.15_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.15_handle: '@audiobooks'
+      caddy_15: http://audiobooks
+      caddy_15.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.15_handle.reverse_proxy: '{{upstreams 80}}'
 
