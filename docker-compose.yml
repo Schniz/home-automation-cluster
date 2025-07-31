@@ -412,7 +412,7 @@ services:
       - caddy
     environment:
       - TZ=Asia/Jerusalem
-      - GUNICORN_MEDIA=true
+      - GUNICORN_MEDIA=1
     volumes:
       - >-
         /media/SchlezExt2/configs/tandoor-web/staticfiles:/opt/recipes/staticfiles
