@@ -393,4 +393,39 @@ services:
       caddy_16: http://opencode
       caddy_16.redir: https://opencode.home.hagever.com{uri}
       caddy_0.16_handle.reverse_proxy: '{{upstreams 3000}}'
+  tandoor_db:
+    restart: unless-stopped
+    image: postgres:16-alpine
+    container_name: tandoor_db
+    environment:
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt2/configs/tandoor-db/postgresql:/var/lib/postgresql/data
+    env_file: ./tandoor/environment
+  tandoor_web:
+    restart: unless-stopped
+    image: vabene1111/recipes
+    container_name: tandoor_web
+    networks:
+      - caddy
+    environment:
+      - TZ=Asia/Jerusalem
+      - GUNICORN_MEDIA=true
+    volumes:
+      - >-
+        /media/SchlezExt2/configs/tandoor-web/staticfiles:/opt/recipes/staticfiles
+      - >-
+        /media/SchlezExt2/configs/tandoor-web/nginx_config:/opt/recipes/nginx/conf.d
+      - /media/SchlezExt2/configs/tandoor-web/mediafiles:/opt/recipes/mediafiles
+    env_file: ./tandoor/environment
+    depends_on:
+      - tandoor_db
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.17_@recipes: host recipes.home.hagever.com
+      caddy_0.17_handle: '@recipes'
+      caddy_17: http://recipes
+      caddy_17.redir: https://recipes.home.hagever.com{uri}
+      caddy_0.17_handle.reverse_proxy: '{{upstreams 8080}}'
 

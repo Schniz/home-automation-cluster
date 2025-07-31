@@ -389,7 +389,7 @@ export default function machine1(): ComposeSpecification {
           image: "vabene1111/recipes",
           container_name: "tandoor_web",
           networks: ["caddy"],
-          environment: ["TZ=Asia/Jerusalem"],
+          environment: ["TZ=Asia/Jerusalem", "GUNICORN_MEDIA=true"],
           volumes: [
             `${helpers.config}/staticfiles:/opt/recipes/staticfiles`,
             `${helpers.config}/nginx_config:/opt/recipes/nginx/conf.d`,
