@@ -397,6 +397,8 @@ services:
     restart: unless-stopped
     image: postgres:16-alpine
     container_name: tandoor_db
+    networks:
+      - caddy
     environment:
       - TZ=Asia/Jerusalem
     volumes:

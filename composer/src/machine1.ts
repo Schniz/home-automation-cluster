@@ -380,6 +380,7 @@ export default function machine1(): ComposeSpecification {
         tandoor_db: service("tandoor-db", (helpers) => ({
           image: "postgres:16-alpine",
           container_name: "tandoor_db",
+          networks: ["caddy"],
           environment: ["TZ=Asia/Jerusalem"],
           volumes: [`${helpers.config}/postgresql:/var/lib/postgresql/data`],
           env_file: "./tandoor/environment",
