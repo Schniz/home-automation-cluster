@@ -385,6 +385,7 @@ services:
       - /media/SchlezExt2/library/opencode/repos:/repos
       - >-
         /media/SchlezExt2/library/opencode/share:/root/.local/share/opencode/project
+      - /root/.ssh:/root/.ssh:ro
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
