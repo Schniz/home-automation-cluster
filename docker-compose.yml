@@ -367,4 +367,30 @@ services:
       caddy_15: http://audiobooks
       caddy_15.redir: https://audiobooks.home.hagever.com{uri}
       caddy_0.15_handle.reverse_proxy: '{{upstreams 80}}'
+  opencode:
+    restart: unless-stopped
+    image: ghcr.io/schniz/opencode-web-bun:main
+    container_name: opencode-web
+    networks:
+      - caddy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+      - PORT=3000
+      - OPENCODE_WEB_REPOS_PATH=/repos
+    volumes:
+      - >-
+        /media/SchlezExt2/configs/opencode-web/auth.json:/root/.local/share/opencode/auth.json
+      - /media/SchlezExt2/library/opencode/repos:/repos
+      - >-
+        /media/SchlezExt2/library/opencode/share:/root/.local/share/opencode/project
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.16_@opencode: host opencode.home.hagever.com
+      caddy_0.16_handle: '@opencode'
+      caddy_16: http://opencode
+      caddy_16.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.16_handle.reverse_proxy: '{{upstreams 3000}}'
 
