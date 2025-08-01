@@ -379,9 +379,11 @@ services:
       - TZ=Asia/Jerusalem
       - PORT=3000
       - OPENCODE_WEB_REPOS_PATH=/repos
+      - OPENCODE_WEB_GH_SETUP_GIT=1
     volumes:
       - >-
         /media/SchlezExt2/configs/opencode-web/auth.json:/root/.local/share/opencode/auth.json
+      - /media/SchlezExt2/configs/opencode-web/gh:/root/.config/gh
       - /media/SchlezExt2/library/opencode/repos:/repos
       - >-
         /media/SchlezExt2/library/opencode/share:/root/.local/share/opencode/project

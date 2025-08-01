@@ -365,9 +365,11 @@ export default function machine1(): ComposeSpecification {
           "TZ=Asia/Jerusalem",
           "PORT=3000",
           "OPENCODE_WEB_REPOS_PATH=/repos",
+          "OPENCODE_WEB_GH_SETUP_GIT=1",
         ],
         volumes: [
           `${helpers.config}/auth.json:/root/.local/share/opencode/auth.json`,
+          `${helpers.config}/gh:/root/.config/gh`,
           `${LIBRARY_ROOT}/opencode/repos:/repos`,
           `${LIBRARY_ROOT}/opencode/share:/root/.local/share/opencode/project`,
           "${HOME}/.ssh:/root/.ssh:ro",
