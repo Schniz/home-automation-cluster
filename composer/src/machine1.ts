@@ -372,7 +372,6 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}/gh:/root/.config/gh`,
           `${LIBRARY_ROOT}/opencode/repos:/repos`,
           `${LIBRARY_ROOT}/opencode/share:/root/.local/share/opencode/project`,
-          "${HOME}/.ssh:/root/.ssh:ro",
         ],
         labels: {
           ...caddy.usingUpstreams("opencode", 3000),
