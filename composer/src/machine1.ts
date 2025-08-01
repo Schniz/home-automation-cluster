@@ -370,39 +370,12 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}/auth.json:/root/.local/share/opencode/auth.json`,
           `${LIBRARY_ROOT}/opencode/repos:/repos`,
           `${LIBRARY_ROOT}/opencode/share:/root/.local/share/opencode/project`,
-          `${process.env.HOME || "/root"}/.ssh:/root/.ssh:ro`,
+          "${HOME}/.ssh:/root/.ssh:ro",
         ],
         labels: {
           ...caddy.usingUpstreams("opencode", 3000),
         },
       })),
-      ...{
-        tandoor_db: service("tandoor-db", (helpers) => ({
-          image: "postgres:16-alpine",
-          container_name: "tandoor_db",
-          networks: ["caddy"],
-          environment: ["TZ=Asia/Jerusalem"],
-          volumes: [`${helpers.config}/postgresql:/var/lib/postgresql/data`],
-          env_file: "./tandoor/environment",
-        })),
-
-        tandoor_web: service("tandoor-web", (helpers) => ({
-          image: "vabene1111/recipes",
-          container_name: "tandoor_web",
-          networks: ["caddy"],
-          environment: ["TZ=Asia/Jerusalem", "GUNICORN_MEDIA=1"],
-          volumes: [
-            `${helpers.config}/staticfiles:/opt/recipes/staticfiles`,
-            `${helpers.config}/nginx_config:/opt/recipes/nginx/conf.d`,
-            `${helpers.config}/mediafiles:/opt/recipes/mediafiles`,
-          ],
-          env_file: "./tandoor/environment",
-          depends_on: ["tandoor_db"],
-          labels: {
-            ...caddy.usingUpstreams("recipes", 8080),
-          },
-        })),
-      },
     },
   };
 }
