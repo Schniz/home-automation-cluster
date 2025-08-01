@@ -370,12 +370,12 @@ export default function machine1(): ComposeSpecification {
           `${helpers.config}/auth.json:/root/.local/share/opencode/auth.json`,
           `${LIBRARY_ROOT}/opencode/repos:/repos`,
           `${LIBRARY_ROOT}/opencode/share:/root/.local/share/opencode/project`,
+          `${process.env.HOME || "/root"}/.ssh:/root/.ssh:ro`,
         ],
         labels: {
           ...caddy.usingUpstreams("opencode", 3000),
         },
       })),
-
       ...{
         tandoor_db: service("tandoor-db", (helpers) => ({
           image: "postgres:16-alpine",
