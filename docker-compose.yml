@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     image: containrrr/watchtower
     container_name: watchtower
+    environment:
+      - DOCKER_CONFIG=/config/docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /media/SchlezExt2/configs/watchtower:/config
