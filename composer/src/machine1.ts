@@ -187,6 +187,22 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
+      lidarr: service("radarr", (helpers) => ({
+        image: "linuxserver/lidarr:latest",
+        container_name: "lidarr",
+        networks: ["caddy"],
+        labels: {
+          ...caddy.usingUpstreams("lidarr", 8686),
+        },
+        environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
+        volumes: [
+          `${helpers.config}:/config`,
+          `${library.movies}:/movies`,
+          `${LIBRARY_ROOT}:/library_root`,
+          `${library.downloads}:/downloads`,
+        ],
+      })),
+
       bazarr: service("bazarr", (helpers) => ({
         image: "linuxserver/bazarr:latest",
         container_name: "bazarr",

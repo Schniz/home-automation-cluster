@@ -181,6 +181,29 @@ services:
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
+  lidarr:
+    restart: unless-stopped
+    image: linuxserver/lidarr:latest
+    container_name: lidarr
+    networks:
+      - caddy
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.12_@lidarr: host lidarr.home.hagever.com
+      caddy_0.12_handle: '@lidarr'
+      caddy_12: http://lidarr
+      caddy_12.redir: https://lidarr.home.hagever.com{uri}
+      caddy_0.12_handle.reverse_proxy: '{{upstreams 8686}}'
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt2/configs/radarr:/config
+      - /media/SchlezExt2/library/movies:/movies
+      - /media/SchlezExt2/library:/library_root
+      - /media/SchlezExt2/library/downloads:/downloads
   bazarr:
     restart: unless-stopped
     image: linuxserver/bazarr:latest
@@ -190,11 +213,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.12_@bazarr: host bazarr.home.hagever.com
-      caddy_0.12_handle: '@bazarr'
-      caddy_12: http://bazarr
-      caddy_12.redir: https://bazarr.home.hagever.com{uri}
-      caddy_0.12_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy_0.13_@bazarr: host bazarr.home.hagever.com
+      caddy_0.13_handle: '@bazarr'
+      caddy_13: http://bazarr
+      caddy_13.redir: https://bazarr.home.hagever.com{uri}
+      caddy_0.13_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -231,11 +254,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.13_@icalsensor: host ical-sensor.home.hagever.com
-      caddy_0.13_handle: '@icalsensor'
-      caddy_13: http://icalsensor
-      caddy_13.redir: https://ical-sensor.home.hagever.com{uri}
-      caddy_0.13_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy_0.14_@icalsensor: host ical-sensor.home.hagever.com
+      caddy_0.14_handle: '@icalsensor'
+      caddy_14: http://icalsensor
+      caddy_14.redir: https://ical-sensor.home.hagever.com{uri}
+      caddy_0.14_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -267,11 +290,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.14_@files: host files.home.hagever.com
-      caddy_0.14_handle: '@files'
-      caddy_14: http://files
-      caddy_14.redir: https://files.home.hagever.com{uri}
-      caddy_0.14_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.15_@files: host files.home.hagever.com
+      caddy_0.15_handle: '@files'
+      caddy_15: http://files
+      caddy_15.redir: https://files.home.hagever.com{uri}
+      caddy_0.15_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -364,11 +387,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.15_@audiobooks: host audiobooks.home.hagever.com
-      caddy_0.15_handle: '@audiobooks'
-      caddy_15: http://audiobooks
-      caddy_15.redir: https://audiobooks.home.hagever.com{uri}
-      caddy_0.15_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.16_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.16_handle: '@audiobooks'
+      caddy_16: http://audiobooks
+      caddy_16.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.16_handle.reverse_proxy: '{{upstreams 80}}'
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main
@@ -392,9 +415,9 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.16_@opencode: host opencode.home.hagever.com
-      caddy_0.16_handle: '@opencode'
-      caddy_16: http://opencode
-      caddy_16.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.16_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.17_@opencode: host opencode.home.hagever.com
+      caddy_0.17_handle: '@opencode'
+      caddy_17: http://opencode
+      caddy_17.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.17_handle.reverse_proxy: '{{upstreams 3000}}'
 
