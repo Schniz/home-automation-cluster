@@ -187,7 +187,7 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
-      lidarr: service("radarr", (helpers) => ({
+      lidarr: service("lidarr", (helpers) => ({
         image: "linuxserver/lidarr:latest",
         container_name: "lidarr",
         networks: ["caddy"],

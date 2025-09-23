@@ -200,7 +200,7 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/radarr:/config
+      - /media/SchlezExt2/configs/lidarr:/config
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
