@@ -181,27 +181,27 @@ services:
       - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
-  headphones:
+  lidarr:
     restart: unless-stopped
-    image: lscr.io/linuxserver/headphones:latest
-    container_name: headphones
+    image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
+    container_name: lidarr
     networks:
       - caddy
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.12_@headphones: host headphones.home.hagever.com
-      caddy_0.12_handle: '@headphones'
-      caddy_12: http://headphones
-      caddy_12.redir: https://headphones.home.hagever.com{uri}
-      caddy_0.12_handle.reverse_proxy: '{{upstreams 8181}}'
+      caddy_0.12_@lidarr: host lidarr.home.hagever.com
+      caddy_0.12_handle: '@lidarr'
+      caddy_12: http://lidarr
+      caddy_12.redir: https://lidarr.home.hagever.com{uri}
+      caddy_0.12_handle.reverse_proxy: '{{upstreams 8686}}'
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/headphones:/config
-      - /media/SchlezExt2/library/music:/music
+      - /media/SchlezExt2/configs/lidarr:/config
+      - /media/SchlezExt2/library/movies:/movies
       - /media/SchlezExt2/library:/library_root
       - /media/SchlezExt2/library/downloads:/downloads
   bazarr:

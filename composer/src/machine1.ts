@@ -187,17 +187,17 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
-      headphones: service("headphones", (helpers) => ({
-        image: "lscr.io/linuxserver/headphones:latest",
-        container_name: "headphones",
+      lidarr: service("lidarr", (helpers) => ({
+        image: "ghcr.io/linuxserver-labs/prarr:lidarr-plugins",
+        container_name: "lidarr",
         networks: ["caddy"],
         labels: {
-          ...caddy.usingUpstreams("headphones", 8181),
+          ...caddy.usingUpstreams("lidarr", 8686),
         },
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [
           `${helpers.config}:/config`,
-          `${LIBRARY_ROOT}/music:/music`,
+          `${library.movies}:/movies`,
           `${LIBRARY_ROOT}:/library_root`,
           `${library.downloads}:/downloads`,
         ],
