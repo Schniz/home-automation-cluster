@@ -155,6 +155,17 @@ export default function machine1(): ComposeSpecification {
         volumes: [`${helpers.config}:/config`],
       })),
 
+      prowlarr: service("prowlarr", (helpers) => ({
+        image: "lscr.io/linuxserver/prowlarr:latest",
+        container_name: "prowlarr",
+        networks: ["caddy"],
+        labels: {
+          ...caddy.usingUpstreams("prowlarr", 9696),
+        },
+        environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
+        volumes: [`${helpers.config}:/config`],
+      })),
+
       sonarr: service("sonarr", (helpers) => ({
         image: "linuxserver/sonarr:latest",
         container_name: "sonarr",
