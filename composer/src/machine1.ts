@@ -166,6 +166,16 @@ export default function machine1(): ComposeSpecification {
         volumes: [`${helpers.config}:/config`],
       })),
 
+      flaresolverr: service("flaresolverr", () => ({
+        image: "ghcr.io/flaresolverr/flaresolverr:latest",
+        container_name: "flaresolverr",
+        networks: ["caddy"],
+        labels: {
+          ...caddy.usingUpstreams("flaresolverr", 8191),
+        },
+        environment: ["LOG_LEVEL=info", "TZ=Asia/Jerusalem"],
+      })),
+
       sonarr: service("sonarr", (helpers) => ({
         image: "linuxserver/sonarr:latest",
         container_name: "sonarr",
