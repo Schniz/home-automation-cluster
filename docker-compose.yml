@@ -332,6 +332,11 @@ services:
       caddy_17: http://files
       caddy_17.redir: https://files.home.hagever.com{uri}
       caddy_0.17_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.18_@fileshare: host fileshare.home.hagever.com
+      caddy_0.18_handle: '@fileshare'
+      caddy_18: http://fileshare
+      caddy_18.redir: https://fileshare.home.hagever.com{uri}
+      caddy_0.18_handle.reverse_proxy: /share/* {{upstreams 80}}/share
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -424,11 +429,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.18_@audiobooks: host audiobooks.home.hagever.com
-      caddy_0.18_handle: '@audiobooks'
-      caddy_18: http://audiobooks
-      caddy_18.redir: https://audiobooks.home.hagever.com{uri}
-      caddy_0.18_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.19_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.19_handle: '@audiobooks'
+      caddy_19: http://audiobooks
+      caddy_19.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.19_handle.reverse_proxy: '{{upstreams 80}}'
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main
@@ -452,9 +457,9 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.19_@opencode: host opencode.home.hagever.com
-      caddy_0.19_handle: '@opencode'
-      caddy_19: http://opencode
-      caddy_19.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.19_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.20_@opencode: host opencode.home.hagever.com
+      caddy_0.20_handle: '@opencode'
+      caddy_20: http://opencode
+      caddy_20.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.20_handle.reverse_proxy: '{{upstreams 3000}}'
 

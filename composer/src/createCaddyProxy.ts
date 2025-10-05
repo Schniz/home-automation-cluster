@@ -3,11 +3,13 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
 
   function usingUpstreams(
     subdomain: string,
-    port: number
+    port: number,
+    opts?: Record<string, string>
   ): Record<string, string> {
     return {
       ...root(),
       ...subdomainDefinition(subdomain, {
+        ...opts,
         reverse_proxy: `{{upstreams ${port}}}`,
       }),
     };
