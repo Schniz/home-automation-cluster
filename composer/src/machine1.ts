@@ -294,9 +294,6 @@ export default function machine1(): ComposeSpecification {
           ],
           labels: {
             ...caddy.usingUpstreams("files", 80),
-            ...caddy.subdomainDefinition("fileshare", {
-              reverse_proxy: `/share/* {{upstreams ${80}}}/share`,
-            }),
           },
         };
       }),
