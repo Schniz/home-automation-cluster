@@ -429,6 +429,26 @@ services:
       caddy_18: http://audiobooks
       caddy_18.redir: https://audiobooks.home.hagever.com{uri}
       caddy_0.18_handle.reverse_proxy: '{{upstreams 80}}'
+  subgenai:
+    restart: unless-stopped
+    image: mccloud/subgen:cpu
+    container_name: subgenai
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+      - LOG_LEVEL=debug
+      - PROCADDEDMEDIA=True
+      - PROCMEDIAONPLAY=False
+      - CONCURRENT_TRANSCRIPTIONS=2
+      - USE_PATH_MAPPING=False
+      - MODEL_PATH=/subgen/models
+    volumes:
+      - /media/SchlezExt2/configs/subgenai/models:/subgen/models
+      - /media/SchlezExt2/configs/subgenai/subgen.env:/subgen/subgen.env:ro
+      - /media/SchlezExt2/library/movies:/movies
+      - /media/SchlezExt2/library/tv:/tv
+      - /media/SchlezExt2/library:/library_root
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main

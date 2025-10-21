@@ -393,6 +393,29 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
+      subgenai: service("subgenai", (helpers) => ({
+        image: "mccloud/subgen:cpu",
+        container_name: "subgenai",
+        environment: [
+          "PUID=1000",
+          "PGID=1000",
+          "TZ=Asia/Jerusalem",
+          "LOG_LEVEL=debug",
+          "PROCADDEDMEDIA=True",
+          "PROCMEDIAONPLAY=False",
+          "CONCURRENT_TRANSCRIPTIONS=2",
+          "USE_PATH_MAPPING=False",
+          "MODEL_PATH=/subgen/models",
+        ],
+        volumes: [
+          `${helpers.config}/models:/subgen/models`,
+          `${helpers.config}/subgen.env:/subgen/subgen.env:ro`,
+          `${library.movies}:/movies`,
+          `${library.tv}:/tv`,
+          `${LIBRARY_ROOT}:/library_root`,
+        ],
+      })),
+
       opencode: service("opencode-web", (helpers) => ({
         image: "ghcr.io/schniz/opencode-web-bun:main",
         container_name: "opencode-web",
