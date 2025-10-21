@@ -396,6 +396,7 @@ export default function machine1(): ComposeSpecification {
       subgenai: service("subgenai", (helpers) => ({
         image: "mccloud/subgen:cpu",
         container_name: "subgenai",
+        networks: ["caddy"],
         environment: [
           "PUID=1000",
           "PGID=1000",
