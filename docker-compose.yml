@@ -6,7 +6,7 @@ networks:
 services:
   watchtower:
     restart: unless-stopped
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     container_name: watchtower
     environment:
       - DOCKER_CONFIG=/config/docker
