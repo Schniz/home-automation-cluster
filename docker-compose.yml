@@ -6,13 +6,13 @@ networks:
 services:
   watchtower:
     restart: unless-stopped
-    image: nickfedor/watchtower
+    image: containrrr/watchtower
     container_name: watchtower
     environment:
       - DOCKER_CONFIG=/config/docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /media/SchlezExt2/configs/watchtower:/config
+      - /media/SchlezExt/configs/watchtower:/config
     command:
       - '--cleanup'
       - '--notification-url'
@@ -28,8 +28,8 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/library/git/gitea/conf:/etc/gitea
-      - /media/SchlezExt2/library/git/:/data
+      - /media/SchlezExt/library/git/gitea/conf:/etc/gitea
+      - /media/SchlezExt/library/git/:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     labels:
@@ -52,7 +52,7 @@ services:
     networks:
       - caddy
     volumes:
-      - /media/SchlezExt2/configs/caddy/data/:/data/caddy/
+      - /media/SchlezExt/configs/caddy/data/:/data/caddy/
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - published: 443
@@ -113,8 +113,8 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/library/downloads:/downloads
-      - /media/SchlezExt2/configs/transmission:/config
+      - /media/SchlezExt/library/downloads:/downloads
+      - /media/SchlezExt/configs/transmission:/config
   jackett:
     restart: unless-stopped
     networks:
@@ -134,7 +134,7 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/jackett:/config
+      - /media/SchlezExt/configs/jackett:/config
   prowlarr:
     restart: unless-stopped
     image: lscr.io/linuxserver/prowlarr:latest
@@ -154,7 +154,7 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/prowlarr:/config
+      - /media/SchlezExt/configs/prowlarr:/config
   flaresolverr:
     restart: unless-stopped
     image: ghcr.io/flaresolverr/flaresolverr:latest
@@ -191,10 +191,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/sonarr:/config
-      - /media/SchlezExt2/library/tv:/tv
-      - /media/SchlezExt2/library:/library_root
-      - /media/SchlezExt2/library/downloads:/downloads
+      - /media/SchlezExt/configs/sonarr:/config
+      - /media/SchlezExt/library/tv:/tv
+      - /media/SchlezExt/library:/library_root
+      - /media/SchlezExt/library/downloads:/downloads
   radarr:
     restart: unless-stopped
     image: linuxserver/radarr:latest
@@ -214,10 +214,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/radarr:/config
-      - /media/SchlezExt2/library/movies:/movies
-      - /media/SchlezExt2/library:/library_root
-      - /media/SchlezExt2/library/downloads:/downloads
+      - /media/SchlezExt/configs/radarr:/config
+      - /media/SchlezExt/library/movies:/movies
+      - /media/SchlezExt/library:/library_root
+      - /media/SchlezExt/library/downloads:/downloads
   lidarr:
     restart: unless-stopped
     image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
@@ -237,10 +237,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/lidarr:/config
-      - /media/SchlezExt2/library/movies:/movies
-      - /media/SchlezExt2/library:/library_root
-      - /media/SchlezExt2/library/downloads:/downloads
+      - /media/SchlezExt/configs/lidarr:/config
+      - /media/SchlezExt/library/movies:/movies
+      - /media/SchlezExt/library:/library_root
+      - /media/SchlezExt/library/downloads:/downloads
   bazarr:
     restart: unless-stopped
     image: linuxserver/bazarr:latest
@@ -260,10 +260,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/bazarr:/config
-      - /media/SchlezExt2/library/movies:/movies
-      - /media/SchlezExt2/library/tv:/tv
-      - /media/SchlezExt2/library:/library_root
+      - /media/SchlezExt/configs/bazarr:/config
+      - /media/SchlezExt/library/movies:/movies
+      - /media/SchlezExt/library/tv:/tv
+      - /media/SchlezExt/library:/library_root
   jellyfin:
     restart: unless-stopped
     image: linuxserver/jellyfin
@@ -274,10 +274,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/jellyfin:/config
-      - /media/SchlezExt2/library/tv:/data/tvshows
-      - /media/SchlezExt2/library/movies:/data/movies
-      - /media/SchlezExt2/library:/library_root
+      - /media/SchlezExt/configs/jellyfin:/config
+      - /media/SchlezExt/library/tv:/data/tvshows
+      - /media/SchlezExt/library/movies:/data/movies
+      - /media/SchlezExt/library:/library_root
       - type: tmpfs
         target: /tmp-transcoding
   ical_http_sensor:
@@ -320,10 +320,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/filebrowser/settings:/config
-      - /media/SchlezExt2/configs/filebrowser/db:/database
-      - /media/SchlezExt2/library/downloads:/downloads
-      - /media/SchlezExt2:/srv
+      - /media/SchlezExt/configs/filebrowser/settings:/config
+      - /media/SchlezExt/configs/filebrowser/db:/database
+      - /media/SchlezExt/library/downloads:/downloads
+      - /media/SchlezExt:/srv
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
@@ -341,7 +341,7 @@ services:
     environment:
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/mosquitto:/mosquitto
+      - /media/SchlezExt/configs/mosquitto:/mosquitto
     ports:
       - published: 1883
         target: 1883
@@ -352,7 +352,7 @@ services:
     environment:
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/configs/ring-mqtt:/data
+      - /media/SchlezExt/configs/ring-mqtt:/data
     ports:
       - published: 8554
         target: 8554
@@ -363,10 +363,10 @@ services:
     environment:
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/homeassistant-config:/config
+      - /media/SchlezExt/homeassistant-config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
-      - /media/SchlezExt2/library:/library
+      - /media/SchlezExt/library:/library
     privileged: true
     network_mode: host
   esphome:
@@ -374,7 +374,7 @@ services:
     container_name: esphome
     image: ghcr.io/esphome/esphome
     volumes:
-      - /media/SchlezExt2/configs/esphome:/config
+      - /media/SchlezExt/configs/esphome:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
       - TZ=Asia/Jerusalem
@@ -399,8 +399,8 @@ services:
       - TZ=Asia/Jerusalem
     env_file: ./pihole/environment
     volumes:
-      - /media/SchlezExt2/configs/pihole/etc-pihole:/etc/pihole
-      - /media/SchlezExt2/configs/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+      - /media/SchlezExt/configs/pihole/etc-pihole:/etc/pihole
+      - /media/SchlezExt/configs/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
     cap_add:
       - NET_ADMIN
   upsnap:
@@ -416,7 +416,7 @@ services:
     healthcheck:
       test: curl -fs http://localhost:8090/api/health || exit 1
     volumes:
-      - /media/SchlezExt2/configs/upsnap/data:/data
+      - /media/SchlezExt/configs/upsnap/data:/data
   audiobookshelf:
     restart: unless-stopped
     image: ghcr.io/advplyr/audiobookshelf:latest
@@ -428,10 +428,10 @@ services:
       - PGID=1000
       - TZ=Asia/Jerusalem
     volumes:
-      - /media/SchlezExt2/library/audiobooks:/audiobooks
-      - /media/SchlezExt2/library/podcasts:/podcasts
-      - /media/SchlezExt2/configs/audiobookshelf:/config
-      - /media/SchlezExt2/configs/audiobookshelf/metadata:/metadata
+      - /media/SchlezExt/library/audiobooks:/audiobooks
+      - /media/SchlezExt/library/podcasts:/podcasts
+      - /media/SchlezExt/configs/audiobookshelf:/config
+      - /media/SchlezExt/configs/audiobookshelf/metadata:/metadata
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
@@ -457,11 +457,11 @@ services:
       - USE_PATH_MAPPING=False
       - MODEL_PATH=/subgen/models
     volumes:
-      - /media/SchlezExt2/configs/subgenai/models:/subgen/models
-      - /media/SchlezExt2/configs/subgenai/subgen.env:/subgen/subgen.env:ro
-      - /media/SchlezExt2/library/movies:/movies
-      - /media/SchlezExt2/library/tv:/tv
-      - /media/SchlezExt2/library:/library_root
+      - /media/SchlezExt/configs/subgenai/models:/subgen/models
+      - /media/SchlezExt/configs/subgenai/subgen.env:/subgen/subgen.env:ro
+      - /media/SchlezExt/library/movies:/movies
+      - /media/SchlezExt/library/tv:/tv
+      - /media/SchlezExt/library:/library_root
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main
@@ -477,11 +477,11 @@ services:
       - OPENCODE_WEB_GH_SETUP_GIT=1
     volumes:
       - >-
-        /media/SchlezExt2/configs/opencode-web/auth.json:/root/.local/share/opencode/auth.json
-      - /media/SchlezExt2/configs/opencode-web/gh:/root/.config/gh
-      - /media/SchlezExt2/library/opencode/repos:/repos
+        /media/SchlezExt/configs/opencode-web/auth.json:/root/.local/share/opencode/auth.json
+      - /media/SchlezExt/configs/opencode-web/gh:/root/.config/gh
+      - /media/SchlezExt/library/opencode/repos:/repos
       - >-
-        /media/SchlezExt2/library/opencode/share:/root/.local/share/opencode/project
+        /media/SchlezExt/library/opencode/share:/root/.local/share/opencode/project
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}

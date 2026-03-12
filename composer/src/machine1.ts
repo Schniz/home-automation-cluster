@@ -5,8 +5,8 @@ import {
   DefinitionsService,
 } from "../generated/docker-compose-spec";
 
-const LIBRARY_ROOT = "/media/SchlezExt2/library";
-const CONFIGS_ROOT = "/media/SchlezExt2/configs";
+const LIBRARY_ROOT = "/media/SchlezExt/library";
+const CONFIGS_ROOT = "/media/SchlezExt/configs";
 const library = {
   tv: path.join(LIBRARY_ROOT, "tv"),
   movies: path.join(LIBRARY_ROOT, "movies"),
@@ -290,7 +290,7 @@ export default function machine1(): ComposeSpecification {
             `${settings}:/config`,
             `${database}:/database`,
             `${library.downloads}:/downloads`,
-            `/media/SchlezExt2:/srv`,
+            `/media/SchlezExt:/srv`,
           ],
           labels: {
             ...caddy.usingUpstreams("files", 80),
@@ -330,7 +330,7 @@ export default function machine1(): ComposeSpecification {
         image: "ghcr.io/home-assistant/home-assistant:stable",
         environment: ["TZ=Asia/Jerusalem"],
         volumes: [
-          `/media/SchlezExt2/homeassistant-config:/config`,
+          `/media/SchlezExt/homeassistant-config:/config`,
           "/etc/localtime:/etc/localtime:ro",
           "/run/dbus:/run/dbus:ro",
           `${LIBRARY_ROOT}:/library`,
