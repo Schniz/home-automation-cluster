@@ -345,6 +345,17 @@ services:
     ports:
       - published: 1883
         target: 1883
+  ring-mqtt:
+    restart: unless-stopped
+    image: tsightler/ring-mqtt
+    container_name: ring-mqtt
+    environment:
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt2/configs/ring-mqtt:/data
+    ports:
+      - published: 8554
+        target: 8554
   homeassistant:
     restart: unless-stopped
     container_name: homeassistant

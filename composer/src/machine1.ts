@@ -312,6 +312,19 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
+      "ring-mqtt": service("ring-mqtt", (helpers) => ({
+        image: "tsightler/ring-mqtt",
+        container_name: "ring-mqtt",
+        environment: ["TZ=Asia/Jerusalem"],
+        volumes: [`${helpers.config}:/data`],
+        ports: [
+          {
+            published: 8554,
+            target: 8554,
+          },
+        ],
+      })),
+
       homeassistant: service("homeassistant", (helpers) => ({
         container_name: "homeassistant",
         image: "ghcr.io/home-assistant/home-assistant:stable",
