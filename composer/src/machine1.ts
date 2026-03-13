@@ -54,7 +54,7 @@ export default function machine1(): ComposeSpecification {
     },
     services: {
       watchtower: service("watchtower", (helpers) => ({
-        image: "containrrr/watchtower",
+        image: "nickfedor/watchtower",
         container_name: "watchtower",
         environment: ["DOCKER_CONFIG=/config/docker"],
         volumes: [
