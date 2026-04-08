@@ -430,6 +430,16 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
+      "telegram-bot-api": service("telegram-bot-api", (helpers) => ({
+        image: "aiogram/telegram-bot-api:latest",
+        container_name: "telegram-bot-api",
+        restart: "always",
+        env_file: "./telegram-bot-api/environment",
+        environment: ["TELEGRAM_LOCAL=true"],
+        volumes: [`${helpers.config}:/var/lib/telegram-bot-api`],
+        ports: ["8081:8081"],
+      })),
+
       opencode: service("opencode-web", (helpers) => ({
         image: "ghcr.io/schniz/opencode-web-bun:main",
         container_name: "opencode-web",

@@ -462,6 +462,17 @@ services:
       - /media/SchlezExt/library/movies:/movies
       - /media/SchlezExt/library/tv:/tv
       - /media/SchlezExt/library:/library_root
+  telegram-bot-api:
+    restart: always
+    image: aiogram/telegram-bot-api:latest
+    container_name: telegram-bot-api
+    env_file: ./telegram-bot-api/environment
+    environment:
+      - TELEGRAM_LOCAL=true
+    volumes:
+      - /media/SchlezExt/configs/telegram-bot-api:/var/lib/telegram-bot-api
+    ports:
+      - '8081:8081'
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main

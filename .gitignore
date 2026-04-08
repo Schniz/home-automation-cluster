@@ -12,3 +12,4 @@ openobserve/environment
 esphome/environment
 pihole/environment
 tandoor/environment
+telegram-bot-api/environment
