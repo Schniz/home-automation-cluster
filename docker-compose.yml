@@ -501,4 +501,12 @@ services:
       caddy_19: http://opencode
       caddy_19.redir: https://opencode.home.hagever.com{uri}
       caddy_0.19_handle.reverse_proxy: '{{upstreams 3000}}'
+  paltiel:
+    restart: unless-stopped
+    image: ghcr.io/schniz/paltiel:main
+    container_name: paltiel
+    environment:
+      - PALTIEL_CONFIG_PATH=/config/config.json
+    volumes:
+      - /media/SchlezExt/configs/paltiel:/config
 

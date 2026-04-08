@@ -462,6 +462,13 @@ export default function machine1(): ComposeSpecification {
           ...caddy.usingUpstreams("opencode", 3000),
         },
       })),
+
+      paltiel: service("paltiel", (helpers) => ({
+        image: "ghcr.io/schniz/paltiel:main",
+        container_name: "paltiel",
+        environment: ["PALTIEL_CONFIG_PATH=/config/config.json"],
+        volumes: [`${helpers.config}:/config`],
+      })),
     },
   };
 }
