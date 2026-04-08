@@ -1,0 +1,15 @@
+name: Run Watchtower Update
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+    environment: home
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Force update with watchtower
+        run: |
+          docker compose --project-name deployment run watchtower --run-once
