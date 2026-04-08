@@ -67,6 +67,15 @@ export default function machine1(): ComposeSpecification {
           `/config/notification_url`,
         ],
       })),
+      dozzle: service("dozzle", () => ({
+        container_name: "dozzle",
+        image: "amir20/dozzle:latest",
+        networks: ["caddy"],
+        volumes: ["/var/run/docker.sock:/var/run/docker.sock"],
+        labels: {
+          ...caddy.usingUpstreams("system", 8080),
+        },
+      })),
       gitea: service("gitea", () => ({
         image: "gitea/gitea",
         container_name: "gitea",

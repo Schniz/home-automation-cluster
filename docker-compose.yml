@@ -17,6 +17,22 @@ services:
       - '--cleanup'
       - '--notification-url'
       - /config/notification_url
+  dozzle:
+    restart: unless-stopped
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    networks:
+      - caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.1_@system: host system.home.hagever.com
+      caddy_0.1_handle: '@system'
+      caddy_1: http://system
+      caddy_1.redir: https://system.home.hagever.com{uri}
+      caddy_0.1_handle.reverse_proxy: '{{upstreams 8080}}'
   gitea:
     restart: unless-stopped
     image: gitea/gitea
@@ -35,11 +51,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.1_@git: host git.home.hagever.com
-      caddy_0.1_handle: '@git'
-      caddy_1: http://git
-      caddy_1.redir: https://git.home.hagever.com{uri}
-      caddy_0.1_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.2_@git: host git.home.hagever.com
+      caddy_0.2_handle: '@git'
+      caddy_2: http://git
+      caddy_2.redir: https://git.home.hagever.com{uri}
+      caddy_0.2_handle.reverse_proxy: '{{upstreams 3000}}'
     ports:
       - '2222:2222'
   caddy:
@@ -62,38 +78,38 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.2_@caddy: host caddy.home.hagever.com
-      caddy_0.2_handle: '@caddy'
-      caddy_2: http://caddy
-      caddy_2.redir: https://caddy.home.hagever.com{uri}
-      caddy_0.2_handle.request_header: Host "localhost:2019"
-      caddy_0.2_handle.reverse_proxy: http://localhost:2019
-      caddy_0.3_@ha: host ha.home.hagever.com
-      caddy_0.3_handle: '@ha'
-      caddy_3: http://ha
-      caddy_3.redir: https://ha.home.hagever.com{uri}
-      caddy_0.3_handle.reverse_proxy: http://192.168.31.38:8123
-      caddy_0.4_@media: host media.home.hagever.com
-      caddy_0.4_handle: '@media'
-      caddy_4: http://media
-      caddy_4.redir: https://media.home.hagever.com{uri}
-      caddy_0.4_handle.reverse_proxy: http://192.168.31.38:8096
-      caddy_0.5_@esphome: host esphome.home.hagever.com
-      caddy_0.5_handle: '@esphome'
-      caddy_5: http://esphome
-      caddy_5.redir: https://esphome.home.hagever.com{uri}
-      caddy_0.5_handle.reverse_proxy: http://192.168.31.38:6052
-      caddy_0.6_@upsnap: host upsnap.home.hagever.com
-      caddy_0.6_handle: '@upsnap'
-      caddy_6: http://upsnap
-      caddy_6.redir: https://upsnap.home.hagever.com{uri}
-      caddy_0.6_handle.reverse_proxy: http://192.168.31.38:8090
-      caddy_0.7_@dns: host dns.home.hagever.com
-      caddy_0.7_handle: '@dns'
-      caddy_7: http://dns
-      caddy_7.redir: https://dns.home.hagever.com{uri}
-      caddy_0.7_handle.reverse_proxy: http://192.168.31.38:8881
-      caddy_0.7_handle.redir: / /admin
+      caddy_0.3_@caddy: host caddy.home.hagever.com
+      caddy_0.3_handle: '@caddy'
+      caddy_3: http://caddy
+      caddy_3.redir: https://caddy.home.hagever.com{uri}
+      caddy_0.3_handle.request_header: Host "localhost:2019"
+      caddy_0.3_handle.reverse_proxy: http://localhost:2019
+      caddy_0.4_@ha: host ha.home.hagever.com
+      caddy_0.4_handle: '@ha'
+      caddy_4: http://ha
+      caddy_4.redir: https://ha.home.hagever.com{uri}
+      caddy_0.4_handle.reverse_proxy: http://192.168.31.38:8123
+      caddy_0.5_@media: host media.home.hagever.com
+      caddy_0.5_handle: '@media'
+      caddy_5: http://media
+      caddy_5.redir: https://media.home.hagever.com{uri}
+      caddy_0.5_handle.reverse_proxy: http://192.168.31.38:8096
+      caddy_0.6_@esphome: host esphome.home.hagever.com
+      caddy_0.6_handle: '@esphome'
+      caddy_6: http://esphome
+      caddy_6.redir: https://esphome.home.hagever.com{uri}
+      caddy_0.6_handle.reverse_proxy: http://192.168.31.38:6052
+      caddy_0.7_@upsnap: host upsnap.home.hagever.com
+      caddy_0.7_handle: '@upsnap'
+      caddy_7: http://upsnap
+      caddy_7.redir: https://upsnap.home.hagever.com{uri}
+      caddy_0.7_handle.reverse_proxy: http://192.168.31.38:8090
+      caddy_0.8_@dns: host dns.home.hagever.com
+      caddy_0.8_handle: '@dns'
+      caddy_8: http://dns
+      caddy_8.redir: https://dns.home.hagever.com{uri}
+      caddy_0.8_handle.reverse_proxy: http://192.168.31.38:8881
+      caddy_0.8_handle.redir: / /admin
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -103,11 +119,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.8_@torrent: host torrent.home.hagever.com
-      caddy_0.8_handle: '@torrent'
-      caddy_8: http://torrent
-      caddy_8.redir: https://torrent.home.hagever.com{uri}
-      caddy_0.8_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy_0.9_@torrent: host torrent.home.hagever.com
+      caddy_0.9_handle: '@torrent'
+      caddy_9: http://torrent
+      caddy_9.redir: https://torrent.home.hagever.com{uri}
+      caddy_0.9_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -122,11 +138,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.9_@jackett: host jackett.home.hagever.com
-      caddy_0.9_handle: '@jackett'
-      caddy_9: http://jackett
-      caddy_9.redir: https://jackett.home.hagever.com{uri}
-      caddy_0.9_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy_0.10_@jackett: host jackett.home.hagever.com
+      caddy_0.10_handle: '@jackett'
+      caddy_10: http://jackett
+      caddy_10.redir: https://jackett.home.hagever.com{uri}
+      caddy_0.10_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -144,11 +160,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.10_@prowlarr: host prowlarr.home.hagever.com
-      caddy_0.10_handle: '@prowlarr'
-      caddy_10: http://prowlarr
-      caddy_10.redir: https://prowlarr.home.hagever.com{uri}
-      caddy_0.10_handle.reverse_proxy: '{{upstreams 9696}}'
+      caddy_0.11_@prowlarr: host prowlarr.home.hagever.com
+      caddy_0.11_handle: '@prowlarr'
+      caddy_11: http://prowlarr
+      caddy_11.redir: https://prowlarr.home.hagever.com{uri}
+      caddy_0.11_handle.reverse_proxy: '{{upstreams 9696}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -164,11 +180,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.11_@flaresolverr: host flaresolverr.home.hagever.com
-      caddy_0.11_handle: '@flaresolverr'
-      caddy_11: http://flaresolverr
-      caddy_11.redir: https://flaresolverr.home.hagever.com{uri}
-      caddy_0.11_handle.reverse_proxy: '{{upstreams 8191}}'
+      caddy_0.12_@flaresolverr: host flaresolverr.home.hagever.com
+      caddy_0.12_handle: '@flaresolverr'
+      caddy_12: http://flaresolverr
+      caddy_12.redir: https://flaresolverr.home.hagever.com{uri}
+      caddy_0.12_handle.reverse_proxy: '{{upstreams 8191}}'
     environment:
       - LOG_LEVEL=info
       - TZ=Asia/Jerusalem
@@ -181,11 +197,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.12_@sonarr: host sonarr.home.hagever.com
-      caddy_0.12_handle: '@sonarr'
-      caddy_12: http://sonarr
-      caddy_12.redir: https://sonarr.home.hagever.com{uri}
-      caddy_0.12_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy_0.13_@sonarr: host sonarr.home.hagever.com
+      caddy_0.13_handle: '@sonarr'
+      caddy_13: http://sonarr
+      caddy_13.redir: https://sonarr.home.hagever.com{uri}
+      caddy_0.13_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -204,11 +220,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.13_@radarr: host radarr.home.hagever.com
-      caddy_0.13_handle: '@radarr'
-      caddy_13: http://radarr
-      caddy_13.redir: https://radarr.home.hagever.com{uri}
-      caddy_0.13_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy_0.14_@radarr: host radarr.home.hagever.com
+      caddy_0.14_handle: '@radarr'
+      caddy_14: http://radarr
+      caddy_14.redir: https://radarr.home.hagever.com{uri}
+      caddy_0.14_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -227,11 +243,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.14_@lidarr: host lidarr.home.hagever.com
-      caddy_0.14_handle: '@lidarr'
-      caddy_14: http://lidarr
-      caddy_14.redir: https://lidarr.home.hagever.com{uri}
-      caddy_0.14_handle.reverse_proxy: '{{upstreams 8686}}'
+      caddy_0.15_@lidarr: host lidarr.home.hagever.com
+      caddy_0.15_handle: '@lidarr'
+      caddy_15: http://lidarr
+      caddy_15.redir: https://lidarr.home.hagever.com{uri}
+      caddy_0.15_handle.reverse_proxy: '{{upstreams 8686}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -250,11 +266,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.15_@bazarr: host bazarr.home.hagever.com
-      caddy_0.15_handle: '@bazarr'
-      caddy_15: http://bazarr
-      caddy_15.redir: https://bazarr.home.hagever.com{uri}
-      caddy_0.15_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy_0.16_@bazarr: host bazarr.home.hagever.com
+      caddy_0.16_handle: '@bazarr'
+      caddy_16: http://bazarr
+      caddy_16.redir: https://bazarr.home.hagever.com{uri}
+      caddy_0.16_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -291,11 +307,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.16_@icalsensor: host ical-sensor.home.hagever.com
-      caddy_0.16_handle: '@icalsensor'
-      caddy_16: http://icalsensor
-      caddy_16.redir: https://ical-sensor.home.hagever.com{uri}
-      caddy_0.16_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy_0.17_@icalsensor: host ical-sensor.home.hagever.com
+      caddy_0.17_handle: '@icalsensor'
+      caddy_17: http://icalsensor
+      caddy_17.redir: https://ical-sensor.home.hagever.com{uri}
+      caddy_0.17_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -327,11 +343,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.17_@files: host files.home.hagever.com
-      caddy_0.17_handle: '@files'
-      caddy_17: http://files
-      caddy_17.redir: https://files.home.hagever.com{uri}
-      caddy_0.17_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.18_@files: host files.home.hagever.com
+      caddy_0.18_handle: '@files'
+      caddy_18: http://files
+      caddy_18.redir: https://files.home.hagever.com{uri}
+      caddy_0.18_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -435,11 +451,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.18_@audiobooks: host audiobooks.home.hagever.com
-      caddy_0.18_handle: '@audiobooks'
-      caddy_18: http://audiobooks
-      caddy_18.redir: https://audiobooks.home.hagever.com{uri}
-      caddy_0.18_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.19_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.19_handle: '@audiobooks'
+      caddy_19: http://audiobooks
+      caddy_19.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.19_handle.reverse_proxy: '{{upstreams 80}}'
   subgenai:
     restart: unless-stopped
     image: mccloud/subgen:cpu
@@ -496,11 +512,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.19_@opencode: host opencode.home.hagever.com
-      caddy_0.19_handle: '@opencode'
-      caddy_19: http://opencode
-      caddy_19.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.19_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.20_@opencode: host opencode.home.hagever.com
+      caddy_0.20_handle: '@opencode'
+      caddy_20: http://opencode
+      caddy_20.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.20_handle.reverse_proxy: '{{upstreams 3000}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main
