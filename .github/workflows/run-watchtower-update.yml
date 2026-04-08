@@ -11,4 +11,4 @@ jobs:
 
       - name: Force update with watchtower
         run: |
-          docker compose --project-name deployment run watchtower --run-once
+          docker compose --project-name deployment run --rm watchtower --run-once
