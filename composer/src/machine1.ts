@@ -472,6 +472,25 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
+      seerr: service("seerr", (helpers) => ({
+        image: "seerr/seerr:latest",
+        container_name: "seerr",
+        init: true,
+        networks: ["caddy"],
+        environment: ["LOG_LEVEL=debug", "TZ=Asia/Jerusalem", "PORT=5055"],
+        volumes: [`${helpers.config}:/app/config`],
+        healthcheck: {
+          test: "wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1",
+          start_period: "20s",
+          timeout: "3s",
+          interval: "15s",
+          retries: 3,
+        },
+        labels: {
+          ...caddy.usingUpstreams("seerr", 5055),
+        },
+      })),
+
       paltiel: service("paltiel", (helpers) => ({
         image: "ghcr.io/schniz/paltiel:main",
         container_name: "paltiel",
