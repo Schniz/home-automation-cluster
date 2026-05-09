@@ -289,6 +289,10 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Jerusalem
+    entrypoint: bash
+    command:
+      - '-c'
+      - mkdir /tmp-transcoding && /init
     volumes:
       - /media/SchlezExt/configs/jellyfin:/config
       - /media/SchlezExt/library/tv:/data/tvshows
