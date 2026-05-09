@@ -294,8 +294,6 @@ services:
       - /media/SchlezExt/library/tv:/data/tvshows
       - /media/SchlezExt/library/movies:/data/movies
       - /media/SchlezExt/library:/library_root
-      - type: tmpfs
-        target: /tmp-transcoding
   ical_http_sensor:
     restart: unless-stopped
     image: ghcr.io/schniz/ical_http_server:main
