@@ -89,27 +89,32 @@ services:
       caddy_4: http://ha
       caddy_4.redir: https://ha.home.hagever.com{uri}
       caddy_0.4_handle.reverse_proxy: http://192.168.31.38:8123
-      caddy_0.5_@media: host media.home.hagever.com
-      caddy_0.5_handle: '@media'
-      caddy_5: http://media
-      caddy_5.redir: https://media.home.hagever.com{uri}
-      caddy_0.5_handle.reverse_proxy: http://192.168.31.38:8096
-      caddy_0.6_@esphome: host esphome.home.hagever.com
-      caddy_0.6_handle: '@esphome'
-      caddy_6: http://esphome
-      caddy_6.redir: https://esphome.home.hagever.com{uri}
-      caddy_0.6_handle.reverse_proxy: http://192.168.31.38:6052
-      caddy_0.7_@upsnap: host upsnap.home.hagever.com
-      caddy_0.7_handle: '@upsnap'
-      caddy_7: http://upsnap
-      caddy_7.redir: https://upsnap.home.hagever.com{uri}
-      caddy_0.7_handle.reverse_proxy: http://192.168.31.38:8090
-      caddy_0.8_@dns: host dns.home.hagever.com
-      caddy_0.8_handle: '@dns'
-      caddy_8: http://dns
-      caddy_8.redir: https://dns.home.hagever.com{uri}
-      caddy_0.8_handle.reverse_proxy: http://192.168.31.38:8881
-      caddy_0.8_handle.redir: / /admin
+      caddy_0.5_@matter: host matter.home.hagever.com
+      caddy_0.5_handle: '@matter'
+      caddy_5: http://matter
+      caddy_5.redir: https://matter.home.hagever.com{uri}
+      caddy_0.5_handle.reverse_proxy: http://192.168.31.38:5580
+      caddy_0.6_@media: host media.home.hagever.com
+      caddy_0.6_handle: '@media'
+      caddy_6: http://media
+      caddy_6.redir: https://media.home.hagever.com{uri}
+      caddy_0.6_handle.reverse_proxy: http://192.168.31.38:8096
+      caddy_0.7_@esphome: host esphome.home.hagever.com
+      caddy_0.7_handle: '@esphome'
+      caddy_7: http://esphome
+      caddy_7.redir: https://esphome.home.hagever.com{uri}
+      caddy_0.7_handle.reverse_proxy: http://192.168.31.38:6052
+      caddy_0.8_@upsnap: host upsnap.home.hagever.com
+      caddy_0.8_handle: '@upsnap'
+      caddy_8: http://upsnap
+      caddy_8.redir: https://upsnap.home.hagever.com{uri}
+      caddy_0.8_handle.reverse_proxy: http://192.168.31.38:8090
+      caddy_0.9_@dns: host dns.home.hagever.com
+      caddy_0.9_handle: '@dns'
+      caddy_9: http://dns
+      caddy_9.redir: https://dns.home.hagever.com{uri}
+      caddy_0.9_handle.reverse_proxy: http://192.168.31.38:8881
+      caddy_0.9_handle.redir: / /admin
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -119,11 +124,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.9_@torrent: host torrent.home.hagever.com
-      caddy_0.9_handle: '@torrent'
-      caddy_9: http://torrent
-      caddy_9.redir: https://torrent.home.hagever.com{uri}
-      caddy_0.9_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy_0.10_@torrent: host torrent.home.hagever.com
+      caddy_0.10_handle: '@torrent'
+      caddy_10: http://torrent
+      caddy_10.redir: https://torrent.home.hagever.com{uri}
+      caddy_0.10_handle.reverse_proxy: '{{upstreams 9091}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -138,11 +143,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.10_@jackett: host jackett.home.hagever.com
-      caddy_0.10_handle: '@jackett'
-      caddy_10: http://jackett
-      caddy_10.redir: https://jackett.home.hagever.com{uri}
-      caddy_0.10_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy_0.11_@jackett: host jackett.home.hagever.com
+      caddy_0.11_handle: '@jackett'
+      caddy_11: http://jackett
+      caddy_11.redir: https://jackett.home.hagever.com{uri}
+      caddy_0.11_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
     environment:
@@ -160,11 +165,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.11_@prowlarr: host prowlarr.home.hagever.com
-      caddy_0.11_handle: '@prowlarr'
-      caddy_11: http://prowlarr
-      caddy_11.redir: https://prowlarr.home.hagever.com{uri}
-      caddy_0.11_handle.reverse_proxy: '{{upstreams 9696}}'
+      caddy_0.12_@prowlarr: host prowlarr.home.hagever.com
+      caddy_0.12_handle: '@prowlarr'
+      caddy_12: http://prowlarr
+      caddy_12.redir: https://prowlarr.home.hagever.com{uri}
+      caddy_0.12_handle.reverse_proxy: '{{upstreams 9696}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -180,11 +185,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.12_@flaresolverr: host flaresolverr.home.hagever.com
-      caddy_0.12_handle: '@flaresolverr'
-      caddy_12: http://flaresolverr
-      caddy_12.redir: https://flaresolverr.home.hagever.com{uri}
-      caddy_0.12_handle.reverse_proxy: '{{upstreams 8191}}'
+      caddy_0.13_@flaresolverr: host flaresolverr.home.hagever.com
+      caddy_0.13_handle: '@flaresolverr'
+      caddy_13: http://flaresolverr
+      caddy_13.redir: https://flaresolverr.home.hagever.com{uri}
+      caddy_0.13_handle.reverse_proxy: '{{upstreams 8191}}'
     environment:
       - LOG_LEVEL=info
       - TZ=Asia/Jerusalem
@@ -197,11 +202,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.13_@sonarr: host sonarr.home.hagever.com
-      caddy_0.13_handle: '@sonarr'
-      caddy_13: http://sonarr
-      caddy_13.redir: https://sonarr.home.hagever.com{uri}
-      caddy_0.13_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy_0.14_@sonarr: host sonarr.home.hagever.com
+      caddy_0.14_handle: '@sonarr'
+      caddy_14: http://sonarr
+      caddy_14.redir: https://sonarr.home.hagever.com{uri}
+      caddy_0.14_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -220,11 +225,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.14_@radarr: host radarr.home.hagever.com
-      caddy_0.14_handle: '@radarr'
-      caddy_14: http://radarr
-      caddy_14.redir: https://radarr.home.hagever.com{uri}
-      caddy_0.14_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy_0.15_@radarr: host radarr.home.hagever.com
+      caddy_0.15_handle: '@radarr'
+      caddy_15: http://radarr
+      caddy_15.redir: https://radarr.home.hagever.com{uri}
+      caddy_0.15_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -243,11 +248,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.15_@lidarr: host lidarr.home.hagever.com
-      caddy_0.15_handle: '@lidarr'
-      caddy_15: http://lidarr
-      caddy_15.redir: https://lidarr.home.hagever.com{uri}
-      caddy_0.15_handle.reverse_proxy: '{{upstreams 8686}}'
+      caddy_0.16_@lidarr: host lidarr.home.hagever.com
+      caddy_0.16_handle: '@lidarr'
+      caddy_16: http://lidarr
+      caddy_16.redir: https://lidarr.home.hagever.com{uri}
+      caddy_0.16_handle.reverse_proxy: '{{upstreams 8686}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -266,11 +271,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.16_@bazarr: host bazarr.home.hagever.com
-      caddy_0.16_handle: '@bazarr'
-      caddy_16: http://bazarr
-      caddy_16.redir: https://bazarr.home.hagever.com{uri}
-      caddy_0.16_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy_0.17_@bazarr: host bazarr.home.hagever.com
+      caddy_0.17_handle: '@bazarr'
+      caddy_17: http://bazarr
+      caddy_17.redir: https://bazarr.home.hagever.com{uri}
+      caddy_0.17_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -309,11 +314,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.17_@icalsensor: host ical-sensor.home.hagever.com
-      caddy_0.17_handle: '@icalsensor'
-      caddy_17: http://icalsensor
-      caddy_17.redir: https://ical-sensor.home.hagever.com{uri}
-      caddy_0.17_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy_0.18_@icalsensor: host ical-sensor.home.hagever.com
+      caddy_0.18_handle: '@icalsensor'
+      caddy_18: http://icalsensor
+      caddy_18.redir: https://ical-sensor.home.hagever.com{uri}
+      caddy_0.18_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -345,11 +350,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.18_@files: host files.home.hagever.com
-      caddy_0.18_handle: '@files'
-      caddy_18: http://files
-      caddy_18.redir: https://files.home.hagever.com{uri}
-      caddy_0.18_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.19_@files: host files.home.hagever.com
+      caddy_0.19_handle: '@files'
+      caddy_19: http://files
+      caddy_19.redir: https://files.home.hagever.com{uri}
+      caddy_0.19_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -374,6 +379,23 @@ services:
     ports:
       - published: 8554
         target: 8554
+  matter-server:
+    restart: unless-stopped
+    image: ghcr.io/matter-js/python-matter-server:stable
+    container_name: matter-server
+    network_mode: host
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /media/SchlezExt/configs/matter-server:/data
+      - /run/dbus:/run/dbus:ro
+    command:
+      - '--storage-path'
+      - /data
+      - '--paa-root-cert-dir'
+      - /data/credentials
+      - '--bluetooth-adapter'
+      - '0'
   homeassistant:
     restart: unless-stopped
     container_name: homeassistant
@@ -453,11 +475,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.19_@audiobooks: host audiobooks.home.hagever.com
-      caddy_0.19_handle: '@audiobooks'
-      caddy_19: http://audiobooks
-      caddy_19.redir: https://audiobooks.home.hagever.com{uri}
-      caddy_0.19_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.20_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.20_handle: '@audiobooks'
+      caddy_20: http://audiobooks
+      caddy_20.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.20_handle.reverse_proxy: '{{upstreams 80}}'
   subgenai:
     restart: unless-stopped
     image: mccloud/subgen:cpu
@@ -514,11 +536,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.20_@opencode: host opencode.home.hagever.com
-      caddy_0.20_handle: '@opencode'
-      caddy_20: http://opencode
-      caddy_20.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.20_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.21_@opencode: host opencode.home.hagever.com
+      caddy_0.21_handle: '@opencode'
+      caddy_21: http://opencode
+      caddy_21.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.21_handle.reverse_proxy: '{{upstreams 3000}}'
   seerr:
     restart: unless-stopped
     image: seerr/seerr:latest
@@ -543,11 +565,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.21_@seerr: host seerr.home.hagever.com
-      caddy_0.21_handle: '@seerr'
-      caddy_21: http://seerr
-      caddy_21.redir: https://seerr.home.hagever.com{uri}
-      caddy_0.21_handle.reverse_proxy: '{{upstreams 5055}}'
+      caddy_0.22_@seerr: host seerr.home.hagever.com
+      caddy_0.22_handle: '@seerr'
+      caddy_22: http://seerr
+      caddy_22.redir: https://seerr.home.hagever.com{uri}
+      caddy_0.22_handle.reverse_proxy: '{{upstreams 5055}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main

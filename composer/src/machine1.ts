@@ -117,6 +117,9 @@ export default function machine1(): ComposeSpecification {
           ...caddy.subdomainDefinition("ha", {
             reverse_proxy: `http://${machines.main}:8123`,
           }),
+          ...caddy.subdomainDefinition("matter", {
+            reverse_proxy: `http://${machines.main}:5580`,
+          }),
           ...caddy.subdomainDefinition("media", {
             reverse_proxy: `http://${machines.main}:8096`,
           }),
@@ -332,6 +335,22 @@ export default function machine1(): ComposeSpecification {
             published: 8554,
             target: 8554,
           },
+        ],
+      })),
+
+      "matter-server": service("matter-server", (helpers) => ({
+        image: "ghcr.io/matter-js/python-matter-server:stable",
+        container_name: "matter-server",
+        network_mode: "host",
+        security_opt: ["apparmor:unconfined"],
+        volumes: [`${helpers.config}:/data`, "/run/dbus:/run/dbus:ro"],
+        command: [
+          "--storage-path",
+          "/data",
+          "--paa-root-cert-dir",
+          "/data/credentials",
+          "--bluetooth-adapter",
+          "0",
         ],
       })),
 
