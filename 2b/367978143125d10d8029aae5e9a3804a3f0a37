@@ -1,0 +1,21 @@
+composer/src/machine1.ts
+  s_fc34ab8dcb1426::t_850744b524d2ff 100,105
+docker-compose.yml
+  s_fc34ab8dcb1426::t_4c6a4cec2da5d0 67,72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "2b367978143125d10d8029aae5e9a3804a3f0a37",
+  "prompts": {},
+  "sessions": {
+    "s_fc34ab8dcb1426": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_1ceef00baffe6p4PRJdFJzgCO6",
+        "model": "openai/gpt-5.5"
+      },
+      "human_author": "Gal Schlezinger <gal@spitfire.co.il>"
+    }
+  }
+}
