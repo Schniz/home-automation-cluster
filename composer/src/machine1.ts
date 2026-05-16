@@ -97,10 +97,12 @@ export default function machine1(): ComposeSpecification {
         env_file: "./caddy/environment",
         environment: {
           CADDY_INGRESS_NETWORKS: "caddy",
+          CADDY_DOCKER_CADDYFILE_PATH: "/etc/caddy/Caddyfile",
         },
         container_name: "caddy",
         networks: ["caddy"],
         volumes: [
+          `${helpers.config}/Caddyfile:/etc/caddy/Caddyfile:ro`,
           `${helpers.config}/data/:/data/caddy/`,
           "/var/run/docker.sock:/var/run/docker.sock",
         ],
