@@ -1,0 +1,23 @@
+composer/src/machine1.ts
+  s_095e62b21c4c90::t_0f8dbbe73f375d 141-145,147-151,153-154,160-166
+  s_095e62b21c4c90::t_e837e4a1d31f41 152,157-158,183-184,192-193
+docker-compose.yml
+  s_095e62b21c4c90::t_a677454f2a7805 120,122-127,130-134,136,155-161
+  s_095e62b21c4c90::t_4e006d1bcc7730 135,145-154,173-175,186-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "ddecdf3ca21b3dbcd5a0dbb28eb3a4db61fc9cfa",
+  "prompts": {},
+  "sessions": {
+    "s_095e62b21c4c90": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_122b5db81ffeIJFciwcbLMHGre",
+        "model": "openai/gpt-5.5"
+      },
+      "human_author": "Gal Schlezinger <gal@spitfire.co.il>"
+    }
+  }
+}
