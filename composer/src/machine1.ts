@@ -138,13 +138,32 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
+      gluetun: service("gluetun", () => ({
+        image: "qmcgaw/gluetun",
+        container_name: "gluetun",
+        cap_add: ["NET_ADMIN"],
+        devices: ["/dev/net/tun:/dev/net/tun"],
+        networks: ["caddy"],
+        env_file: "./gluetun/environment",
+        environment: [
+          "VPN_SERVICE_PROVIDER=nordvpn",
+          "VPN_TYPE=openvpn",
+          "SERVER_HOSTNAMES=us11709.nordvpn.com",
+          "FIREWALL_INPUT_PORTS=9091,9117,9696",
+          "TZ=Asia/Jerusalem",
+        ],
+        labels: {
+          ...caddy.usingUpstreams("torrent", 9091),
+          ...caddy.usingUpstreams("jackett", 9117),
+          ...caddy.usingUpstreams("prowlarr", 9696),
+        },
+      })),
+
       transmission: service("transmission", (helpers) => ({
         container_name: "transmission",
         image: "linuxserver/transmission",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("torrent", 9091),
-        },
+        network_mode: "service:gluetun",
+        depends_on: ["gluetun"],
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [
           `${library.downloads}:/downloads`,
@@ -159,12 +178,10 @@ export default function machine1(): ComposeSpecification {
       // })),
 
       jackett: service("jackett", (helpers) => ({
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("jackett", 9117),
-        },
         image: "linuxserver/jackett:latest",
         container_name: "jackett",
+        network_mode: "service:gluetun",
+        depends_on: ["gluetun"],
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [`${helpers.config}:/config`],
       })),
@@ -172,10 +189,8 @@ export default function machine1(): ComposeSpecification {
       prowlarr: service("prowlarr", (helpers) => ({
         image: "lscr.io/linuxserver/prowlarr:latest",
         container_name: "prowlarr",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("prowlarr", 9696),
-        },
+        network_mode: "service:gluetun",
+        depends_on: ["gluetun"],
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
         volumes: [`${helpers.config}:/config`],
       })),

@@ -117,12 +117,23 @@ services:
       caddy_9.redir: https://dns.home.hagever.com{uri}
       caddy_0.9_handle.reverse_proxy: http://192.168.31.38:8881
       caddy_0.9_handle.redir: / /admin
-  transmission:
+  gluetun:
     restart: unless-stopped
-    container_name: transmission
-    image: linuxserver/transmission
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     networks:
       - caddy
+    env_file: ./gluetun/environment
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - SERVER_HOSTNAMES=us11709.nordvpn.com
+      - FIREWALL_INPUT_PORTS=9091,9117,9696
+      - TZ=Asia/Jerusalem
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
@@ -131,6 +142,23 @@ services:
       caddy_10: http://torrent
       caddy_10.redir: https://torrent.home.hagever.com{uri}
       caddy_0.10_handle.reverse_proxy: '{{upstreams 9091}}'
+      caddy_0.11_@jackett: host jackett.home.hagever.com
+      caddy_0.11_handle: '@jackett'
+      caddy_11: http://jackett
+      caddy_11.redir: https://jackett.home.hagever.com{uri}
+      caddy_0.11_handle.reverse_proxy: '{{upstreams 9117}}'
+      caddy_0.12_@prowlarr: host prowlarr.home.hagever.com
+      caddy_0.12_handle: '@prowlarr'
+      caddy_12: http://prowlarr
+      caddy_12.redir: https://prowlarr.home.hagever.com{uri}
+      caddy_0.12_handle.reverse_proxy: '{{upstreams 9696}}'
+  transmission:
+    restart: unless-stopped
+    container_name: transmission
+    image: linuxserver/transmission
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
     environment:
       - PUID=1000
       - PGID=1000
@@ -140,18 +168,11 @@ services:
       - /media/SchlezExt/configs/transmission:/config
   jackett:
     restart: unless-stopped
-    networks:
-      - caddy
-    labels:
-      caddy_0: '*.home.hagever.com'
-      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.11_@jackett: host jackett.home.hagever.com
-      caddy_0.11_handle: '@jackett'
-      caddy_11: http://jackett
-      caddy_11.redir: https://jackett.home.hagever.com{uri}
-      caddy_0.11_handle.reverse_proxy: '{{upstreams 9117}}'
     image: linuxserver/jackett:latest
     container_name: jackett
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
     environment:
       - PUID=1000
       - PGID=1000
@@ -162,16 +183,9 @@ services:
     restart: unless-stopped
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    networks:
-      - caddy
-    labels:
-      caddy_0: '*.home.hagever.com'
-      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.12_@prowlarr: host prowlarr.home.hagever.com
-      caddy_0.12_handle: '@prowlarr'
-      caddy_12: http://prowlarr
-      caddy_12.redir: https://prowlarr.home.hagever.com{uri}
-      caddy_0.12_handle.reverse_proxy: '{{upstreams 9696}}'
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
     environment:
       - PUID=1000
       - PGID=1000
