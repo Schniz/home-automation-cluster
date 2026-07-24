@@ -257,7 +257,7 @@ services:
       - /media/SchlezExt/library/downloads:/downloads
   lidarr:
     restart: unless-stopped
-    image: ghcr.io/linuxserver-labs/prarr:lidarr-plugins
+    image: linuxserver/lidarr:latest
     container_name: lidarr
     networks:
       - caddy
