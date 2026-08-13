@@ -486,6 +486,22 @@ export default function machine1(): ComposeSpecification {
         ports: ["8081:8081"],
       })),
 
+      hermes: service("hermes", (helpers) => ({
+        image: "nousresearch/hermes-agent",
+        container_name: "hermes",
+        networks: ["caddy"],
+        env_file: "./hermes/environment",
+        volumes: [`${helpers.config}:/opt/data`],
+        environment: [
+          "API_SERVER_ENABLED=true",
+          "API_SERVER_HOST=0.0.0.0",
+        ],
+        labels: {
+          ...caddy.usingUpstreams("agent", 8642),
+        },
+        command: ["gateway", "run"],
+      })),
+
       opencode: service("opencode-web", (helpers) => ({
         image: "ghcr.io/schniz/opencode-web-bun:main",
         container_name: "opencode-web",

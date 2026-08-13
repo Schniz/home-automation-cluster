@@ -529,6 +529,29 @@ services:
       - /media/SchlezExt/configs/telegram-bot-api:/var/lib/telegram-bot-api
     ports:
       - '8081:8081'
+  hermes:
+    restart: unless-stopped
+    image: nousresearch/hermes-agent
+    container_name: hermes
+    networks:
+      - caddy
+    env_file: ./hermes/environment
+    volumes:
+      - /media/SchlezExt/configs/hermes:/opt/data
+    environment:
+      - API_SERVER_ENABLED=true
+      - API_SERVER_HOST=0.0.0.0
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.21_@agent: host agent.home.hagever.com
+      caddy_0.21_handle: '@agent'
+      caddy_21: http://agent
+      caddy_21.redir: https://agent.home.hagever.com{uri}
+      caddy_0.21_handle.reverse_proxy: '{{upstreams 8642}}'
+    command:
+      - gateway
+      - run
   opencode:
     restart: unless-stopped
     image: ghcr.io/schniz/opencode-web-bun:main
@@ -552,11 +575,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.21_@opencode: host opencode.home.hagever.com
-      caddy_0.21_handle: '@opencode'
-      caddy_21: http://opencode
-      caddy_21.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.21_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.22_@opencode: host opencode.home.hagever.com
+      caddy_0.22_handle: '@opencode'
+      caddy_22: http://opencode
+      caddy_22.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.22_handle.reverse_proxy: '{{upstreams 3000}}'
   seerr:
     restart: unless-stopped
     image: seerr/seerr:latest
@@ -581,11 +604,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.22_@seerr: host seerr.home.hagever.com
-      caddy_0.22_handle: '@seerr'
-      caddy_22: http://seerr
-      caddy_22.redir: https://seerr.home.hagever.com{uri}
-      caddy_0.22_handle.reverse_proxy: '{{upstreams 5055}}'
+      caddy_0.23_@seerr: host seerr.home.hagever.com
+      caddy_0.23_handle: '@seerr'
+      caddy_23: http://seerr
+      caddy_23.redir: https://seerr.home.hagever.com{uri}
+      caddy_0.23_handle.reverse_proxy: '{{upstreams 5055}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main

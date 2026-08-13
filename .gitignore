@@ -11,6 +11,7 @@ tailscale/environment
 openobserve/environment
 esphome/environment
 pihole/environment
+hermes/environment
 tandoor/environment
 telegram-bot-api/environment
 gluetun/environment
