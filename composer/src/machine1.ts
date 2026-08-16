@@ -493,13 +493,15 @@ export default function machine1(): ComposeSpecification {
         env_file: "./hermes/environment",
         volumes: [`${helpers.config}:/opt/data`],
         environment: [
+          "HERMES_DASHBOARD=1",
           "PUID=1000",
           "PGID=1000",
           "API_SERVER_ENABLED=true",
           "API_SERVER_HOST=0.0.0.0",
         ],
         labels: {
-          ...caddy.usingUpstreams("agent", 8642),
+          ...caddy.usingUpstreams("agent", 9119),
+          ...caddy.usingUpstreams("agent2", 8642),
         },
         command: ["gateway", "run"],
       })),

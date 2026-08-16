@@ -539,6 +539,7 @@ services:
     volumes:
       - /media/SchlezExt/configs/hermes:/opt/data
     environment:
+      - HERMES_DASHBOARD=1
       - PUID=1000
       - PGID=1000
       - API_SERVER_ENABLED=true
@@ -550,7 +551,12 @@ services:
       caddy_0.21_handle: '@agent'
       caddy_21: http://agent
       caddy_21.redir: https://agent.home.hagever.com{uri}
-      caddy_0.21_handle.reverse_proxy: '{{upstreams 8642}}'
+      caddy_0.21_handle.reverse_proxy: '{{upstreams 9119}}'
+      caddy_0.22_@agent2: host agent2.home.hagever.com
+      caddy_0.22_handle: '@agent2'
+      caddy_22: http://agent2
+      caddy_22.redir: https://agent2.home.hagever.com{uri}
+      caddy_0.22_handle.reverse_proxy: '{{upstreams 8642}}'
     command:
       - gateway
       - run
@@ -577,11 +583,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.22_@opencode: host opencode.home.hagever.com
-      caddy_0.22_handle: '@opencode'
-      caddy_22: http://opencode
-      caddy_22.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.22_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.23_@opencode: host opencode.home.hagever.com
+      caddy_0.23_handle: '@opencode'
+      caddy_23: http://opencode
+      caddy_23.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.23_handle.reverse_proxy: '{{upstreams 3000}}'
   seerr:
     restart: unless-stopped
     image: seerr/seerr:latest
@@ -606,11 +612,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.23_@seerr: host seerr.home.hagever.com
-      caddy_0.23_handle: '@seerr'
-      caddy_23: http://seerr
-      caddy_23.redir: https://seerr.home.hagever.com{uri}
-      caddy_0.23_handle.reverse_proxy: '{{upstreams 5055}}'
+      caddy_0.24_@seerr: host seerr.home.hagever.com
+      caddy_0.24_handle: '@seerr'
+      caddy_24: http://seerr
+      caddy_24.redir: https://seerr.home.hagever.com{uri}
+      caddy_0.24_handle.reverse_proxy: '{{upstreams 5055}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main
