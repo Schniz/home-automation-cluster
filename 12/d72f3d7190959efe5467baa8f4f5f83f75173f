@@ -1,0 +1,18 @@
+.gitsecret/paths/mapping.cfg
+  h_3ceb785fe0a1f8 10
+composer/src/machine1.ts
+  h_3ceb785fe0a1f8 496,503-504
+docker-compose.yml
+  h_3ceb785fe0a1f8 542,554-559,586-590,615-619
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "12d72f3d7190959efe5467baa8f4f5f83f75173f",
+  "prompts": {},
+  "humans": {
+    "h_3ceb785fe0a1f8": {
+      "author": "Gal Schlezinger <gal@spitfire.co.il>"
+    }
+  }
+}
