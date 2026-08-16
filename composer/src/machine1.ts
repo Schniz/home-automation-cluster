@@ -493,6 +493,8 @@ export default function machine1(): ComposeSpecification {
         env_file: "./hermes/environment",
         volumes: [`${helpers.config}:/opt/data`],
         environment: [
+          "PUID=1000",
+          "PGID=1000",
           "API_SERVER_ENABLED=true",
           "API_SERVER_HOST=0.0.0.0",
         ],

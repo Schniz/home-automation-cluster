@@ -539,6 +539,8 @@ services:
     volumes:
       - /media/SchlezExt/configs/hermes:/opt/data
     environment:
+      - PUID=1000
+      - PGID=1000
       - API_SERVER_ENABLED=true
       - API_SERVER_HOST=0.0.0.0
     labels:
