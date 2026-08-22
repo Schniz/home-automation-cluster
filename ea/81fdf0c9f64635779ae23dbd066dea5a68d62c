@@ -1,0 +1,16 @@
+composer/src/machine1.ts
+  h_3ceb785fe0a1f8 152,159,202-203
+docker-compose.yml
+  h_3ceb785fe0a1f8 135,155-159,204-206
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "ea81fdf0c9f64635779ae23dbd066dea5a68d62c",
+  "prompts": {},
+  "humans": {
+    "h_3ceb785fe0a1f8": {
+      "author": "Gal Schlezinger <gal@spitfire.co.il>"
+    }
+  }
+}
