@@ -132,7 +132,7 @@ services:
       - VPN_SERVICE_PROVIDER=nordvpn
       - VPN_TYPE=openvpn
       - SERVER_HOSTNAMES=us11709.nordvpn.com
-      - FIREWALL_INPUT_PORTS=9091,9117,9696
+      - FIREWALL_INPUT_PORTS=9091,9117,9696,8191
       - TZ=Asia/Jerusalem
     labels:
       caddy_0: '*.home.hagever.com'
@@ -152,6 +152,11 @@ services:
       caddy_12: http://prowlarr
       caddy_12.redir: https://prowlarr.home.hagever.com{uri}
       caddy_0.12_handle.reverse_proxy: '{{upstreams 9696}}'
+      caddy_0.13_@flaresolverr: host flaresolverr.home.hagever.com
+      caddy_0.13_handle: '@flaresolverr'
+      caddy_13: http://flaresolverr
+      caddy_13.redir: https://flaresolverr.home.hagever.com{uri}
+      caddy_0.13_handle.reverse_proxy: '{{upstreams 8191}}'
   transmission:
     restart: unless-stopped
     container_name: transmission
@@ -196,16 +201,9 @@ services:
     restart: unless-stopped
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
-    networks:
-      - caddy
-    labels:
-      caddy_0: '*.home.hagever.com'
-      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.13_@flaresolverr: host flaresolverr.home.hagever.com
-      caddy_0.13_handle: '@flaresolverr'
-      caddy_13: http://flaresolverr
-      caddy_13.redir: https://flaresolverr.home.hagever.com{uri}
-      caddy_0.13_handle.reverse_proxy: '{{upstreams 8191}}'
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
     environment:
       - LOG_LEVEL=info
       - TZ=Asia/Jerusalem

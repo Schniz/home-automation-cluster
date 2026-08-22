@@ -149,13 +149,14 @@ export default function machine1(): ComposeSpecification {
           "VPN_SERVICE_PROVIDER=nordvpn",
           "VPN_TYPE=openvpn",
           "SERVER_HOSTNAMES=us11709.nordvpn.com",
-          "FIREWALL_INPUT_PORTS=9091,9117,9696",
+          "FIREWALL_INPUT_PORTS=9091,9117,9696,8191",
           "TZ=Asia/Jerusalem",
         ],
         labels: {
           ...caddy.usingUpstreams("torrent", 9091),
           ...caddy.usingUpstreams("jackett", 9117),
           ...caddy.usingUpstreams("prowlarr", 9696),
+          ...caddy.usingUpstreams("flaresolverr", 8191),
         },
       })),
 
@@ -198,10 +199,8 @@ export default function machine1(): ComposeSpecification {
       flaresolverr: service("flaresolverr", () => ({
         image: "ghcr.io/flaresolverr/flaresolverr:latest",
         container_name: "flaresolverr",
-        networks: ["caddy"],
-        labels: {
-          ...caddy.usingUpstreams("flaresolverr", 8191),
-        },
+        network_mode: "service:gluetun",
+        depends_on: ["gluetun"],
         environment: ["LOG_LEVEL=info", "TZ=Asia/Jerusalem"],
       })),
 
