@@ -623,4 +623,26 @@ services:
       - PALTIEL_CONFIG_PATH=/config/config.json
     volumes:
       - /media/SchlezExt/configs/paltiel:/config
+  multiscrobbler:
+    restart: unless-stopped
+    image: ghcr.io/foxxmd/multi-scrobbler:latest
+    container_name: multiscrobbler
+    networks:
+      - caddy
+    env_file: ./multiscrobbler/environment
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jerusalem
+      - SOURCE_LASTFM_REDIRECT_URI=https://scrobbler.home.hagever.com/lastfm/callback
+    volumes:
+      - /media/SchlezExt/configs/multiscrobbler:/config
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.25_@scrobbler: host scrobbler.home.hagever.com
+      caddy_0.25_handle: '@scrobbler'
+      caddy_25: http://scrobbler
+      caddy_25.redir: https://scrobbler.home.hagever.com{uri}
+      caddy_0.25_handle.reverse_proxy: '{{upstreams 9078}}'
 

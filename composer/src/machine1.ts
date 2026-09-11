@@ -553,6 +553,23 @@ export default function machine1(): ComposeSpecification {
         environment: ["PALTIEL_CONFIG_PATH=/config/config.json"],
         volumes: [`${helpers.config}:/config`],
       })),
+
+      multiscrobbler: service("multiscrobbler", (helpers) => ({
+        image: "ghcr.io/foxxmd/multi-scrobbler:latest",
+        container_name: "multiscrobbler",
+        networks: ["caddy"],
+        env_file: "./multiscrobbler/environment",
+        environment: [
+          "PUID=1000",
+          "PGID=1000",
+          "TZ=Asia/Jerusalem",
+          "SOURCE_LASTFM_REDIRECT_URI=https://scrobbler.home.hagever.com/lastfm/callback",
+        ],
+        volumes: [`${helpers.config}:/config`],
+        labels: {
+          ...caddy.usingUpstreams("scrobbler", 9078),
+        },
+      })),
     },
   };
 }
