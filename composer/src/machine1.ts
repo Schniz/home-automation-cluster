@@ -273,11 +273,6 @@ export default function machine1(): ComposeSpecification {
         container_name: "jellyfin",
         network_mode: "host",
         environment: ["PUID=1000", "PGID=1000", "TZ=Asia/Jerusalem"],
-        entrypoint: "bash",
-        command: [
-          "-c",
-          "mkdir -p /tmp-transcoding; chown -R abc:abc /tmp-transcoding; /init",
-        ],
         volumes: [
           `${helpers.config}:/config`,
           `${library.tv}:/data/tvshows`,
