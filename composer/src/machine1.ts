@@ -542,18 +542,6 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
-      automergeRepo: service("automerge-repo", (helpers) => ({
-        image: "ghcr.io/automerge/automerge-repo-sync-server:main",
-        container_name: "automerge-repo",
-        restart: "always",
-        networks: ["caddy"],
-        environment: ["DATA_DIR=/data"],
-        volumes: [`${helpers.config}:/data`],
-        labels: {
-          ...caddy.usingUpstreams("automerge-repo", 3030),
-        },
-      })),
-
       paltiel: service("paltiel", (helpers) => ({
         image: "ghcr.io/schniz/paltiel:main",
         container_name: "paltiel",
