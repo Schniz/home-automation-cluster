@@ -582,6 +582,27 @@ services:
       caddy_23: http://opencode
       caddy_23.redir: https://opencode.home.hagever.com{uri}
       caddy_0.23_handle.reverse_proxy: '{{upstreams 3000}}'
+  dispatcharr:
+    restart: unless-stopped
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    networks:
+      - caddy
+    environment:
+      - DISPATCHARR_ENV=aio
+      - REDIS_HOST=localhost
+      - CELERY_BROKER_URL=redis://localhost:6379/0
+      - DISPATCHARR_LOG_LEVEL=info
+    volumes:
+      - /media/SchlezExt/configs/dispatcharr:/data
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.24_@dispatcharr: host dispatcharr.home.hagever.com
+      caddy_0.24_handle: '@dispatcharr'
+      caddy_24: http://dispatcharr
+      caddy_24.redir: https://dispatcharr.home.hagever.com{uri}
+      caddy_0.24_handle.reverse_proxy: '{{upstreams 9191}}'
   seerr:
     restart: unless-stopped
     image: seerr/seerr:latest
@@ -606,11 +627,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
-      caddy_0.24_@seerr: host seerr.home.hagever.com
-      caddy_0.24_handle: '@seerr'
-      caddy_24: http://seerr
-      caddy_24.redir: https://seerr.home.hagever.com{uri}
-      caddy_0.24_handle.reverse_proxy: '{{upstreams 5055}}'
+      caddy_0.25_@seerr: host seerr.home.hagever.com
+      caddy_0.25_handle: '@seerr'
+      caddy_25: http://seerr
+      caddy_25.redir: https://seerr.home.hagever.com{uri}
+      caddy_0.25_handle.reverse_proxy: '{{upstreams 5055}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main

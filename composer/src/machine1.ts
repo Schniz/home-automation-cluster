@@ -523,6 +523,22 @@ export default function machine1(): ComposeSpecification {
         },
       })),
 
+      dispatcharr: service("dispatcharr", (helpers) => ({
+        image: "ghcr.io/dispatcharr/dispatcharr:latest",
+        container_name: "dispatcharr",
+        networks: ["caddy"],
+        environment: [
+          "DISPATCHARR_ENV=aio",
+          "REDIS_HOST=localhost",
+          "CELERY_BROKER_URL=redis://localhost:6379/0",
+          "DISPATCHARR_LOG_LEVEL=info",
+        ],
+        volumes: [`${helpers.config}:/data`],
+        labels: {
+          ...caddy.usingUpstreams("dispatcharr", 9191),
+        },
+      })),
+
       seerr: service("seerr", (helpers) => ({
         image: "seerr/seerr:latest",
         container_name: "seerr",
