@@ -611,6 +611,24 @@ services:
       caddy_24: http://seerr
       caddy_24.redir: https://seerr.home.hagever.com{uri}
       caddy_0.24_handle.reverse_proxy: '{{upstreams 5055}}'
+  automergeRepo:
+    restart: always
+    image: ghcr.io/automerge/automerge-repo-sync-server:main
+    container_name: automerge-repo
+    networks:
+      - caddy
+    environment:
+      - DATA_DIR=/data
+    volumes:
+      - /media/SchlezExt/configs/automerge-repo:/data
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: cloudflare {env.CF_API_TOKEN}
+      caddy_0.25_@automergerepo: host automerge-repo.home.hagever.com
+      caddy_0.25_handle: '@automergerepo'
+      caddy_25: http://automergerepo
+      caddy_25.redir: https://automerge-repo.home.hagever.com{uri}
+      caddy_0.25_handle.reverse_proxy: '{{upstreams 3030}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main
