@@ -1,0 +1,25 @@
+# Multi-scrobbler secrets — template.
+#
+# 1. Copy this file to `environment` (same directory, no extension).
+# 2. Fill in the values below.
+# 3. Encrypt it like the other services:
+#      git secret add multiscrobbler/environment && git secret hide
+#    (the decrypted `environment` file is what docker compose reads via env_file)
+#
+# Docs:
+#   Last.fm source: https://docs.multi-scrobbler.app/configuration/sources/lastfm-source
+#   teal.fm client:  https://docs.multi-scrobbler.app/configuration/clients/tealfm/
+
+# Last.fm API credentials — create at https://www.last.fm/api/account/create
+SOURCE_LASTFM_ID=lastfm
+SOURCE_LASTFM_API_KEY=
+SOURCE_LASTFM_SECRET=
+# Optional: skip the interactive dashboard auth by pasting a session key here.
+# Do the Last.fm auth flow once in the dashboard
+# (https://scrobbler.home.hagever.com), then set the returned session id.
+#SOURCE_LASTFM_SESSION=
+
+# teal.fm / ATProto — app password from your PDS account settings
+TEALFM_ID=teal
+TEALFM_IDENTIFIER=
+TEALFM_APP_PW=
