@@ -16,7 +16,7 @@ export function createCaddyProxy({ rootDomain }: { rootDomain: string }) {
   function root() {
     return {
       caddy_0: `*.${rootDomain}`,
-      "caddy_0.tls.dns": "cloudflare {env.CF_API_TOKEN}",
+      "caddy_0.tls.dns": "vercel {env.VERCEL_API_TOKEN}",
     };
   }
 
