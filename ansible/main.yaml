@@ -109,12 +109,33 @@
 
     - name: configure docker
       block:
+        - name: Check for existing Docker configuration
+          become: true
+          stat:
+            path: /etc/docker/daemon.json
+          register: docker_daemon_config
+
+        - name: Read existing Docker configuration
+          become: true
+          slurp:
+            src: /etc/docker/daemon.json
+          register: docker_daemon_config_content
+          when: docker_daemon_config.stat.exists
+
         - name: Set up Docker log rotation
           become: true
-          lineinfile:
-            path: /etc/docker/daemon.json
-            line: '{"log-driver":"json-file","log-opts":{"max-size":"10m","max-file":"2"}}'
-            create: true
+          vars:
+            existing_docker_config: "{{ (docker_daemon_config_content.content | b64decode | from_json) if docker_daemon_config.stat.exists else {} }}"
+            docker_log_config:
+              log-driver: json-file
+              log-opts:
+                max-size: "10m"
+                max-file: "2"
+          copy:
+            dest: /etc/docker/daemon.json
+            content: "{{ existing_docker_config | combine(docker_log_config) | to_nice_json }}\n"
+            mode: "0644"
+            validate: "dockerd --validate --config-file %s"
           notify:
             - reload docker
         # sudo groupadd docker
