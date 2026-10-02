@@ -632,6 +632,33 @@ export default function machine1(): ComposeSpecification {
           ...caddy.usingUpstreams("monitoring", 3000),
         },
       })),
+      "kid-miniplayer": service("kid-miniplayer", (helpers) => ({
+        image: "ghcr.io/schniz/kid-miniplayer-server:main",
+        platform: "linux/amd64",
+        container_name: "kid-miniplayer",
+        networks: ["caddy"],
+        command: [
+          "--config",
+          "/config/device-config.json",
+          "--listen",
+          "0.0.0.0:8090",
+          "--cache-dir",
+          "/data",
+        ],
+        volumes: [
+          {
+            type: "bind",
+            source: `${helpers.config}/device-config.json`,
+            target: "/config/device-config.json",
+            read_only: true,
+            bind: { create_host_path: false },
+          },
+          `${helpers.config}/data:/data`,
+        ],
+        labels: {
+          ...caddy.usingUpstreams("kid-miniplayer", 8090),
+        },
+      })),
     },
   };
 }

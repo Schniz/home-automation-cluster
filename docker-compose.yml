@@ -716,4 +716,34 @@ services:
       caddy_26: http://monitoring
       caddy_26.redir: https://monitoring.home.hagever.com{uri}
       caddy_0.26_handle.reverse_proxy: '{{upstreams 3000}}'
+  kid-miniplayer:
+    restart: unless-stopped
+    image: ghcr.io/schniz/kid-miniplayer-server:main
+    platform: linux/amd64
+    container_name: kid-miniplayer
+    networks:
+      - caddy
+    command:
+      - '--config'
+      - /config/device-config.json
+      - '--listen'
+      - 0.0.0.0:8090
+      - '--cache-dir'
+      - /data
+    volumes:
+      - type: bind
+        source: /media/SchlezExt/configs/kid-miniplayer/device-config.json
+        target: /config/device-config.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - /media/SchlezExt/configs/kid-miniplayer/data:/data
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
+      caddy_0.27_@kidminiplayer: host kid-miniplayer.home.hagever.com
+      caddy_0.27_handle: '@kidminiplayer'
+      caddy_27: http://kidminiplayer
+      caddy_27.redir: https://kid-miniplayer.home.hagever.com{uri}
+      caddy_0.27_handle.reverse_proxy: '{{upstreams 8090}}'
 
