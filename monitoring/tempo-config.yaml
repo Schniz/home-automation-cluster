@@ -45,7 +45,7 @@ metrics_generator:
 overrides:
   defaults:
     compaction:
-      block_retention: 72h
+      block_retention: 48h
     ingestion:
       rate_limit_bytes: 26214
       burst_size_bytes: 4194304

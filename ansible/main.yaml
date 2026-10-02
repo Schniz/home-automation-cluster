@@ -13,8 +13,6 @@
     dust_version: "1.2.6"
     dust_checksum: sha256:c6e247e6097efca343373ab4c91548799d8815c1d84c9a15fa8ea38fc2bb50f8
     rustdesk_version: "1.5.0"
-    lgtm_directory: /media/SchlezExt/configs/lgtm
-    lgtm_budget_bytes: 21474836480
     rustdesk_checksums:
       x86_64: sha256:4e2b9701d25a7ef373f3d09bda584a37d6902f97a6ab15f2e86d4a5783e2a0ec
       aarch64: sha256:1f2fc9be8321c10347aa33cb13198c6a956aec272c5e58ac81f4c0ef04037df3
@@ -81,7 +79,6 @@
           - containerd.io
           - docker-buildx-plugin
           - docker-compose-plugin
-          - e2fsprogs
 
           # <kvm>
           # TODO: extract a kvm role
@@ -186,84 +183,6 @@
           community.docker.docker_network:
             name: caddy
             state: present
-
-    - name: Provision the LGTM disk budget
-      become: true
-      block:
-        - name: Verify the external disk is mounted
-          command: mountpoint -q /media/SchlezExt
-          changed_when: false
-
-        - name: Create the LGTM mount directory
-          file:
-            path: "{{ lgtm_directory }}/data"
-            state: directory
-            mode: "0755"
-
-        - name: Check for the LGTM filesystem image
-          stat:
-            path: "{{ lgtm_directory }}/data.ext4"
-          register: lgtm_image
-
-        - name: Verify the existing filesystem budget
-          assert:
-            that:
-              - lgtm_image.stat.size | int == lgtm_budget_bytes | int
-            fail_msg: "The LGTM filesystem image must be exactly 20 GiB."
-          when: lgtm_image.stat.exists
-
-        - name: Allocate the 20 GiB filesystem image
-          command: "fallocate -l {{ lgtm_budget_bytes }} {{ lgtm_directory }}/data.ext4"
-          when: not lgtm_image.stat.exists
-
-        - name: Check the filesystem image format
-          command: "blkid -p -s TYPE -o value {{ lgtm_directory }}/data.ext4"
-          register: lgtm_image_type
-          changed_when: false
-          failed_when: lgtm_image_type.rc not in [0, 2]
-
-        - name: Verify the image is empty or ext4
-          assert:
-            that:
-              - lgtm_image_type.stdout in ['', 'ext4']
-
-        - name: Format the new LGTM filesystem
-          command: "mkfs.ext4 -m 0 {{ lgtm_directory }}/data.ext4"
-          when: lgtm_image_type.stdout == ''
-
-        - name: Mount the budgeted filesystem and persist it in fstab
-          ansible.posix.mount:
-            path: "{{ lgtm_directory }}/data"
-            src: "{{ lgtm_directory }}/data.ext4"
-            fstype: ext4
-            opts: loop,nodev,nosuid
-            state: mounted
-
-        - name: Mark the mounted filesystem for the container startup check
-          copy:
-            dest: "{{ lgtm_directory }}/data/.lgtm-budget-20gib"
-            content: "20 GiB LGTM filesystem\n"
-            mode: "0444"
-
-        - name: Create the Docker systemd override directory
-          file:
-            path: /etc/systemd/system/docker.service.d
-            state: directory
-            mode: "0755"
-
-        - name: Mount LGTM storage before Docker starts after a reboot
-          copy:
-            dest: /etc/systemd/system/docker.service.d/lgtm-storage.conf
-            content: |
-              [Unit]
-              RequiresMountsFor={{ lgtm_directory }}/data
-            mode: "0644"
-          register: lgtm_docker_override
-
-        - name: Reload systemd mount dependencies
-          systemd:
-            daemon_reload: true
-          when: lgtm_docker_override.changed
 
     - name: secrets
       block:

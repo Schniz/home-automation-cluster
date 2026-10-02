@@ -597,30 +597,22 @@ export default function machine1(): ComposeSpecification {
         networks: ["caddy"],
         read_only: true,
         tmpfs: ["/tmp:size=256m", "/etc/lgtm:size=1m"],
-        entrypoint: ["/bin/bash", "/monitoring/start.sh"],
         environment: {
           GF_AUTH_ANONYMOUS_ENABLED: "false",
           GF_PLUGINS_PREINSTALL_AUTO_UPDATE: "false",
           GF_SERVER_ROOT_URL: "https://monitoring.home.hagever.com",
           GRAFANA_PUBLIC_URL: "https://monitoring.home.hagever.com",
-          PROMETHEUS_EXTRA_ARGS:
-            "--storage.tsdb.retention.time=3d --storage.tsdb.retention.size=5GB",
+          PROMETHEUS_EXTRA_ARGS: "--storage.tsdb.retention.time=2d",
           LOKI_EXTRA_ARGS:
-            "-store.retention=72h -compactor.retention-enabled=true -compactor.delete-request-store=filesystem -compactor.working-directory=/data/loki/compactor -distributor.ingestion-rate-limit-mb=0.025 -distributor.ingestion-burst-size-mb=4",
+            "-store.retention=48h -compactor.retention-enabled=true -compactor.delete-request-store=filesystem -compactor.working-directory=/data/loki/compactor -distributor.ingestion-rate-limit-mb=0.025 -distributor.ingestion-burst-size-mb=4",
           PYROSCOPE_EXTRA_ARGS:
-            "-retention-period=72h -metastore.index.cleanup-interval=15m",
+            "-retention-period=48h -metastore.index.cleanup-interval=15m",
           ENABLE_LOGS_ALL: "true",
           LGTM_SHUTDOWN_TIMEOUT_SECONDS: "30",
         },
         stop_grace_period: "40s",
         volumes: [
-          {
-            type: "bind",
-            source: `${helpers.config}/data`,
-            target: "/data",
-            bind: { create_host_path: false },
-          },
-          "./monitoring/start.sh:/monitoring/start.sh:ro",
+          `${helpers.config}/data:/data`,
           "./monitoring/tempo-config.yaml:/otel-lgtm/tempo-config.yaml:ro",
         ],
         ports: [`${machines.main}:4317:4317`, `${machines.main}:4318:4318`],
