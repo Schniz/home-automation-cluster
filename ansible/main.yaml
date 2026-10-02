@@ -61,14 +61,20 @@
       become: true
       apt:
         name:
+          - ca-certificates
           - gnupg
           - git
           - git-secret
+          - vim
           - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
           - docker-compose-plugin
 
           # <kvm>
           # TODO: extract a kvm role
+          - cpu-checker
           - qemu-kvm
           - bridge-utils
           - libvirt-daemon-system
@@ -79,6 +85,8 @@
           # </kvm>
 
         state: latest
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Install RustDesk
       block:
