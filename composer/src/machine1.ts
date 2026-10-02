@@ -564,6 +564,33 @@ export default function machine1(): ComposeSpecification {
         environment: ["PALTIEL_CONFIG_PATH=/config/config.json"],
         volumes: [`${helpers.config}:/config`],
       })),
+
+      krembo: service("krembo", () => ({
+        image: "ghcr.io/schniz/krembo:main",
+        container_name: "krembo",
+        network_mode: "host",
+        environment: {
+          PORT: "16661",
+          HTTP_HOSTNAME: "0.0.0.0",
+          APPS_DIR: "/apps",
+          DOCKER_SOCKET: "/var/run/docker.sock",
+          TTL_IN_SECONDS: "60",
+          MDNS_ENABLED: "false",
+          OTEL_ENABLED: "false",
+          TRUST_FORWARDED: "true",
+          RUST_LOG: "info",
+          TZ: "Asia/Jerusalem",
+        },
+        volumes: [
+          `${LIBRARY_ROOT}/krembo_apps:/apps:ro`,
+          "/var/run/docker.sock:/var/run/docker.sock",
+        ],
+        labels: {
+          caddy: "*.apps.home.hagever.com",
+          "caddy.tls.dns": "vercel {env.VERCEL_API_TOKEN}",
+          "caddy.reverse_proxy": `http://${machines.main}:16661`,
+        },
+      })),
     },
   };
 }
