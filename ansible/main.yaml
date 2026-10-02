@@ -10,6 +10,8 @@
     runner_labels: [home, linux]
     github_account: Schniz
     github_repo: home-automation-cluster
+    dust_version: "1.2.6"
+    dust_checksum: sha256:c6e247e6097efca343373ab4c91548799d8815c1d84c9a15fa8ea38fc2bb50f8
     rustdesk_version: "1.5.0"
     rustdesk_checksums:
       x86_64: sha256:4e2b9701d25a7ef373f3d09bda584a37d6902f97a6ab15f2e86d4a5783e2a0ec
@@ -70,6 +72,8 @@
           - git
           - git-secret
           - vim
+          - ripgrep
+          - fd-find
           - docker-ce
           - docker-ce-cli
           - containerd.io
@@ -91,6 +95,28 @@
         state: latest
         update_cache: true
         cache_valid_time: 3600
+
+    - name: Make fd available under its upstream command name
+      become: true
+      file:
+        src: /usr/bin/fdfind
+        dest: /usr/local/bin/fd
+        state: link
+
+    - name: Install Dust
+      block:
+        - name: Download Dust deb file for the x86_64 host
+          get_url:
+            url: "https://github.com/bootandy/dust/releases/download/v{{ dust_version }}/du-dust_{{ dust_version }}-1_amd64.deb"
+            dest: "/tmp/du-dust_{{ dust_version }}-1_amd64.deb"
+            checksum: "{{ dust_checksum }}"
+            mode: "0644"
+
+        - name: Install Dust
+          become: true
+          apt:
+            deb: "/tmp/du-dust_{{ dust_version }}-1_amd64.deb"
+            state: present
 
     - name: Install RustDesk
       block:
