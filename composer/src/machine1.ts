@@ -591,6 +591,47 @@ export default function machine1(): ComposeSpecification {
           "caddy.reverse_proxy": `http://${machines.main}:16661`,
         },
       })),
+      lgtm: service("lgtm", (helpers) => ({
+        image: "grafana/otel-lgtm:latest",
+        container_name: "lgtm",
+        networks: ["caddy"],
+        read_only: true,
+        tmpfs: ["/tmp:size=256m", "/etc/lgtm:size=1m"],
+        entrypoint: ["/bin/bash", "/monitoring/start.sh"],
+        environment: {
+          GF_AUTH_ANONYMOUS_ENABLED: "false",
+          GF_PLUGINS_PREINSTALL_AUTO_UPDATE: "false",
+          GF_SERVER_ROOT_URL: "https://monitoring.home.hagever.com",
+          GRAFANA_PUBLIC_URL: "https://monitoring.home.hagever.com",
+          PROMETHEUS_EXTRA_ARGS:
+            "--storage.tsdb.retention.time=3d --storage.tsdb.retention.size=5GB",
+          LOKI_EXTRA_ARGS:
+            "-store.retention=72h -compactor.retention-enabled=true -compactor.delete-request-store=filesystem -compactor.working-directory=/data/loki/compactor -distributor.ingestion-rate-limit-mb=0.025 -distributor.ingestion-burst-size-mb=4",
+          PYROSCOPE_EXTRA_ARGS:
+            "-retention-period=72h -metastore.index.cleanup-interval=15m",
+          ENABLE_LOGS_ALL: "true",
+          LGTM_SHUTDOWN_TIMEOUT_SECONDS: "30",
+        },
+        stop_grace_period: "40s",
+        volumes: [
+          {
+            type: "bind",
+            source: `${helpers.config}/data`,
+            target: "/data",
+            bind: { create_host_path: false },
+          },
+          "./monitoring/start.sh:/monitoring/start.sh:ro",
+          "./monitoring/tempo-config.yaml:/otel-lgtm/tempo-config.yaml:ro",
+        ],
+        ports: [`${machines.main}:4317:4317`, `${machines.main}:4318:4318`],
+        logging: {
+          driver: "local",
+          options: { "max-size": "10m", "max-file": "3" },
+        },
+        labels: {
+          ...caddy.usingUpstreams("monitoring", 3000),
+        },
+      })),
     },
   };
 }

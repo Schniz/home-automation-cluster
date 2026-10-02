@@ -2,4 +2,5 @@
 roles:
   - monolithprojects.github_actions_runner
 collections:
+  - ansible.posix
   - community.docker
