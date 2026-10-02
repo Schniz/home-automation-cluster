@@ -336,6 +336,20 @@ export default function machine1(): ComposeSpecification {
         ],
       })),
 
+      "beelink-fan": service("beelink-fan", () => ({
+        image: "ghcr.io/schniz/home-automation-cluster-beelink-fan:main",
+        container_name: "beelink-fan",
+        privileged: true,
+        networks: ["caddy"],
+        env_file: "./beelink-fan/environment",
+        environment: {
+          MQTT_HOST: "mosquitto",
+          MQTT_PORT: "1883",
+          TZ: "Asia/Jerusalem",
+        },
+        volumes: ["/sys:/sys", "/dev:/dev", "/lib/modules:/lib/modules"],
+      })),
+
       "ring-mqtt": service("ring-mqtt", (helpers) => ({
         image: "tsightler/ring-mqtt",
         container_name: "ring-mqtt",

@@ -1,0 +1,12 @@
+# Copy to `environment` (gitignored) and fill in as needed.
+# Only required if your mosquitto broker needs authentication;
+# leave empty for anonymous brokers.
+MQTT_USER=
+MQTT_PASS=
+
+# Optional overrides (defaults shown):
+# IT87_OPTS=ignore_resource_conflict=1 mmio=off
+# IT87_FORCE_ID=0x8622
+# QUIET_PWM=64
+# TRIAL_DEFAULT_PERCENT=60
+# TRIAL_DEFAULT_SECONDS=120
