@@ -10,6 +10,10 @@
     runner_labels: [home, linux]
     github_account: Schniz
     github_repo: home-automation-cluster
+    rustdesk_version: "1.5.0"
+    rustdesk_checksums:
+      x86_64: sha256:4e2b9701d25a7ef373f3d09bda584a37d6902f97a6ab15f2e86d4a5783e2a0ec
+      aarch64: sha256:1f2fc9be8321c10347aa33cb13198c6a956aec272c5e58ac81f4c0ef04037df3
   tasks:
     - name: Ensure port 53 is free for pihole
       block:
@@ -92,14 +96,15 @@
       block:
         - name: Download RustDesk deb file
           get_url:
-            url: https://github.com/rustdesk/rustdesk/releases/download/1.1.9/rustdesk-1.1.9.deb
-            dest: /tmp/rustdesk.deb
-            mode: 0644
+            url: "https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_version }}/rustdesk-{{ rustdesk_version }}-{{ ansible_architecture }}.deb"
+            dest: "/tmp/rustdesk-{{ rustdesk_version }}-{{ ansible_architecture }}.deb"
+            checksum: "{{ rustdesk_checksums[ansible_architecture] }}"
+            mode: "0644"
 
         - name: Install RustDesk
           become: true
           apt:
-            deb: /tmp/rustdesk.deb
+            deb: "/tmp/rustdesk-{{ rustdesk_version }}-{{ ansible_architecture }}.deb"
             state: present
 
     - name: configure docker
