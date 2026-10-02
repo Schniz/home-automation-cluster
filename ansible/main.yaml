@@ -179,6 +179,7 @@
           become: true
           command: kvm-ok
           register: kvm_ok
+          changed_when: false
           failed_when: kvm_ok.rc != 0
         - name: Ensure there's a "libvirt" group
           become: true
