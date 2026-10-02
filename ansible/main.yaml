@@ -23,20 +23,12 @@
           notify:
             - restart systemd-resolved
         - name: Adjust /etc/resolv.conf symlink to point to /run/systemd/resolve/resolv.conf
-          block:
-            - name: Remove existing /etc/resolv.conf symlink
-              become: true
-              file:
-                path: /etc/resolv.conf
-                state: absent
-
-            - name: Create new symlink for /etc/resolv.conf
-              become: true
-              file:
-                src: /run/systemd/resolve/resolv.conf
-                dest: /etc/resolv.conf
-                state: link
-                mode: "0644"
+          become: true
+          file:
+            src: /run/systemd/resolve/resolv.conf
+            dest: /etc/resolv.conf
+            state: link
+            force: true
 
     - name: Install Docker GPG
       block:
