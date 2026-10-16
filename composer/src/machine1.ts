@@ -207,7 +207,10 @@ export default function machine1(): ComposeSpecification {
       browserless: service("browserless", () => ({
         image: "ghcr.io/browserless/chromium",
         shm_size: "2gb",
-        ports: ["100.82.65.83:3000:3000"],
+        networks: ["caddy"],
+        labels: {
+          ...caddy.usingUpstreams("browser", 3000),
+        },
         env_file: "./browserless/environment",
         environment: [
           "CONCURRENT=1",

@@ -211,8 +211,16 @@ services:
     restart: unless-stopped
     image: ghcr.io/browserless/chromium
     shm_size: 2gb
-    ports:
-      - 100.82.65.83:3000:3000
+    networks:
+      - caddy
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
+      caddy_0.14_@browser: host browser.home.hagever.com
+      caddy_0.14_handle: '@browser'
+      caddy_14: http://browser
+      caddy_14.redir: https://browser.home.hagever.com{uri}
+      caddy_0.14_handle.reverse_proxy: '{{upstreams 3000}}'
     env_file: ./browserless/environment
     environment:
       - CONCURRENT=1
@@ -233,11 +241,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.14_@sonarr: host sonarr.home.hagever.com
-      caddy_0.14_handle: '@sonarr'
-      caddy_14: http://sonarr
-      caddy_14.redir: https://sonarr.home.hagever.com{uri}
-      caddy_0.14_handle.reverse_proxy: '{{upstreams 8989}}'
+      caddy_0.15_@sonarr: host sonarr.home.hagever.com
+      caddy_0.15_handle: '@sonarr'
+      caddy_15: http://sonarr
+      caddy_15.redir: https://sonarr.home.hagever.com{uri}
+      caddy_0.15_handle.reverse_proxy: '{{upstreams 8989}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -256,11 +264,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.15_@radarr: host radarr.home.hagever.com
-      caddy_0.15_handle: '@radarr'
-      caddy_15: http://radarr
-      caddy_15.redir: https://radarr.home.hagever.com{uri}
-      caddy_0.15_handle.reverse_proxy: '{{upstreams 7878}}'
+      caddy_0.16_@radarr: host radarr.home.hagever.com
+      caddy_0.16_handle: '@radarr'
+      caddy_16: http://radarr
+      caddy_16.redir: https://radarr.home.hagever.com{uri}
+      caddy_0.16_handle.reverse_proxy: '{{upstreams 7878}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -279,11 +287,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.16_@lidarr: host lidarr.home.hagever.com
-      caddy_0.16_handle: '@lidarr'
-      caddy_16: http://lidarr
-      caddy_16.redir: https://lidarr.home.hagever.com{uri}
-      caddy_0.16_handle.reverse_proxy: '{{upstreams 8686}}'
+      caddy_0.17_@lidarr: host lidarr.home.hagever.com
+      caddy_0.17_handle: '@lidarr'
+      caddy_17: http://lidarr
+      caddy_17.redir: https://lidarr.home.hagever.com{uri}
+      caddy_0.17_handle.reverse_proxy: '{{upstreams 8686}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -302,11 +310,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.17_@bazarr: host bazarr.home.hagever.com
-      caddy_0.17_handle: '@bazarr'
-      caddy_17: http://bazarr
-      caddy_17.redir: https://bazarr.home.hagever.com{uri}
-      caddy_0.17_handle.reverse_proxy: '{{upstreams 6767}}'
+      caddy_0.18_@bazarr: host bazarr.home.hagever.com
+      caddy_0.18_handle: '@bazarr'
+      caddy_18: http://bazarr
+      caddy_18.redir: https://bazarr.home.hagever.com{uri}
+      caddy_0.18_handle.reverse_proxy: '{{upstreams 6767}}'
     environment:
       - PUID=1000
       - PGID=1000
@@ -341,11 +349,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.18_@icalsensor: host ical-sensor.home.hagever.com
-      caddy_0.18_handle: '@icalsensor'
-      caddy_18: http://icalsensor
-      caddy_18.redir: https://ical-sensor.home.hagever.com{uri}
-      caddy_0.18_handle.reverse_proxy: '{{upstreams 8080}}'
+      caddy_0.19_@icalsensor: host ical-sensor.home.hagever.com
+      caddy_0.19_handle: '@icalsensor'
+      caddy_19: http://icalsensor
+      caddy_19.redir: https://ical-sensor.home.hagever.com{uri}
+      caddy_0.19_handle.reverse_proxy: '{{upstreams 8080}}'
   tailscale:
     restart: unless-stopped
     image: tailscale/tailscale
@@ -377,11 +385,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.19_@files: host files.home.hagever.com
-      caddy_0.19_handle: '@files'
-      caddy_19: http://files
-      caddy_19.redir: https://files.home.hagever.com{uri}
-      caddy_0.19_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.20_@files: host files.home.hagever.com
+      caddy_0.20_handle: '@files'
+      caddy_20: http://files
+      caddy_20.redir: https://files.home.hagever.com{uri}
+      caddy_0.20_handle.reverse_proxy: '{{upstreams 80}}'
   mosquitto:
     restart: unless-stopped
     image: eclipse-mosquitto:latest
@@ -502,11 +510,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.20_@audiobooks: host audiobooks.home.hagever.com
-      caddy_0.20_handle: '@audiobooks'
-      caddy_20: http://audiobooks
-      caddy_20.redir: https://audiobooks.home.hagever.com{uri}
-      caddy_0.20_handle.reverse_proxy: '{{upstreams 80}}'
+      caddy_0.21_@audiobooks: host audiobooks.home.hagever.com
+      caddy_0.21_handle: '@audiobooks'
+      caddy_21: http://audiobooks
+      caddy_21.redir: https://audiobooks.home.hagever.com{uri}
+      caddy_0.21_handle.reverse_proxy: '{{upstreams 80}}'
   subgenai:
     restart: unless-stopped
     image: mccloud/subgen:cpu
@@ -558,16 +566,16 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.21_@agent: host agent.home.hagever.com
-      caddy_0.21_handle: '@agent'
-      caddy_21: http://agent
-      caddy_21.redir: https://agent.home.hagever.com{uri}
-      caddy_0.21_handle.reverse_proxy: '{{upstreams 9119}}'
-      caddy_0.22_@agent2: host agent2.home.hagever.com
-      caddy_0.22_handle: '@agent2'
-      caddy_22: http://agent2
-      caddy_22.redir: https://agent2.home.hagever.com{uri}
-      caddy_0.22_handle.reverse_proxy: '{{upstreams 8642}}'
+      caddy_0.22_@agent: host agent.home.hagever.com
+      caddy_0.22_handle: '@agent'
+      caddy_22: http://agent
+      caddy_22.redir: https://agent.home.hagever.com{uri}
+      caddy_0.22_handle.reverse_proxy: '{{upstreams 9119}}'
+      caddy_0.23_@agent2: host agent2.home.hagever.com
+      caddy_0.23_handle: '@agent2'
+      caddy_23: http://agent2
+      caddy_23.redir: https://agent2.home.hagever.com{uri}
+      caddy_0.23_handle.reverse_proxy: '{{upstreams 8642}}'
     command:
       - gateway
       - run
@@ -594,11 +602,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.23_@opencode: host opencode.home.hagever.com
-      caddy_0.23_handle: '@opencode'
-      caddy_23: http://opencode
-      caddy_23.redir: https://opencode.home.hagever.com{uri}
-      caddy_0.23_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.24_@opencode: host opencode.home.hagever.com
+      caddy_0.24_handle: '@opencode'
+      caddy_24: http://opencode
+      caddy_24.redir: https://opencode.home.hagever.com{uri}
+      caddy_0.24_handle.reverse_proxy: '{{upstreams 3000}}'
   dispatcharr:
     restart: unless-stopped
     image: ghcr.io/dispatcharr/dispatcharr:latest
@@ -615,11 +623,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.24_@dispatcharr: host dispatcharr.home.hagever.com
-      caddy_0.24_handle: '@dispatcharr'
-      caddy_24: http://dispatcharr
-      caddy_24.redir: https://dispatcharr.home.hagever.com{uri}
-      caddy_0.24_handle.reverse_proxy: '{{upstreams 9191}}'
+      caddy_0.25_@dispatcharr: host dispatcharr.home.hagever.com
+      caddy_0.25_handle: '@dispatcharr'
+      caddy_25: http://dispatcharr
+      caddy_25.redir: https://dispatcharr.home.hagever.com{uri}
+      caddy_0.25_handle.reverse_proxy: '{{upstreams 9191}}'
   seerr:
     restart: unless-stopped
     image: seerr/seerr:latest
@@ -644,11 +652,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.25_@seerr: host seerr.home.hagever.com
-      caddy_0.25_handle: '@seerr'
-      caddy_25: http://seerr
-      caddy_25.redir: https://seerr.home.hagever.com{uri}
-      caddy_0.25_handle.reverse_proxy: '{{upstreams 5055}}'
+      caddy_0.26_@seerr: host seerr.home.hagever.com
+      caddy_0.26_handle: '@seerr'
+      caddy_26: http://seerr
+      caddy_26.redir: https://seerr.home.hagever.com{uri}
+      caddy_0.26_handle.reverse_proxy: '{{upstreams 5055}}'
   paltiel:
     restart: unless-stopped
     image: ghcr.io/schniz/paltiel:main
@@ -720,11 +728,11 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.26_@monitoring: host monitoring.home.hagever.com
-      caddy_0.26_handle: '@monitoring'
-      caddy_26: http://monitoring
-      caddy_26.redir: https://monitoring.home.hagever.com{uri}
-      caddy_0.26_handle.reverse_proxy: '{{upstreams 3000}}'
+      caddy_0.27_@monitoring: host monitoring.home.hagever.com
+      caddy_0.27_handle: '@monitoring'
+      caddy_27: http://monitoring
+      caddy_27.redir: https://monitoring.home.hagever.com{uri}
+      caddy_0.27_handle.reverse_proxy: '{{upstreams 3000}}'
   kid-miniplayer:
     restart: unless-stopped
     image: ghcr.io/schniz/kid-miniplayer-server:main
@@ -750,9 +758,9 @@ services:
     labels:
       caddy_0: '*.home.hagever.com'
       caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
-      caddy_0.27_@kidminiplayer: host kid-miniplayer.home.hagever.com
-      caddy_0.27_handle: '@kidminiplayer'
-      caddy_27: http://kidminiplayer
-      caddy_27.redir: https://kid-miniplayer.home.hagever.com{uri}
-      caddy_0.27_handle.reverse_proxy: '{{upstreams 8090}}'
+      caddy_0.28_@kidminiplayer: host kid-miniplayer.home.hagever.com
+      caddy_0.28_handle: '@kidminiplayer'
+      caddy_28: http://kidminiplayer
+      caddy_28.redir: https://kid-miniplayer.home.hagever.com{uri}
+      caddy_0.28_handle.reverse_proxy: '{{upstreams 8090}}'
 
