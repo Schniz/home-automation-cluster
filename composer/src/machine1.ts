@@ -204,6 +204,27 @@ export default function machine1(): ComposeSpecification {
         environment: ["LOG_LEVEL=info", "TZ=Asia/Jerusalem"],
       })),
 
+      browserless: service("browserless", () => ({
+        image: "ghcr.io/browserless/chromium",
+        shm_size: "2gb",
+        ports: ["100.82.65.83:3000:3000"],
+        env_file: "./browserless/environment",
+        environment: [
+          "CONCURRENT=1",
+          "QUEUED=5",
+          "TIMEOUT=60000",
+          "PREBOOT_CHROME=false",
+        ],
+        deploy: {
+          resources: {
+            limits: {
+              memory: "3G",
+              cpus: "1",
+            },
+          },
+        },
+      })),
+
       sonarr: service("sonarr", (helpers) => ({
         image: "linuxserver/sonarr:latest",
         container_name: "sonarr",
