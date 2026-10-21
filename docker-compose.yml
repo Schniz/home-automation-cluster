@@ -225,8 +225,10 @@ services:
     environment:
       - CONCURRENT=1
       - QUEUED=5
-      - TIMEOUT=60000
+      - TIMEOUT=600000
       - PREBOOT_CHROME=false
+    volumes:
+      - /media/SchlezExt/configs/browserless:/profiles
     deploy:
       resources:
         limits:

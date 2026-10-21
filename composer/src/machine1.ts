@@ -204,7 +204,7 @@ export default function machine1(): ComposeSpecification {
         environment: ["LOG_LEVEL=info", "TZ=Asia/Jerusalem"],
       })),
 
-      browserless: service("browserless", () => ({
+      browserless: service("browserless", (helpers) => ({
         image: "ghcr.io/browserless/chromium",
         shm_size: "2gb",
         networks: ["caddy"],
@@ -215,9 +215,10 @@ export default function machine1(): ComposeSpecification {
         environment: [
           "CONCURRENT=1",
           "QUEUED=5",
-          "TIMEOUT=60000",
+          "TIMEOUT=600000",
           "PREBOOT_CHROME=false",
         ],
+        volumes: [`${helpers.config}:/profiles`],
         deploy: {
           resources: {
             limits: {
