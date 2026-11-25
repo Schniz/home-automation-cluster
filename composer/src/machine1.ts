@@ -676,6 +676,20 @@ export default function machine1(): ComposeSpecification {
           ...caddy.usingUpstreams("kid-miniplayer", 8090),
         },
       })),
+
+      pinchflat: service("pinchflat", (helpers) => ({
+        image: "ghcr.io/kieraneglin/pinchflat:latest",
+        container_name: "pinchflat",
+        networks: ["caddy"],
+        environment: ["TZ=Asia/Jerusalem"],
+        volumes: [
+          `${helpers.config}:/config`,
+          `${LIBRARY_ROOT}/youtube:/downloads`,
+        ],
+        labels: {
+          ...caddy.usingUpstreams("pinchflat", 8945),
+        },
+      })),
     },
   };
 }

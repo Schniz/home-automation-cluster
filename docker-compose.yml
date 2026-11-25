@@ -765,4 +765,23 @@ services:
       caddy_28: http://kidminiplayer
       caddy_28.redir: https://kid-miniplayer.home.hagever.com{uri}
       caddy_0.28_handle.reverse_proxy: '{{upstreams 8090}}'
+  pinchflat:
+    restart: unless-stopped
+    image: ghcr.io/kieraneglin/pinchflat:latest
+    container_name: pinchflat
+    networks:
+      - caddy
+    environment:
+      - TZ=Asia/Jerusalem
+    volumes:
+      - /media/SchlezExt/configs/pinchflat:/config
+      - /media/SchlezExt/library/youtube:/downloads
+    labels:
+      caddy_0: '*.home.hagever.com'
+      caddy_0.tls.dns: vercel {env.VERCEL_API_TOKEN}
+      caddy_0.29_@pinchflat: host pinchflat.home.hagever.com
+      caddy_0.29_handle: '@pinchflat'
+      caddy_29: http://pinchflat
+      caddy_29.redir: https://pinchflat.home.hagever.com{uri}
+      caddy_0.29_handle.reverse_proxy: '{{upstreams 8945}}'
 
