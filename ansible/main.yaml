@@ -220,6 +220,51 @@
               - "libvirt"
             append: yes
 
+    - name: Install OpenTofu
+      become: true
+      block:
+        - name: Download OpenTofu apt signing key
+          get_url:
+            url: https://packages.opentofu.org/opentofu/tofu/gpgkey
+            dest: /etc/apt/keyrings/opentofu.asc
+            mode: "0644"
+
+        - name: Add OpenTofu repository
+          apt_repository:
+            repo: "deb [signed-by=/etc/apt/keyrings/opentofu.asc] https://packages.opentofu.org/opentofu/tofu/any/ any main"
+            filename: opentofu
+            state: present
+
+        - name: Install tofu
+          apt:
+            name: tofu
+            state: latest
+            update_cache: true
+            cache_valid_time: 3600
+
+    - name: Set up Incus
+      become: true
+      block:
+        - name: Install Incus
+          apt:
+            name: incus
+            state: present
+
+        - name: Allow "{{runner_user}}" to use Incus
+          user:
+            name: "{{runner_user}}"
+            groups:
+              - "incus-admin"
+            append: yes
+
+        - name: Create machine1 state directory
+          file:
+            path: /var/lib/tofu/machine1
+            state: directory
+            owner: "{{runner_user}}"
+            group: "{{runner_user}}"
+            mode: "0755"
+
     - name: Add EDITOR=vim to {{runner_user}}
       become: true
       lineinfile:
