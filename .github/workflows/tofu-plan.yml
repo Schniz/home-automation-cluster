@@ -1,0 +1,41 @@
+name: tofu plan
+
+on:
+  pull_request:
+    paths:
+      - "tofu/**"
+      - ".github/workflows/tofu-plan.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  plan:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux]
+    environment: home
+    strategy:
+      matrix:
+        workspace: [machine1]
+    defaults:
+      run:
+        working-directory: tofu/workspaces/${{ matrix.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # sg: the runner process started before the incus-admin group was added
+          sg incus-admin -c "tofu init -input=false -no-color && tofu plan -input=false -no-color -lock-timeout=5m" 2>&1 | tee "$RUNNER_TEMP/plan.txt"
+          {
+            echo "### tofu plan: ${{ matrix.workspace }}"
+            echo '```'
+            tail -c 60000 "$RUNNER_TEMP/plan.txt"
+            echo '```'
+            echo
+            echo "_sent from @Schniz's agent 🤖_"
+          } > "$RUNNER_TEMP/comment.md"
+          gh pr comment ${{ github.event.pull_request.number }} --body-file "$RUNNER_TEMP/comment.md"
