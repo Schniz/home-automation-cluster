@@ -12,6 +12,9 @@ openobserve/environment
 esphome/environment
 pihole/environment
 hermes/environment
+tofu/**/.terraform/
+tofu/**/*.tfstate
+tofu/**/*.tfstate.*
 tandoor/environment
 telegram-bot-api/environment
 gluetun/environment
