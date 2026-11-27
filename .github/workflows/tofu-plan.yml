@@ -46,8 +46,6 @@ jobs:
               "```",
               plan,
               "```",
-              "",
-              "_sent from @Schniz's agent 🤖_",
             ].join("\n");
             await github.rest.issues.createComment({
               ...context.repo,
