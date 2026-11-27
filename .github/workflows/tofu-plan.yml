@@ -28,8 +28,11 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
+          rm -f "$RUNNER_TEMP/plan.diff" "$RUNNER_TEMP/plan.log" "$RUNNER_TEMP/tfplan"
           # sg: the runner process started before the incus-admin group was added
-          sg incus-admin -c "tofu init -input=false -no-color && tofu plan -input=false -no-color -lock-timeout=5m" 2>&1 | tee "$RUNNER_TEMP/plan.txt"
+          sg incus-admin -c "tofu init -input=false -no-color && tofu plan -input=false -no-color -lock-timeout=5m -out=\"$RUNNER_TEMP/tfplan\"" 2>&1 | tee "$RUNNER_TEMP/plan.log"
+          # Only the planned changes go on the PR, not init/refresh noise
+          sg incus-admin -c "tofu show -no-color \"$RUNNER_TEMP/tfplan\"" > "$RUNNER_TEMP/plan.diff"
 
       - name: Comment plan on PR
         if: always()
@@ -39,12 +42,20 @@ jobs:
         with:
           script: |
             const fs = require("fs");
-            const path = `${process.env.RUNNER_TEMP}/plan.txt`;
-            const plan = fs.existsSync(path) ? fs.readFileSync(path, "utf8").slice(-60000) : "(no plan output)";
+            const tmp = process.env.RUNNER_TEMP;
+            let text;
+            if (fs.existsSync(`${tmp}/plan.diff`)) {
+              text = fs.readFileSync(`${tmp}/plan.diff`, "utf8").trim().slice(0, 60000);
+            } else if (fs.existsSync(`${tmp}/plan.log`)) {
+              // Plan failed before producing a plan: show the end of the log (the error)
+              text = "Plan failed:\n\n" + fs.readFileSync(`${tmp}/plan.log`, "utf8").trim().slice(-20000);
+            } else {
+              text = "No plan output.";
+            }
             const body = [
               `### tofu plan: ${process.env.WORKSPACE}`,
-              "```",
-              plan,
+              "```diff",
+              text,
               "```",
             ].join("\n");
             await github.rest.issues.createComment({
