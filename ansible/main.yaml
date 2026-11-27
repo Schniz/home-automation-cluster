@@ -242,7 +242,7 @@
             update_cache: true
             cache_valid_time: 3600
 
-    - name: Set up Incus
+    - name: Apply machine1 OpenTofu workspace
       become: true
       block:
         - name: Install Incus
@@ -264,6 +264,21 @@
             owner: "{{runner_user}}"
             group: "{{runner_user}}"
             mode: "0755"
+
+        - name: Initialize tofu workspace
+          command: tofu init -input=false
+          args:
+            chdir: "{{ playbook_dir }}/../tofu/workspaces/machine1"
+          become_user: "{{ runner_user }}"
+          changed_when: false
+
+        - name: Apply tofu workspace
+          command: tofu apply -auto-approve -input=false
+          args:
+            chdir: "{{ playbook_dir }}/../tofu/workspaces/machine1"
+          become_user: "{{ runner_user }}"
+          register: tofu_apply
+          changed_when: "'0 added, 0 changed, 0 destroyed' not in tofu_apply.stdout"
 
     - name: Add EDITOR=vim to {{runner_user}}
       become: true

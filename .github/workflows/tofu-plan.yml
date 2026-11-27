@@ -1,0 +1,65 @@
+name: tofu plan
+
+on:
+  pull_request:
+    paths:
+      - "tofu/**"
+      - ".github/workflows/tofu-plan.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  plan:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux]
+    environment: home
+    strategy:
+      matrix:
+        workspace: [machine1]
+    defaults:
+      run:
+        working-directory: tofu/workspaces/${{ matrix.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Plan
+        shell: bash
+        run: |
+          set -o pipefail
+          rm -f "$RUNNER_TEMP/plan.diff" "$RUNNER_TEMP/plan.log" "$RUNNER_TEMP/tfplan"
+          # sg: the runner process started before the incus-admin group was added
+          sg incus-admin -c "tofu init -input=false -no-color && tofu plan -input=false -no-color -lock-timeout=5m -out=\"$RUNNER_TEMP/tfplan\"" 2>&1 | tee "$RUNNER_TEMP/plan.log"
+          # Only the planned changes go on the PR, not init/refresh noise
+          sg incus-admin -c "tofu show -no-color \"$RUNNER_TEMP/tfplan\"" > "$RUNNER_TEMP/plan.diff"
+
+      - name: Comment plan on PR
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          WORKSPACE: ${{ matrix.workspace }}
+        with:
+          script: |
+            const fs = require("fs");
+            const tmp = process.env.RUNNER_TEMP;
+            let text;
+            if (fs.existsSync(`${tmp}/plan.diff`)) {
+              text = fs.readFileSync(`${tmp}/plan.diff`, "utf8").trim().slice(0, 60000);
+            } else if (fs.existsSync(`${tmp}/plan.log`)) {
+              // Plan failed before producing a plan: show the end of the log (the error)
+              text = "Plan failed:\n\n" + fs.readFileSync(`${tmp}/plan.log`, "utf8").trim().slice(-20000);
+            } else {
+              text = "No plan output.";
+            }
+            const body = [
+              `### tofu plan: ${process.env.WORKSPACE}`,
+              "```diff",
+              text,
+              "```",
+            ].join("\n");
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body,
+            });
